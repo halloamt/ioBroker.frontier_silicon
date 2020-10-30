@@ -1,0 +1,121 @@
+{
+	"common": {
+		"name": "frontier_silicon",
+		"version": "0.0.1",
+		"news": {
+			"0.0.1": {
+				"en": "initial release",
+				"de": "Erstveröffentlichung",
+				"ru": "Начальная версия",
+				"pt": "lançamento inicial",
+				"nl": "Eerste uitgave",
+				"fr": "Première version",
+				"it": "Versione iniziale",
+				"es": "Versión inicial",
+				"pl": "Pierwsze wydanie",
+				"zh-cn": "首次出版"
+			}
+		},
+		"title": "Frontier Silicon",
+		"titleLang": {
+			"en": "Frontier Silicon",
+			"de": "Frontier Silicon",
+			"ru": "Frontier Silicon",
+			"pt": "Frontier Silicon",
+			"nl": "Frontier Silicium",
+			"fr": "Frontier Silicon",
+			"it": "Frontier Silicon",
+			"es": "Silicio de frontera",
+			"pl": "Frontier Silicon",
+			"zh-cn": "前沿硅"
+		},
+		"desc": {
+			"en": "Provides support for media players equipped with a Frontier Silicon chipset using FSAPI.",
+			"de": "Bietet Unterstützung für Mediaplayer, die mit einem Frontier Silicon-Chipsatz mit FSAPI ausgestattet sind.",
+			"ru": "Обеспечивает поддержку медиаплееров, оснащенных чипсетом Frontier Silicon, с использованием FSAPI.",
+			"pt": "Fornece suporte para media players equipados com um chipset Frontier Silicon usando FSAPI.",
+			"nl": "Biedt ondersteuning voor mediaspelers die zijn uitgerust met een Frontier Silicon-chipset die FSAPI gebruikt.",
+			"fr": "Prend en charge les lecteurs multimédias équipés d'un chipset Frontier Silicon utilisant FSAPI.",
+			"it": "Fornisce supporto per lettori multimediali dotati di chipset Frontier Silicon utilizzando FSAPI.",
+			"es": "Brinda soporte para reproductores multimedia equipados con un chipset Frontier Silicon que usa FSAPI.",
+			"pl": "Zapewnia obsługę odtwarzaczy multimedialnych wyposażonych w chipset Frontier Silicon korzystających z FSAPI.",
+			"zh-cn": "为配备有使用FSAPI的Frontier Silicon芯片组的媒体播放器提供支持。"
+		},
+		"authors": [
+			"halloamt <iobroker@halloserv.de>"
+		],
+		"keywords": [
+			"frontier silicon",
+			"media player",
+			"fsapi",
+			"internet radio",
+			"radio",
+			"music player"
+		],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "main.js",
+		"icon": "frontier_silicon.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/halloamt/ioBroker.frontier_silicon/master/admin/frontier_silicon.png",
+		"readme": "https://github.com/halloamt/ioBroker.frontier_silicon/blob/master/README.md",
+		"loglevel": "info",
+		"mode": "daemon",
+		"type": "multimedia",
+		"compact": true,
+		"connectionType": "local",
+		"dataSource": "poll",
+		"materialize": true,
+		"materializeTab": true,
+		"adminTab": {
+			"singleton": true,
+			"name": {
+				"en": "Frontier Silicon",
+				"de": "Frontier Silicon",
+				"ru": "Frontier Silicon",
+				"pt": "Frontier Silicon",
+				"nl": "Frontier Silicium",
+				"fr": "Frontier Silicon",
+				"it": "Frontier Silicon",
+				"es": "Silicio de frontera",
+				"pl": "Frontier Silicon",
+				"zh-cn": "前沿硅"
+			},
+			"link": "",
+			"fa-icon": "info"
+		},
+		"dependencies": [
+			{
+				"js-controller": ">=2.0.0"
+			}
+		]
+	},
+	"native": {
+		"option1": true,
+		"option2": "42"
+	},
+	"objects": [],
+	"instanceObjects": [
+		{
+			"_id": "info",
+			"type": "channel",
+			"common": {
+				"name": "Information"
+			},
+			"native": {}
+		},
+		{
+			"_id": "info.connection",
+			"type": "state",
+			"common": {
+				"role": "indicator.connected",
+				"name": "Device or service connected",
+				"type": "boolean",
+				"read": true,
+				"write": false,
+				"def": false
+			},
+			"native": {}
+		}
+	]
+}

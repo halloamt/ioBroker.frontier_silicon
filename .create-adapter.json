@@ -1,0 +1,43 @@
+{
+	"cli": true,
+	"adapterName": "frontier_silicon",
+	"title": "Frontier Silicon",
+	"description": "Provides support for media players equipped with a Frontier Silicon chipset using FSAPI.",
+	"keywords": [
+		"frontier silicon",
+		"media player",
+		"fsapi",
+		"internet radio",
+		"radio",
+		"music player"
+	],
+	"expert": "yes",
+	"features": [
+		"adapter"
+	],
+	"adminFeatures": [
+		"tab"
+	],
+	"type": "multimedia",
+	"startMode": "daemon",
+	"connectionType": "local",
+	"dataSource": "poll",
+	"connectionIndicator": "yes",
+	"language": "JavaScript",
+	"tools": [
+		"ESLint",
+		"type checking"
+	],
+	"indentation": "Tab",
+	"quotes": "double",
+	"es6class": "yes",
+	"authorName": "halloamt",
+	"authorGithub": "halloamt",
+	"authorEmail": "iobroker@halloserv.de",
+	"gitRemoteProtocol": "SSH",
+	"gitCommit": "yes",
+	"license": "MIT License",
+	"ci": "gh-actions",
+	"dependabot": "yes",
+	"creatorVersion": "1.29.1"
+}
