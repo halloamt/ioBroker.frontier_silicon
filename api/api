@@ -1,0 +1,24 @@
+Favoriten auslesen
+http://192.168.178.26/fsapi/LIST_GET_NEXT/netRemote.nav.presets/-1?pin=7389&sid=883168529&maxItems=10
+
+Nav ein
+http://192.168.178.26/fsapi/SET/netRemote.nav.state?pin=7389&sid=883168529&value=1
+
+Quellen auslesen
+http://192.168.178.26/fsapi/LIST_GET_NEXT/netRemote.sys.caps.validModes/-1?pin=7389&sid=682647964&maxItems=100
+
+aktuelle Quelle
+http://192.168.178.26/fsapi/GET/netRemote.sys.mode?pin=7389&sid=682647964
+
+Updates suchen
+http://192.168.178.26/fsapi/SET/netRemote.sys.isu.control?pin=7389&value=2
+
+Ein/Aus?
+http://192.168.178.26/fsapi/GET/netRemote.sys.power?pin=7389&sid=682647964
+
+Einschalten
+http://192.168.178.26/fsapi/SET/netRemote.sys.power?pin=7389&sid=883168529&value=0
+
+Doku
+https://github.com/flammy/fsapi/blob/master/FSAPI.md
+https://www.niehoff.nl/producthandleiding/PMR4000RMKII-03.pdf
