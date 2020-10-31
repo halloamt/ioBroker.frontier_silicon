@@ -16,6 +16,49 @@
 
 Provides support for media players equipped with a Frontier Silicon chipset using FSAPI.
 
+## Features
+
+PRs and contructive criticism are always welcome.
+
+### Implemented features
+
+- Power control
+- Mode selection
+- Preset selection
+
+### Planned features
+
+- Auto discovery
+- More states
+- Timers for states
+- Translations
+- Volume control
+- More Exception handling
+- Cleaner code
+
+### Features I cannot implement
+
+- Multi room features
+
+### Not planned features
+
+- Changing system information
+
+### Known Bugs
+
+- Media player must be on for preset discovery
+
+## Installation
+
+	```bash
+	cd /opt
+	git clone https://github.com/halloamt/ioBroker.frontier_silicon.git
+	cd ioBroker.frontier_silicon.git
+	npm pack
+	cd ../iobroker
+	npm i ../ioBroker.frontier_silicon/iobroker.frontier_silicon-0.0.1.tgz
+	```
+	
 ## Developer manual
 This section is intended for the developer. It can be deleted later
 
