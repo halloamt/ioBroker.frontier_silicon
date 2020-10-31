@@ -74,12 +74,12 @@
 				"de": "Frontier Silicon",
 				"ru": "Frontier Silicon",
 				"pt": "Frontier Silicon",
-				"nl": "Frontier Silicium",
+				"nl": "Frontier Silicon",
 				"fr": "Frontier Silicon",
 				"it": "Frontier Silicon",
-				"es": "Silicio de frontera",
+				"es": "Frontier Silicon",
 				"pl": "Frontier Silicon",
-				"zh-cn": "前沿硅"
+				"zh-cn": "Frontier Silicon"
 			},
 			"link": "",
 			"fa-icon": "info"
@@ -91,8 +91,11 @@
 		]
 	},
 	"native": {
-		"option1": true,
-		"option2": "42"
+		"PIN": 1234,
+		"IP": "192.168.178.34",
+		"SessionID": 0,
+		"fsAPIURL": "",
+		"SangeanNoSound": false
 	},
 	"objects": [],
 	"instanceObjects": [
@@ -101,6 +104,22 @@
 			"type": "channel",
 			"common": {
 				"name": "Information"
+			},
+			"native": {}
+		},
+		{
+			"_id": "device",
+			"type": "channel",
+			"common": {
+				"name": "Gerät"
+			},
+			"native": {}
+		},
+		{
+			"_id": "modes",
+			"type": "channel",
+			"common": {
+				"name": "Modi"
 			},
 			"native": {}
 		},

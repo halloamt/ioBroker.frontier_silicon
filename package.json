@@ -21,7 +21,10 @@
     "url": "git@github.com:halloamt/ioBroker.frontier_silicon.git"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^2.4.0"
+    "@iobroker/adapter-core": "^2.4.0",
+    "axios": "^0.21.0",
+    "jslint": "^0.12.1",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@iobroker/testing": "^2.3.0",
@@ -33,7 +36,6 @@
     "@types/proxyquire": "^1.3.28",
     "@types/sinon": "^9.0.8",
     "@types/sinon-chai": "^3.2.5",
-    "axios": "^0.21.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^7.12.1",
