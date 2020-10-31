@@ -67,23 +67,6 @@
 		"dataSource": "poll",
 		"materialize": true,
 		"materializeTab": true,
-		"adminTab": {
-			"singleton": true,
-			"name": {
-				"en": "Frontier Silicon",
-				"de": "Frontier Silicon",
-				"ru": "Frontier Silicon",
-				"pt": "Frontier Silicon",
-				"nl": "Frontier Silicon",
-				"fr": "Frontier Silicon",
-				"it": "Frontier Silicon",
-				"es": "Frontier Silicon",
-				"pl": "Frontier Silicon",
-				"zh-cn": "Frontier Silicon"
-			},
-			"link": "",
-			"fa-icon": "info"
-		},
 		"dependencies": [
 			{
 				"js-controller": ">=2.0.0"

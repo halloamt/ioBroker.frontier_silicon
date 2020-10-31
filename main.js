@@ -340,6 +340,10 @@ class FrontierSilicon extends utils.Adapter {
 		const mode = result.result.value[0].u32[0];
 		let unmute = false;
 
+		const mute = await this.callAPI("netRemote.sys.audio.mute");
+		unmute = mute.result.value[0].u8[0] == 0;
+		this.log.debug(`Mute: ${JSON.stringify(mute)} - Unmute: ${unmute.toString()}`);
+
 		for(let i=0;i<=25;++i)
 		{
 			this.log.debug("Getting Modes");
@@ -385,9 +389,6 @@ class FrontierSilicon extends utils.Adapter {
 			//this.log.debug(result.success.toString() + " - " + (available !== undefined).toString());
 			if(!result.success) continue;
 
-			const mute = await this.callAPI("netRemote.sys.audio.mute");
-			unmute = mute.result.value[0].u8[0] == 0;
-			this.log.debug(`Mute: ${JSON.stringify(mute)} - Unmute: ${unmute.toString()}`);
 			if(unmute)
 			{
 				await this.callAPI("netRemote.sys.audio.mute", "1");
