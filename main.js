@@ -57,6 +57,10 @@ class FrontierSilicon extends utils.Adapter {
 		this.subscribeStates("device.*");
 		this.subscribeStates("modes.*.switchTo");
 		this.subscribeStates("modes.*.presets.*.recall");
+		this.subscribeStates("modes.selected");
+		this.subscribeStates("modes.selectPreset");
+		this.subscribeStates("audio.mute");
+		this.subscribeStates("audio.volume");
 
 		/*
 			setState examples
@@ -122,6 +126,7 @@ class FrontierSilicon extends utils.Adapter {
 	 */
 	async onStateChange(id, state) {
 		if (state) {
+			if (!id || !state || state.ack) return;
 			// The state was changed
 			this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
 			//const setState = this.setStateAsync;
@@ -140,8 +145,7 @@ class FrontierSilicon extends utils.Adapter {
 							adapter.callAPI("netRemote.sys.power", state.val ? "1" : "0")
 								.then(function (result) {
 									if(result.success) {
-										//adapter.setStateAsync("device.power", {ack: true});
-										state.ack = true;
+										adapter.setStateAsync("device.power", {val:true, ack: true});
 									}
 								});
 
@@ -155,28 +159,88 @@ class FrontierSilicon extends utils.Adapter {
 					}
 					break;
 				case "modes":
-					// frontier_silicon.0.modes.2.switchTo
-					this.log.debug("Modus umschalten");
-					await adapter.callAPI("netRemote.sys.mode", zustand[3])
-						.then(function (result) {
-							if(result.success) {
-								//adapter.setStateAsync("device.power", {ack: true});
-								state.ack = true;
-							}
-						});
+					if((zustand.length == 5 && zustand[4] === "switchTo")
+						|| (zustand.length == 7 && zustand[4] === "presets" && zustand[6] === "recall"))
+					{
+						// frontier_silicon.0.modes.2.switchTo
+						this.log.debug("Modus umschalten");
+						await adapter.callAPI("netRemote.sys.mode", zustand[3])
+							.then(function (result) {
+								if(result.success) {
+									adapter.setStateAsync("modes.selected", {val:zustand[3], ack: true});
+									adapter.getStateAsync(`modes.${zustand[3]}.label`)
+										.then(function (lab) {
+											if(lab !== null && lab !== undefined && lab.val !== null)
+											{
+												adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
+											}
+										});
+								}
+							});
+					}
 					// frontier_silicon.1.modes.4.presets.2.recall
-					if(zustand.length == 7 && zustand[6] === "recall")
+					if(zustand.length == 7 && zustand[4] === "presets" && zustand[6] === "recall")
 					{
 						await this.callAPI("netRemote.nav.state", "1");
 						adapter.callAPI("netRemote.nav.action.selectPreset", zustand[5])
 							.then(function (result) {
 								if(result.success) {
-								//adapter.setStateAsync("device.power", {ack: true});
-									state.ack = true;
+									adapter.setStateAsync("modes.selectPreset", {val:zustand[5], ack: true});
+								}
+							});
+						//adapter.getSelectedPreset();
+					}
+					// frontier_silicon.1.modes.selected
+					else if(zustand[3] === "selected" && state.val !== null)
+					{
+						this.log.debug("Modus umschalten");
+						await adapter.callAPI("netRemote.sys.mode", state.val.toString())
+							.then(function (result) {
+								if(result.success) {
+									adapter.setStateAsync("modes.selected", {val:state.val, ack: true});
+									adapter.getStateAsync(`modes.${state.val}.label`)
+										.then(function (lab) {
+											if(lab !== null && lab !== undefined && lab.val !== null)
+											{
+												adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
+											}
+										});
+								}
+							});
+					}
+					else if(zustand[3] === "selectPreset" && state.val !== null)
+					{
+						this.log.debug(`Selecting Preset ${state.val}`);
+						await this.callAPI("netRemote.nav.state", "1");
+						adapter.callAPI("netRemote.nav.action.selectPreset", state.val.toString())
+							.then(function (result) {
+								if(result.success) {
+									adapter.setStateAsync("modes.selectPreset", {val:state.val, ack: true});
 								}
 							});
 					}
 					break;
+				case "audio":
+					if(zustand[3] === "volume" && state.val !== null)
+					{
+						await this.callAPI("netRemote.nav.state", "1");
+						adapter.callAPI("netRemote.sys.audio.volume", state.val.toString())
+							.then(function (result) {
+								if(result.success) {
+									adapter.setStateAsync("audio.volume", {val:state.val, ack: true});
+								}
+							});
+					}
+					else if(zustand[3] === "mute" && state.val !== null)
+					{
+						await this.callAPI("netRemote.nav.state", "1");
+						adapter.callAPI("netRemote.sys.audio.mute", state.val ? "1" : "0")
+							.then(function (result) {
+								if(result.success) {
+									adapter.setStateAsync("audio.mute", {val:state.val, ack: true});
+								}
+							});
+					}
 				default:
 					break;
 			}
@@ -186,6 +250,21 @@ class FrontierSilicon extends utils.Adapter {
 		}
 	}
 
+	async getSelectedPreset()
+	{
+		const preset = await this.callAPI("netRemote.nav.action.selectPreset");
+		this.log.debug("Getting selected preset");
+		this.log.debug(JSON.stringify(preset));
+		if(preset.success)
+		{
+			this.log.debug(`Mode: ${preset.result.value[0].u32[0]}`);
+			this.setStateAsync("modes.selectedPreset", { val: preset.result.value[0].u32[0], ack: true });
+		}
+		else
+		{
+			this.setStateAsync("modes.selectedPreset", { val: "", ack: true });
+		}
+	}
 	makeSangeanDABPlay()
 	{
 		this.sleep(100);
@@ -194,15 +273,18 @@ class FrontierSilicon extends utils.Adapter {
 			.then(function (result) {
 				adapter.getStateAsync(`modes.${result.result.value[0].u32[0]}.id`)
 					.then(function (res){
-						if(res !== null && res.val !== null && res.val === "DAB")
+						if(res !== null && res !== undefined && res.val !== null && res.val === "DAB")
 						{
 							adapter.sleep(2000).then(function (){
 								adapter.getStateAsync("modes.mediaplayer")
 									.then(function (r) {
-										adapter.callAPI("netRemote.sys.mode", r.val.toString());
-										adapter.sleep(2000).then(function (){
-											adapter.callAPI("netRemote.sys.mode", result.result.value[0].u32[0]);
-										});
+										if(r !== null && r !== undefined && r.val !== null)
+										{
+											adapter.callAPI("netRemote.sys.mode", r.val.toString());
+											adapter.sleep(2000).then(function (){
+												adapter.callAPI("netRemote.sys.mode", result.result.value[0].u32[0]);
+											});
+										}
 									});
 							});
 						}
@@ -484,7 +566,7 @@ class FrontierSilicon extends utils.Adapter {
 		if(power.success)
 		{
 			this.log.debug(`Power: ${power.result.value[0].u8[0] == 1}`);
-			await this.setStateAsync("device.power", { val: power.result.value[0].u8[0] == 1, ack: true });
+			this.setStateAsync("device.power", { val: power.result.value[0].u8[0] == 1, ack: true });
 		}
 
 		await this.setObjectNotExistsAsync("modes.selected", {
@@ -502,8 +584,21 @@ class FrontierSilicon extends utils.Adapter {
 		if(power.success)
 		{
 			this.log.debug(`Mode: ${power.result.value[0].u32[0]}`);
-			await this.setStateAsync("modes.selected", { val: power.result.value[0].u32[0], ack: true });
+			this.setStateAsync("modes.selected", { val: power.result.value[0].u32[0], ack: true });
 		}
+
+		await this.setObjectNotExistsAsync("modes.selectPreset", {
+			type: "state",
+			common: {
+				name: "Mode",
+				type: "string",
+				role: "media.track",
+				read: false,
+				write: true,
+			},
+			native: {},
+		});
+		//this.getSelectedPreset();
 
 		await this.setObjectNotExistsAsync("modes.selectedLabel", {
 			type: "state",
@@ -512,7 +607,7 @@ class FrontierSilicon extends utils.Adapter {
 				type: "string",
 				role: "media.input",
 				read: true,
-				write: true,
+				write: false,
 			},
 			native: {},
 		});
@@ -520,7 +615,43 @@ class FrontierSilicon extends utils.Adapter {
 		if(power.success && power.value !== null)
 		{
 			this.log.debug(`Mode: ${power.value.val}`);
-			await this.setStateAsync("modes.selectedLabel", { val: power.value.val, ack: true });
+			this.setStateAsync("modes.selectedLabel", { val: power.value.val, ack: true });
+		}
+
+		//netRemote.sys.audio.volume
+		power = await this.callAPI("netRemote.sys.audio.volume");
+		await this.setObjectNotExistsAsync("audio.volume", {
+			type: "state",
+			common: {
+				name: "Volume",
+				type: "number",
+				role: "level.volume",
+				read: true,
+				write: true,
+			},
+			native: {},
+		});
+		if(power.success && power.value !== null)
+		{
+			this.setStateAsync("audio.volume", { val: power.result.value[0].u8[0], ack: true });
+		}
+
+		//netRemote.sys.audio.mute
+		power = await this.callAPI("netRemote.sys.audio.mute");
+		await this.setObjectNotExistsAsync("audio.mute", {
+			type: "state",
+			common: {
+				name: "Mute",
+				type: "boolean",
+				role: "switch",
+				read: true,
+				write: true,
+			},
+			native: {},
+		});
+		if(power.success && power.value !== null)
+		{
+			this.setStateAsync("audio.mute", { val: power.result.value[0].u8[0] == 1, ack: true });
 		}
 	}
 
@@ -591,7 +722,7 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			await this.setStateAsync("device.friendlyName", { val: dev.friendlyName, ack: true });
 		}
-		if(dev.vesion !== null)
+		if(dev.version !== null)
 		{
 			await this.setStateAsync("device.version", { val: dev.version, ack: true });
 		}
@@ -599,6 +730,24 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			await this.setStateAsync("device.webfsapi", { val: dev.webfsapi, ack: true });
 			this.config.fsAPIURL = dev.webfsapi;
+		}
+
+		//netRemote.sys.caps.volumeSteps
+		await this.setObjectNotExistsAsync("audio.maxVolume", {
+			type: "state",
+			common: {
+				name: "Max Volume setting",
+				type: "number",
+				role: "value.max",
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+		const maxVol = await this.callAPI("netRemote.sys.caps.volumeSteps");
+		if(maxVol.success)
+		{
+			this.setStateAsync("audio.maxVolume", {val: maxVol.result.value[0].u8[0]-1, ack: true});
 		}
 	}
 
