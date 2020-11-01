@@ -7,7 +7,6 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
-const { debug } = require("console");
 const axios = require("axios").default;
 const xml2js = require("xml2js");
 
@@ -121,12 +120,13 @@ class FrontierSilicon extends utils.Adapter {
 	 * @param {string} id
 	 * @param {ioBroker.State | null | undefined} state
 	 */
-	onStateChange(id, state) {
+	async onStateChange(id, state) {
 		if (state) {
 			// The state was changed
-			this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+			this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
 			//const setState = this.setStateAsync;
 			const zustand = id.split(".");
+			const adapter = this;
 
 			//let result;
 			switch(zustand[2])
@@ -137,7 +137,7 @@ class FrontierSilicon extends utils.Adapter {
 						case "power":
 							this.log.debug("Ein-/Ausschalten");
 							//const adapter = this;
-							this.callAPI("netRemote.sys.power", state.val ? "1" : "0")
+							adapter.callAPI("netRemote.sys.power", state.val ? "1" : "0")
 								.then(function (result) {
 									if(result.success) {
 										//adapter.setStateAsync("device.power", {ack: true});
@@ -147,7 +147,7 @@ class FrontierSilicon extends utils.Adapter {
 
 							if(state.val && this.config.SangeanNoSound)
 							{
-								this.makeSangeanDABPlay();
+								adapter.makeSangeanDABPlay();
 							}
 							break;
 						default:
@@ -157,7 +157,7 @@ class FrontierSilicon extends utils.Adapter {
 				case "modes":
 					// frontier_silicon.0.modes.2.switchTo
 					this.log.debug("Modus umschalten");
-					this.callAPI("netRemote.sys.mode", zustand[3])
+					await adapter.callAPI("netRemote.sys.mode", zustand[3])
 						.then(function (result) {
 							if(result.success) {
 								//adapter.setStateAsync("device.power", {ack: true});
@@ -167,10 +167,11 @@ class FrontierSilicon extends utils.Adapter {
 					// frontier_silicon.1.modes.4.presets.2.recall
 					if(zustand.length == 7 && zustand[6] === "recall")
 					{
-						this.callAPI("netRemote.nav.action.selectPreset", zustand[5])
+						await this.callAPI("netRemote.nav.state", "1");
+						adapter.callAPI("netRemote.nav.action.selectPreset", zustand[5])
 							.then(function (result) {
 								if(result.success) {
-									//adapter.setStateAsync("device.power", {ack: true});
+								//adapter.setStateAsync("device.power", {ack: true});
 									state.ack = true;
 								}
 							});
