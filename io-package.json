@@ -116,6 +116,14 @@
 			"native": {}
 		},
 		{
+			"_id": "media",
+			"type": "channel",
+			"common": {
+				"name": "Media information"
+			},
+			"native": {}
+		},
+		{
 			"_id": "info.connection",
 			"type": "state",
 			"common": {
