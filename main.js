@@ -48,7 +48,7 @@ class FrontierSilicon extends utils.Adapter {
 		//await this.createSession();
 		await this.discoverState();
 		await this.discoverDeviceFeatures();
-		await this.getModePresets();
+		await this.getModePresets(false);
 		// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
 		//this.subscribeStates("testVariable");
 		// You can also add a subscription for multiple states. The following line watches all states starting with "lights."
@@ -61,6 +61,7 @@ class FrontierSilicon extends utils.Adapter {
 		this.subscribeStates("modes.selectPreset");
 		this.subscribeStates("audio.mute");
 		this.subscribeStates("audio.volume");
+		this.subscribeStates("modes.readPresets");
 
 		/*
 			setState examples
@@ -219,6 +220,10 @@ class FrontierSilicon extends utils.Adapter {
 								}
 							});
 					}
+					else if(zustand[3] === "readPresets")
+					{
+						this.getModePresets(true);
+					}
 					break;
 				case "audio":
 					if(zustand[3] === "volume" && state.val !== null)
@@ -241,6 +246,7 @@ class FrontierSilicon extends utils.Adapter {
 								}
 							});
 					}
+					break;
 				default:
 					break;
 			}
@@ -326,6 +332,8 @@ class FrontierSilicon extends utils.Adapter {
 				}
 			});
 			if (!selectable) return;
+			this.log.debug(`ModeMaxIndex: ${this.config.ModeMaxIndex} - Key: ${key}`);
+			if(this.config.ModeMaxIndex === undefined || this.config.ModeMaxIndex < key) this.config.ModeMaxIndex = key;
 
 			if(id === "MP" && this.config.SangeanNoSound)
 			{
@@ -409,12 +417,27 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
+			this.setObjectNotExistsAsync(`modes.readPresets`, {
+				type: "state",
+				common: {
+					name: "Read presets",
+					type: "boolean",
+					role: "button",
+					read: false,
+					write: true,
+				},
+				native: {},
+			});
 			this.setStateAsync(`modes.${key}.streamable`, { val: streamable, ack: true });
 			this.log.debug(`ID: ${id} - Selectable: ${selectable} - Label: ${label} - Key: ${key}`);
 		});
 	}
 
-	async getModePresets()
+	/**
+	 * Reads presets for all modes
+	 * @param {boolean} force Force rescan of all presets
+	 */
+	async getModePresets(force)
 	{
 		this.log.debug("Getting presets");
 		let result = await this.callAPI("netRemote.nav.state", "1");
@@ -427,16 +450,19 @@ class FrontierSilicon extends utils.Adapter {
 		unmute = mute.result.value[0].u8[0] == 0;
 		this.log.debug(`Mute: ${JSON.stringify(mute)} - Unmute: ${unmute.toString()}`);
 
-		for(let i=0;i<=25;++i)
+		for(let i=0;i<=this.config.ModeMaxIndex;++i)
 		{
 			this.log.debug("Getting Modes");
 			let mode = await this.getStateAsync(`modes.${i}.key`);
 			if(mode === null) continue;
 			this.log.debug(`Mode ${i}`);
 
-			mode = await this.getStateAsync(`modes.${i}.presets.available`);
-			this.log.debug(JSON.stringify(mode));
-			if(mode !== null) continue;
+			if(!force)
+			{
+				mode = await this.getStateAsync(`modes.${i}.presets.available`);
+				this.log.debug(JSON.stringify(mode));
+				if(mode !== null) continue;
+			}
 			this.log.debug(`Presets ${i}`);
 
 			result = await this.callAPI("netRemote.sys.mode", i.toString());
@@ -468,7 +494,7 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			await this.setStateAsync(`modes.${i}.presets.available`, { val: true, ack: true });
+			await this.setStateAsync(`modes.${i}.presets.available`, { val: false, ack: true });
 			//this.log.debug(result.success.toString() + " - " + (available !== undefined).toString());
 			if(!result.success) continue;
 
@@ -477,6 +503,7 @@ class FrontierSilicon extends utils.Adapter {
 				await this.callAPI("netRemote.sys.audio.mute", "1");
 			}
 			result.result.item.forEach(item => {
+				this.setStateAsync(`modes.${i}.presets.available`, { val: true, ack: true });
 				key = item.$.key;
 				item.field.forEach(f => {
 					//this.log.debug(key.toString());

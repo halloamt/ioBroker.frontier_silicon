@@ -78,7 +78,8 @@
 		"IP": "192.168.178.34",
 		"SessionID": 0,
 		"fsAPIURL": "",
-		"SangeanNoSound": false
+		"SangeanNoSound": false,
+		"ModeMaxIndex": 0
 	},
 	"objects": [],
 	"instanceObjects": [
