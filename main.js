@@ -704,6 +704,23 @@ class FrontierSilicon extends utils.Adapter {
 			this.setStateAsync("media.text", { val: power.result.value[0].c8_array[0].trim(), ack: true });
 		}
 
+		await this.setObjectNotExistsAsync("media.graphic", {
+			type: "state",
+			common: {
+				name: "Media text",
+				type: "string",
+				role: "media.cover",
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+		power = await this.callAPI("netRemote.play.info.graphicUri");
+		if(power.success)
+		{
+			this.setStateAsync("media.graphic", { val: power.result.value[0].c8_array[0].trim(), ack: true });
+		}
+
 		await this.setObjectNotExistsAsync("modes.selectPreset", {
 			type: "state",
 			common: {
@@ -1065,6 +1082,10 @@ class FrontierSilicon extends utils.Adapter {
 									adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
 								}
 							});
+						this.callAPI("netRemote.play.info.graphicUri")
+							.then(function (result) {
+								adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+							});
 						break;
 					case "netremote.play.serviceids.ecc":
 						break;
@@ -1079,6 +1100,10 @@ class FrontierSilicon extends utils.Adapter {
 						break;
 					case "netremote.play.info.name":
 						this.setStateAsync("media.name", { val: item.value[0].c8_array[0].trim(), ack: true });
+						this.callAPI("netRemote.play.info.graphicUri")
+							.then(function (result) {
+								adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+							});
 						break;
 					case "netremote.sys.audio.volume":
 						this.setStateAsync("audio.volume", { val: item.value[0].u8[0], ack: true });
