@@ -50,7 +50,7 @@ class FrontierSilicon extends utils.Adapter {
 		//await this.createSession();
 		await this.discoverState();
 		await this.discoverDeviceFeatures();
-		await this.getModePresets(false);
+		await this.getAllPresets(false);
 
 		this.onFSAPIMessage();
 		// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
@@ -227,7 +227,7 @@ class FrontierSilicon extends utils.Adapter {
 					}
 					else if(zustand[3] === "readPresets")
 					{
-						this.getModePresets(true);
+						this.getAllPresets(true);
 					}
 					break;
 				case "audio":
@@ -318,6 +318,10 @@ class FrontierSilicon extends utils.Adapter {
 
 		result.result.item.forEach(item => {
 			key = item.$.key;
+			id = "";
+			selectable = false;
+			label = "";
+			streamable = false;
 			item.field.forEach(f => {
 				switch (f.$.name) {
 					case "id":
@@ -336,7 +340,7 @@ class FrontierSilicon extends utils.Adapter {
 						break;
 				}
 			});
-			if (!selectable) return;
+
 			this.log.debug(`ModeMaxIndex: ${this.config.ModeMaxIndex} - Key: ${key}`);
 			if(this.config.ModeMaxIndex === undefined || this.config.ModeMaxIndex < key) this.config.ModeMaxIndex = key;
 
@@ -403,7 +407,7 @@ class FrontierSilicon extends utils.Adapter {
 			this.setObjectNotExistsAsync(`modes.${key}.streamable`, {
 				type: "state",
 				common: {
-					name: "Mode Streamable",
+					name: "Mode streamable",
 					type: "boolean",
 					role: "indicator",
 					read: true,
@@ -411,29 +415,44 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.setObjectNotExistsAsync(`modes.${key}.switchTo`, {
-				type: "state",
-				common: {
-					name: "Switch to mode",
-					type: "boolean",
-					role: "button",
-					read: false,
-					write: true,
-				},
-				native: {},
-			});
-			this.setObjectNotExistsAsync(`modes.readPresets`, {
-				type: "state",
-				common: {
-					name: "Read presets",
-					type: "boolean",
-					role: "button",
-					read: false,
-					write: true,
-				},
-				native: {},
-			});
 			this.setStateAsync(`modes.${key}.streamable`, { val: streamable, ack: true });
+			this.setObjectNotExistsAsync(`modes.${key}.selectable`, {
+				type: "state",
+				common: {
+					name: "Mode selectable",
+					type: "boolean",
+					role: "indicator",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			this.setStateAsync(`modes.${key}.selectable`, { val: selectable, ack: true });
+			if(selectable)
+			{
+				this.setObjectNotExistsAsync(`modes.${key}.switchTo`, {
+					type: "state",
+					common: {
+						name: "Switch to mode",
+						type: "boolean",
+						role: "button",
+						read: false,
+						write: true,
+					},
+					native: {},
+				});
+				this.setObjectNotExistsAsync(`modes.readPresets`, {
+					type: "state",
+					common: {
+						name: "Read presets",
+						type: "boolean",
+						role: "button",
+						read: false,
+						write: true,
+					},
+					native: {},
+				});
+			}
 			this.log.debug(`ID: ${id} - Selectable: ${selectable} - Label: ${label} - Key: ${key}`);
 		});
 	}
@@ -442,7 +461,7 @@ class FrontierSilicon extends utils.Adapter {
 	 * Reads presets for all modes
 	 * @param {boolean} force Force rescan of all presets
 	 */
-	async getModePresets(force)
+	async getAllPresets(force)
 	{
 		this.log.debug("Getting presets");
 		let result = await this.callAPI("netRemote.nav.state", "1");
@@ -468,111 +487,115 @@ class FrontierSilicon extends utils.Adapter {
 				this.log.debug(JSON.stringify(mode));
 				if(mode !== null) continue;
 			}
-			this.log.debug(`Presets ${i}`);
-
-			result = await this.callAPI("netRemote.sys.mode", i.toString());
-			await this.sleep(1000);
-			result = await this.callAPI("netRemote.nav.state", "1");
-			result = await this.callAPI("netRemote.nav.presets", "", -1, 65535);
-			//this.log.debug(JSON.stringify(result.result));
-
-			let key = 0;
-			let name = "";
-
-			await this.setObjectNotExistsAsync(`modes.${i}.presets`, {
-				type: "channel",
-				common: {
-					name: "Presets"
-				},
-				native: {},
-			});
-
-			//const available = await this.getStateAsync(`modes.${i}.presets.available`);
-			await this.setObjectNotExistsAsync(`modes.${i}.presets.available`, {
-				type: "state",
-				common: {
-					name: "Mode Key",
-					type: "boolean",
-					role: "indicator",
-					read: true,
-					write: false,
-				},
-				native: {},
-			});
-			await this.setStateAsync(`modes.${i}.presets.available`, { val: false, ack: true });
-			//this.log.debug(result.success.toString() + " - " + (available !== undefined).toString());
-			if(!result.success) continue;
-
-			if(unmute)
-			{
-				await this.callAPI("netRemote.sys.audio.mute", "1");
-			}
-			result.result.item.forEach(item => {
-				this.setStateAsync(`modes.${i}.presets.available`, { val: true, ack: true });
-				key = item.$.key;
-				item.field.forEach(f => {
-					//this.log.debug(key.toString());
-					//this.log.debug(JSON.stringify(item));
-					//this.log.debug(JSON.stringify(f));
-					switch (f.$.name) {
-						case "name":
-							name = f.c8_array[0];
-							break;
-						default:
-							break;
-					}
-				});
-
-				this.log.debug(name);
-				this.setObjectNotExistsAsync(`modes.${i}.presets.${key}`, {
-					type: "channel",
-					common: {
-						name: `Preset ${key}`
-					},
-					native: {},
-				});
-				this.setObjectNotExistsAsync(`modes.${i}.presets.${key}.name`, {
-					type: "state",
-					common: {
-						name: "Preset Name",
-						type: "string",
-						role: "text",
-						read: true,
-						write: false,
-					},
-					native: {},
-				});
-				this.setStateAsync(`modes.${i}.presets.${key}.name`, { val: name.toString(), ack: true });
-				this.setObjectNotExistsAsync(`modes.${i}.presets.${key}.key`, {
-					type: "state",
-					common: {
-						name: "Preset Key",
-						type: "number",
-						role: "media.playid",
-						read: true,
-						write: false,
-					},
-					native: {},
-				});
-				this.setStateAsync(`modes.${i}.presets.${key}.key`, { val: key, ack: true });
-				this.setObjectNotExistsAsync(`modes.${i}.presets.${key}.recall`, {
-					type: "state",
-					common: {
-						name: "Recall Preset",
-						type: "boolean",
-						role: "button",
-						read: false,
-						write: true,
-					},
-					native: {},
-				});
-			});
+			await this.getModePresets(i, unmute);
 		}
 		await this.callAPI("netRemote.sys.mode", mode);
 		if(unmute)
 		{
 			await this.callAPI("netRemote.sys.audio.mute", "0");
 		}
+	}
+
+	async getModePresets(mode, unmute = false)
+	{
+		this.log.debug(`Presets ${mode}`);
+
+		let result = await this.callAPI("netRemote.sys.mode", mode.toString());
+		await this.sleep(1000);
+		result = await this.callAPI("netRemote.nav.state", "1");
+		result = await this.callAPI("netRemote.nav.presets", "", -1, 65535);
+
+		let key = 0;
+		let name = "";
+
+		await this.setObjectNotExistsAsync(`modes.${mode}.presets`, {
+			type: "channel",
+			common: {
+				name: "Presets"
+			},
+			native: {},
+		});
+
+		//const available = await this.getStateAsync(`modes.${mode}.presets.available`);
+		await this.setObjectNotExistsAsync(`modes.${mode}.presets.available`, {
+			type: "state",
+			common: {
+				name: "Mode Key",
+				type: "boolean",
+				role: "indicator",
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+		await this.setStateAsync(`modes.${mode}.presets.available`, { val: result.success, ack: true });
+		//this.log.debug(result.success.toString() + " - " + (available !== undefined).toString());
+		if(!result.success) return;
+
+		if(unmute)
+		{
+			await this.callAPI("netRemote.sys.audio.mute", "1");
+		}
+		result.result.item.forEach(item => {
+			//this.setStateAsync(`modes.${mode}.presets.available`, { val: true, ack: true });
+			key = item.$.key;
+			item.field.forEach(f => {
+				//this.log.debug(key.toString());
+				//this.log.debug(JSON.stringify(item));
+				//this.log.debug(JSON.stringify(f));
+				switch (f.$.name) {
+					case "name":
+						name = f.c8_array[0];
+						break;
+					default:
+						break;
+				}
+			});
+
+			this.log.debug(name);
+			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}`, {
+				type: "channel",
+				common: {
+					name: `Preset ${key}`
+				},
+				native: {},
+			});
+			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.name`, {
+				type: "state",
+				common: {
+					name: "Preset Name",
+					type: "string",
+					role: "text",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			this.setStateAsync(`modes.${mode}.presets.${key}.name`, { val: name.toString(), ack: true });
+			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.key`, {
+				type: "state",
+				common: {
+					name: "Preset Key",
+					type: "number",
+					role: "media.playid",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			this.setStateAsync(`modes.${mode}.presets.${key}.key`, { val: key, ack: true });
+			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.recall`, {
+				type: "state",
+				common: {
+					name: "Recall Preset",
+					type: "boolean",
+					role: "button",
+					read: false,
+					write: true,
+				},
+				native: {},
+			});
+		});
 	}
 
 	/**
@@ -1086,6 +1109,7 @@ class FrontierSilicon extends utils.Adapter {
 							.then(function (result) {
 								adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
 							});
+						this.getModePresets(variable, false);
 						break;
 					case "netremote.play.serviceids.ecc":
 						break;
