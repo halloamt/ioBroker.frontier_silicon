@@ -1,8 +1,32 @@
 {
 	"common": {
 		"name": "frontier_silicon",
-		"version": "0.0.1",
+		"version": "0.0.3",
 		"news": {
+			"0.0.3": {
+				"en": "Bugfixes",
+				"de": "Bugfixes",
+				"ru": "Bugfixes",
+				"pt": "Bugfixes",
+				"nl": "Bugfixes",
+				"fr": "Bugfixes",
+				"it": "Bugfixes",
+				"es": "Bugfixes",
+				"pl": "Bugfixes",
+				"zh-cn": "Bugfixes"
+			},
+			"0.0.2": {
+				"en": "Presets and notifications",
+				"de": "Presets and notifications",
+				"ru": "Presets and notifications",
+				"pt": "Presets and notifications",
+				"nl": "Presets and notifications",
+				"fr": "Presets and notifications",
+				"it": "Presets and notifications",
+				"es": "Presets and notifications",
+				"pl": "Presets and notifications",
+				"zh-cn": "Presets and notifications"
+			},
 			"0.0.1": {
 				"en": "initial release",
 				"de": "Erstveröffentlichung",
