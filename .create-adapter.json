@@ -9,24 +9,25 @@
 		"fsapi",
 		"internet radio",
 		"radio",
-		"music player"
+		"music player",
+		"undok"
 	],
 	"expert": "yes",
 	"features": [
 		"adapter"
 	],
-	"adminFeatures": [
-		"tab"
-	],
+	"adminFeatures": [],
 	"type": "multimedia",
 	"startMode": "daemon",
 	"connectionType": "local",
 	"dataSource": "poll",
 	"connectionIndicator": "yes",
 	"language": "JavaScript",
+	"adminReact": "no",
 	"tools": [
 		"ESLint",
-		"type checking"
+		"type checking",
+		"devcontainer"
 	],
 	"indentation": "Tab",
 	"quotes": "double",
@@ -35,9 +36,9 @@
 	"authorGithub": "halloamt",
 	"authorEmail": "iobroker@halloserv.de",
 	"gitRemoteProtocol": "SSH",
-	"gitCommit": "yes",
+	"gitCommit": "no",
 	"license": "MIT License",
-	"ci": "gh-actions",
+	"ci": "travis",
 	"dependabot": "yes",
-	"creatorVersion": "1.29.1"
+	"creatorVersion": "1.30.0"
 }
