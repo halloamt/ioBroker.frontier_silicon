@@ -181,6 +181,7 @@ class FrontierSilicon extends utils.Adapter {
 												adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
 											}
 										});
+										adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 								}
 							});
 					}
@@ -211,6 +212,10 @@ class FrontierSilicon extends utils.Adapter {
 												adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
 											}
 										});
+									adapter.callAPI("netRemote.play.info.graphicUri")
+									.then(function (result) {
+										adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+									});
 								}
 							});
 					}
@@ -222,6 +227,10 @@ class FrontierSilicon extends utils.Adapter {
 							.then(function (result) {
 								if(result.success) {
 									adapter.setStateAsync("modes.selectPreset", {val:state.val, ack: true});
+									adapter.callAPI("netRemote.play.info.graphicUri")
+									.then(function (result) {
+										adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+									});
 								}
 							});
 					}
@@ -1105,10 +1114,7 @@ class FrontierSilicon extends utils.Adapter {
 									adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
 								}
 							});
-						this.callAPI("netRemote.play.info.graphicUri")
-							.then(function (result) {
-								adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
-							});
+						adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 						this.getModePresets(variable, false);
 						break;
 					case "netremote.play.serviceids.ecc":
@@ -1124,10 +1130,6 @@ class FrontierSilicon extends utils.Adapter {
 						break;
 					case "netremote.play.info.name":
 						this.setStateAsync("media.name", { val: item.value[0].c8_array[0].trim(), ack: true });
-						this.callAPI("netRemote.play.info.graphicUri")
-							.then(function (result) {
-								adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
-							});
 						break;
 					case "netremote.sys.audio.volume":
 						this.setStateAsync("audio.volume", { val: item.value[0].u8[0], ack: true });
@@ -1138,10 +1140,17 @@ class FrontierSilicon extends utils.Adapter {
 					case "netremote.sys.power":
 						this.setStateAsync("device.power", { val: item.value[0].u8[0] == 1, ack: true });
 						break;
+					case "netremote.play.info.graphicuri":
+						this.setStateAsync("media.graphic", { val: item.value[0].c8_array[0].trim(), ack: true });
+						break;
 					default:
 						break;
 				}
 			});
+			this.callAPI("netRemote.play.info.graphicUri")
+				.then(function (result) {
+					adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+				});
 		}
 		timeOutMessage = setTimeout(async () => {
 			await this.onFSAPIMessage();
