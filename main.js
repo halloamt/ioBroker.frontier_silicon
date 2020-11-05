@@ -59,6 +59,7 @@ class FrontierSilicon extends utils.Adapter {
 		// this.subscribeStates("lights.*");
 		// Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
 		this.subscribeStates("device.power");
+		this.subscribeStates("device.friendlyName");
 		this.subscribeStates("modes.*.switchTo");
 		this.subscribeStates("modes.*.presets.*.recall");
 		this.subscribeStates("modes.selected");
@@ -158,6 +159,19 @@ class FrontierSilicon extends utils.Adapter {
 							if(state.val && this.config.SangeanNoSound)
 							{
 								adapter.makeSangeanDABPlay();
+							}
+							break;
+						case "friendlyName":
+							this.log.debug("Umbenennen");
+
+							if(state != null && state != undefined && state.val != null && state.val != undefined)
+							{
+								adapter.callAPI("netRemote.sys.info.friendlyName", state.val.toString())
+									.then(function (result) {
+										if(result.success) {
+											adapter.setStateAsync("device.friendlyName", {val:true, ack: true});
+										}
+									});
 							}
 							break;
 						default:
