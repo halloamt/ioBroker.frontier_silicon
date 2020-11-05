@@ -58,7 +58,7 @@ class FrontierSilicon extends utils.Adapter {
 		// You can also add a subscription for multiple states. The following line watches all states starting with "lights."
 		// this.subscribeStates("lights.*");
 		// Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-		this.subscribeStates("device.*");
+		this.subscribeStates("device.power");
 		this.subscribeStates("modes.*.switchTo");
 		this.subscribeStates("modes.*.presets.*.recall");
 		this.subscribeStates("modes.selected");
@@ -82,11 +82,11 @@ class FrontierSilicon extends utils.Adapter {
 		//await this.setStateAsync("testVariable", { val: true, ack: true, expire: 30 });
 
 		// examples for the checkPassword/checkGroup functions
-		let result = await this.checkPasswordAsync("admin", "iobroker");
-		this.log.info("check user admin pw iobroker: " + result);
+		//let result = await this.checkPasswordAsync("admin", "iobroker");
+		//this.log.info("check user admin pw iobroker: " + result);
 
-		result = await this.checkGroupAsync("admin", "admin");
-		this.log.info("check group user admin group admin: " + result);
+		//result = await this.checkGroupAsync("admin", "admin");
+		//this.log.info("check group user admin group admin: " + result);
 	}
 
 	/**
@@ -181,7 +181,7 @@ class FrontierSilicon extends utils.Adapter {
 												adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
 											}
 										});
-										adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+									adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 								}
 							});
 					}
@@ -213,9 +213,10 @@ class FrontierSilicon extends utils.Adapter {
 											}
 										});
 									adapter.callAPI("netRemote.play.info.graphicUri")
-									.then(function (result) {
-										adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
-									});
+										.then(function (result) {
+											adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+										});
+									adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 								}
 							});
 					}
@@ -228,9 +229,9 @@ class FrontierSilicon extends utils.Adapter {
 								if(result.success) {
 									adapter.setStateAsync("modes.selectPreset", {val:state.val, ack: true});
 									adapter.callAPI("netRemote.play.info.graphicUri")
-									.then(function (result) {
-										adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
-									});
+										.then(function (result) {
+											adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+										});
 								}
 							});
 					}

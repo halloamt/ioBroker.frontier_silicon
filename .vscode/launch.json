@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "type": "pwa-node",
             "request": "launch",
             "name": "Launch JavaScript Adapter",
             "skipFiles": ["<node_internals>/**"],
@@ -13,6 +13,10 @@
             "args": ["--debug", "0"],
             //"preLaunchTask": "tsc: build - tsconfig.build.json",
             //"outFiles": ["${workspaceFolder}/build/**/*.js"]
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ]
         }
     ]
 }
