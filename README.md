@@ -25,6 +25,7 @@ PRs and contructive criticism are always welcome.
 - Power control
 - Mode selection
 - Preset selection
+- Notifications for several states
 
 ### Planned features
 
@@ -35,9 +36,6 @@ PRs and contructive criticism are always welcome.
 - Volume control
 - More Exception handling
 - Cleaner code
-
-### Features I cannot implement
-
 - Multi room features
 
 ### Not planned features
@@ -56,9 +54,22 @@ PRs and contructive criticism are always welcome.
 	cd ioBroker.frontier_silicon.git
 	npm pack
 	cd ../iobroker
-	npm i ../ioBroker.frontier_silicon/iobroker.frontier_silicon-0.0.1.tgz
+	npm i ../ioBroker.frontier_silicon/iobroker.frontier_silicon-0.0.3.tgz
 	```
-	
+
+## Changelog
+
+### 0.0.3
+* (halloamt) Get notifications from the radio
+* (halloamt) Change volume / mute
+
+### 0.0.1
+* (halloamt) initial release
+* (halloamt) Change mode
+* (halloamt) Select Preset
+
+<details>
+<summary>Developer Manual</summary>
 ## Developer manual
 This section is intended for the developer. It can be deleted later
 
@@ -123,11 +134,7 @@ In order to install the adapter locally without publishing, the following steps 
 For later updates, the above procedure is not necessary. Just do the following:
 1. Overwrite the changed files in the adapter directory (`/opt/iobroker/node_modules/iobroker.frontier_silicon`)
 1. Execute `iobroker upload frontier_silicon` on the ioBroker host
-
-## Changelog
-
-### 0.0.1
-* (halloamt) initial release
+</details>
 
 ## License
 MIT License
