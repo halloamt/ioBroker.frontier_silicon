@@ -920,6 +920,23 @@ class FrontierSilicon extends utils.Adapter {
 			this.config.fsAPIURL = dev.webfsapi;
 		}
 
+		await this.setObjectNotExistsAsync("device.radioId", {
+			type: "state",
+			common: {
+				name: "Radio ID",
+				type: "string",
+				role: "text",
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+		let result = await this.callAPI("netRemote.sys.info.radioId");
+		if(result.success)
+		{
+			this.setStateAsync("device.radioId", {val: result.result.value[0].c8_array[0], ack: true});
+		}
+
 		//netRemote.sys.caps.volumeSteps
 		await this.setObjectNotExistsAsync("audio.maxVolume", {
 			type: "state",
@@ -932,10 +949,10 @@ class FrontierSilicon extends utils.Adapter {
 			},
 			native: {},
 		});
-		const maxVol = await this.callAPI("netRemote.sys.caps.volumeSteps");
-		if(maxVol.success)
+		result = await this.callAPI("netRemote.sys.caps.volumeSteps");
+		if(result.success)
 		{
-			this.setStateAsync("audio.maxVolume", {val: maxVol.result.value[0].u8[0]-1, ack: true});
+			this.setStateAsync("audio.maxVolume", {val: result.result.value[0].u8[0]-1, ack: true});
 		}
 	}
 
