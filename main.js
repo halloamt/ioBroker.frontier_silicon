@@ -1161,7 +1161,7 @@ class FrontierSilicon extends utils.Adapter {
 							.then(function (result) {
 								if(result !== null && result !== undefined && result.val !== null )
 								{
-									adapter.setStateAsync("media.artist", { val: result.val, ack: true });
+									adapter.setStateAsync("media.artist", { val: result.result.value[0].c8_array[0], ack: true });
 								}
 							});
 						this.callAPI("netremote.sys.mode")
@@ -1187,6 +1187,28 @@ class FrontierSilicon extends utils.Adapter {
 						break;
 					case "netremote.play.info.name":
 						this.setStateAsync("media.name", { val: item.value[0].c8_array[0].trim(), ack: true });
+						this.callAPI("netRemote.play.info.artist")
+							.then(function (result) {
+								if(result !== null && result !== undefined && result.val !== null )
+								{
+									adapter.setStateAsync("media.artist", { val: result.result.value[0].c8_array[0], ack: true });
+								}
+							});
+						this.callAPI("netremote.sys.mode")
+							.then(function (result) {
+								if(result !== null && result !== undefined && result.val !== null )
+								{
+									adapter.setStateAsync("modes.selected", { val: variable, ack: true });
+									adapter.getStateAsync(`modes.${variable}.label`)
+										.then(function (result) {
+											if(result !== null && result !== undefined && result.val !== null )
+											{
+												adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
+											}
+										});
+									adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+								}
+							});
 						break;
 					case "netremote.sys.audio.volume":
 						this.setStateAsync("audio.volume", { val: item.value[0].u8[0], ack: true });
