@@ -166,10 +166,11 @@ class FrontierSilicon extends utils.Adapter {
 
 							if(state != null && state != undefined && state.val != null && state.val != undefined)
 							{
-								adapter.callAPI("netRemote.sys.info.friendlyName", state.val.toString())
+								const name = state.val.toString();
+								adapter.callAPI("netRemote.sys.info.friendlyName", name)
 									.then(function (result) {
 										if(result.success) {
-											adapter.setStateAsync("device.friendlyName", {val:true, ack: true});
+											adapter.setStateAsync("device.friendlyName", {val:name, ack: true});
 										}
 									});
 							}
