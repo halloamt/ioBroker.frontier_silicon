@@ -7,6 +7,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
+const { TestHarness } = require("@iobroker/testing/build/tests/integration/lib/harness");
 const axios = require("axios").default;
 const xml2js = require("xml2js");
 
@@ -988,6 +989,7 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			let url = "";
 			const log = this.log;
+			const adapter = this;
 
 			if(command.toUpperCase().startsWith("/FSAPI"))
 			{
@@ -1005,7 +1007,8 @@ class FrontierSilicon extends utils.Adapter {
 			if(notify)
 			{
 				url = `${this.config.fsAPIURL}/GET_NOTIFIES?pin=${this.config.PIN}&sid=${this.config.SessionID}`;
-			}else if(start > - 65535)
+			}
+			else if(start > - 65535)
 			{
 				url = `${this.config.fsAPIURL}/LIST_GET_NEXT/${command}/${start}?pin=${this.config.PIN}&sid=${this.config.SessionID}&maxItems=${maxItems}`;
 			}
@@ -1039,6 +1042,7 @@ class FrontierSilicon extends utils.Adapter {
 					{
 						log.error("Connection error");
 						log.debug(JSON.stringify(error));
+						adapter.createSession();
 					}
 				});
 		}
@@ -1153,7 +1157,28 @@ class FrontierSilicon extends utils.Adapter {
 						break;
 					case "netremote.play.info.text":
 						this.setStateAsync("media.text", { val: item.value[0].c8_array[0].trim(), ack: true });
-						break;
+						this.callAPI("netRemote.play.info.artist")
+							.then(function (result) {
+								if(result !== null && result !== undefined && result.val !== null )
+								{
+									adapter.setStateAsync("media.artist", { val: result.val, ack: true });
+								}
+							});
+						this.callAPI("netremote.sys.mode")
+							.then(function (result) {
+								if(result !== null && result !== undefined && result.val !== null )
+								{
+									adapter.setStateAsync("modes.selected", { val: variable, ack: true });
+									adapter.getStateAsync(`modes.${variable}.label`)
+										.then(function (result) {
+											if(result !== null && result !== undefined && result.val !== null )
+											{
+												adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
+											}
+										});
+									adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+								}
+							});						break;
 					case "netremote.play.info.artist":
 						this.setStateAsync("media.artist", { val: item.value[0].c8_array[0].trim(), ack: true });
 						break;

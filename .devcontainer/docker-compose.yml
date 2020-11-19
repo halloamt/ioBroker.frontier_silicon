@@ -8,6 +8,7 @@ services:
         # This port is only internal, so we can work on this while another instance of ioBroker is running on the host
         expose:
             - 8081
+            - 1880
         volumes:
             - ..:/workspace:cached
             - iobrokerdata-frontier_silicon:/opt/iobroker
@@ -32,6 +33,7 @@ services:
         ports:
             # Make the ioBroker admin available under http://localhost:8082
             - 8082:80
+
 
 volumes:
     iobrokerdata-frontier_silicon:
