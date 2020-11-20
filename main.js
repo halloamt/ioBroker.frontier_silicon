@@ -152,7 +152,7 @@ class FrontierSilicon extends utils.Adapter {
 							adapter.callAPI("netRemote.sys.power", state.val ? "1" : "0")
 								.then(function (result) {
 									if(result.success) {
-										adapter.setStateAsync("device.power", {val:true, ack: true});
+										adapter.setStateAsync("device.power", {val:state.val ? "1" : "0", ack: true});
 									}
 								});
 
