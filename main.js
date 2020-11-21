@@ -14,6 +14,7 @@ const xml2js = require("xml2js");
 // const fs = require("fs");
 
 let timeOutMessage;
+let sessionTimestamp = 0;
 
 class FrontierSilicon extends utils.Adapter {
 
@@ -1021,7 +1022,7 @@ class FrontierSilicon extends utils.Adapter {
 
 		if(conn !== null && conn !== undefined)
 		{
-			if(!conn.val || this.config.SessionID === 0 || conn.ts <= Date.now()-15*60*1000)
+			if(!conn.val || this.config.SessionID === 0 || sessionTimestamp <= Date.now()-15*60*1000)
 			{
 				await this.createSession();
 			}
@@ -1121,6 +1122,7 @@ class FrontierSilicon extends utils.Adapter {
 						dev.Session = result.fsapiResponse.sessionId;
 						log.debug("Session created");
 						connected = true;
+						sessionTimestamp = Date.now();
 					})
 						.catch(function (err) {
 							// Failed});
@@ -1143,6 +1145,7 @@ class FrontierSilicon extends utils.Adapter {
 			if(this.log.level=="debug" || this.log.level=="silly")
 			{
 				this.setStateAsync("debug.session", {val: dev.Session, ack: true});
+				this.setStateAsync("debug.sessionCreationTime", { val: sessionTimestamp, ack: true});
 			}
 			await this.sleep(200);
 		}
