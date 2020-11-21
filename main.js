@@ -67,6 +67,10 @@ class FrontierSilicon extends utils.Adapter {
 		this.subscribeStates("audio.mute");
 		this.subscribeStates("audio.volume");
 		this.subscribeStates("modes.readPresets");
+		if(this.log.level=="debug" || this.log.level=="silly")
+		{
+			this.subscribeStates("debug.resetSession");
+		}
 
 		/*
 			setState examples
@@ -275,6 +279,13 @@ class FrontierSilicon extends utils.Adapter {
 									adapter.setStateAsync("audio.mute", {val:state.val, ack: true});
 								}
 							});
+					}
+					break;
+				case "debug":
+					//debug.resetSession
+					if(zustand[3] === "resetSession")
+					{
+						await this.createSession();
 					}
 					break;
 				default:
@@ -842,6 +853,42 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			this.setStateAsync("audio.mute", { val: power.result.value[0].u8[0] == 1, ack: true });
 		}
+		if(this.log.level=="debug" || this.log.level=="silly")
+		{
+			await this.setObjectNotExistsAsync("debug", {
+				type: "channel",
+				common: {
+					name: "Debugging Tools",
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync("debug.resetSession", {
+				type: "state",
+				common: {
+					name: "Reset Session",
+					type: "boolean",
+					role: "button",
+					read: false,
+					write: true,
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync("debug.session", {
+				type: "state",
+				common: {
+					name: "Session ID",
+					type: "number",
+					role: "value",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+		}
+		else
+		{
+			this.deleteChannel("debug" );
+		}
 	}
 
 	/**
@@ -1093,6 +1140,10 @@ class FrontierSilicon extends utils.Adapter {
 			this.config.SessionID = dev.Session;
 			//this.config.SessionTS = Date.now();
 			await this.setState("info.connection", connected, true);
+			if(this.log.level=="debug" || this.log.level=="silly")
+			{
+				this.setStateAsync("debug.session", {val: dev.Session, ack: true});
+			}
 			await this.sleep(200);
 		}
 	}
