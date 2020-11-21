@@ -885,6 +885,17 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
+			await this.setObjectNotExistsAsync("debug.sessionCreationTime", {
+				type: "state",
+				common: {
+					name: "Session Timestamp",
+					type: "number",
+					role: "value.time",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
 		}
 		else
 		{
