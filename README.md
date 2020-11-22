@@ -26,6 +26,7 @@ PRs and contructive criticism are always welcome.
 - Mode selection
 - Preset selection
 - Notifications for several states
+- Volume control
 
 ### Planned features
 
@@ -33,7 +34,6 @@ PRs and contructive criticism are always welcome.
 - More states
 - Timers for states
 - Translations
-- Volume control
 - More Exception handling
 - Cleaner code
 - Multi room features
