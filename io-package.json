@@ -115,7 +115,7 @@
 		"license": "MIT",
 		"platform": "Javascript/Node.js",
 		"main": "main.js",
-		"icon": "frontier_silicon.png",
+		"icon": "radio.png",
 		"enabled": true,
 		"extIcon": "https://raw.githubusercontent.com/halloamt/ioBroker.frontier_silicon/master/admin/radio.png",
 		"readme": "https://github.com/halloamt/ioBroker.frontier_silicon/blob/master/README.md",
