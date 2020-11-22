@@ -1,8 +1,20 @@
 {
 	"common": {
 		"name": "frontier_silicon",
-		"version": "0.0.3",
+		"version": "0.0.4",
 		"news": {
+			"0.0.4": {
+				"en": "Volume and other controls, Bugfixes",
+				"de": "Lautstärke und andere Buttons, Bugfixes",
+				"ru": "Bugfixes",
+				"pt": "Bugfixes",
+				"nl": "Bugfixes",
+				"fr": "Bugfixes",
+				"it": "Bugfixes",
+				"es": "Bugfixes",
+				"pl": "Bugfixes",
+				"zh-cn": "Bugfixes"
+			},
 			"0.0.3": {
 				"en": "Bugfixes",
 				"de": "Bugfixes",

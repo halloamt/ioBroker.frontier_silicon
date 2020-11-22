@@ -59,6 +59,10 @@ PRs and contructive criticism are always welcome.
 
 ## Changelog
 
+### 0.0.4
+* (halloamt) Media and volume control button
+* (halloamt) Bugfixes
+
 ### 0.0.3
 * (halloamt) Get notifications from the radio
 * (halloamt) Change volume / mute

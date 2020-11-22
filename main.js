@@ -7,7 +7,6 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
-const { DEFAULT_MAX_VERSION } = require("tls");
 const axios = require("axios").default;
 const xml2js = require("xml2js");
 
