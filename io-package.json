@@ -115,7 +115,8 @@
 		"SessionID": 0,
 		"fsAPIURL": "",
 		"SangeanNoSound": false,
-		"ModeMaxIndex": 0
+		"ModeMaxIndex": 0,
+		"VolumeMax": 0
 	},
 	"objects": [],
 	"instanceObjects": [

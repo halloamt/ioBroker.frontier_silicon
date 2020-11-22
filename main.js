@@ -70,6 +70,7 @@ class FrontierSilicon extends utils.Adapter {
 		this.subscribeStates("modes.readPresets");
 		this.subscribeStates("media.control.*");
 		this.subscribeStates("audio.control.*");
+		this.subscribeStates("media.state");
 		if(this.log.level=="debug" || this.log.level=="silly")
 		{
 			this.subscribeStates("debug.resetSession");
@@ -266,12 +267,15 @@ class FrontierSilicon extends utils.Adapter {
 					if(zustand[3] === "volume" && state.val !== null)
 					{
 						await this.callAPI("netRemote.nav.state", "1");
-						adapter.callAPI("netRemote.sys.audio.volume", state.val.toString())
-							.then(function (result) {
-								if(result.success) {
-									adapter.setStateAsync("audio.volume", {val:state.val, ack: true});
-								}
-							});
+						if(state.val >= 0 && state.val <= this.config.VolumeMax)
+						{
+							adapter.callAPI("netRemote.sys.audio.volume", state.val.toString())
+								.then(function (result) {
+									if(result.success) {
+										adapter.setStateAsync("audio.volume", {val:state.val, ack: true});
+									}
+								});
+						}
 					}
 					else if(zustand[3] === "mute" && state.val !== null)
 					{
@@ -291,24 +295,18 @@ class FrontierSilicon extends utils.Adapter {
 								await this.callAPI("netRemote.nav.state", "1");
 								adapter.getStateAsync("audio.volume")
 									.then(function (result) {
-										adapter.getStateAsync("audio.maxVolume")
-											.then(function (max) {
-												if(max != null && max != undefined && max.val != null && max.val != undefined)
-												{
-													if(result != null && result != undefined && result.val != null && result.val != undefined
-														&& result.val < max.val)
-													{
-														// @ts-ignore
-														const vol = parseInt(result.val) + 1;
-														adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
-															.then(function (result) {
-																if(result.success) {
-																	adapter.setStateAsync("audio.volume", {val:vol, ack: true});
-																}
-															});
+										if(result != null && result != undefined && result.val != null && result.val != undefined
+											&& result.val < adapter.config.VolumeMax)
+										{
+											// @ts-ignore
+											const vol = parseInt(result.val) + 1;
+											adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
+												.then(function (result) {
+													if(result.success) {
+														adapter.setStateAsync("audio.volume", {val:vol, ack: true});
 													}
-												}
-											});
+												});
+										}
 									});
 								break;
 							case "volumeDown":
@@ -335,23 +333,55 @@ class FrontierSilicon extends utils.Adapter {
 					}
 					break;
 				case "media":
-					if(zustand[3] !== "control") return;
-					if(zustand[4] === "play")
+					if(zustand[3] === "state")
+					{
+						let z = -1;
+						if(state.val === 0)
+						{
+							z = 2;
+						}
+						else if(state.val === 1)
+						{
+							z = 1;
+						}
+						else
+						{
+							return;
+						}
+						await this.callAPI("netRemote.nav.state", "1");
+						await this.callAPI("netRemote.play.control", z.toString())
+							.then(function (result) {
+								if(result.success) {
+									adapter.setStateAsync("media.state", {val:state.val, ack: true});
+								}
+							});
+					}
+					else if(zustand[3] === "control" && zustand[4] === "play")
 					{
 						await this.callAPI("netRemote.nav.state", "1");
-						await this.callAPI("netRemote.play.control", "1");
+						await this.callAPI("netRemote.play.control", "1")
+							.then(function (result) {
+								if(result.success) {
+									adapter.setStateAsync("media.state", {val:1, ack: true});
+								}
+							});
 					}
-					if(zustand[4] === "pause")
+					else if(zustand[3] === "control" && zustand[4] === "pause")
 					{
 						await this.callAPI("netRemote.nav.state", "1");
-						await this.callAPI("netRemote.play.control", "2");
+						await this.callAPI("netRemote.play.control", "2")
+							.then(function (result) {
+								if(result.success) {
+									adapter.setStateAsync("media.state", {val:0, ack: true});
+								}
+							});
 					}
-					if(zustand[4] === "next")
+					else if(zustand[3] === "control" && zustand[4] === "next")
 					{
 						await this.callAPI("netRemote.nav.state", "1");
 						await this.callAPI("netRemote.play.control", "3");
 					}
-					if(zustand[4] === "previous")
+					else if(zustand[3] === "control" && zustand[4] === "previous")
 					{
 						await this.callAPI("netRemote.nav.state", "1");
 						await this.callAPI("netRemote.play.control", "4");
@@ -771,21 +801,21 @@ class FrontierSilicon extends utils.Adapter {
 			this.setStateAsync("media.name", { val: power.result.value[0].c8_array[0].trim(), ack: true });
 		}
 
-		await this.setObjectNotExistsAsync("media.name", {
+		await this.setObjectNotExistsAsync("media.album", {
 			type: "state",
 			common: {
 				name: "Media name",
 				type: "string",
-				role: "text",
+				role: "media.album",
 				read: true,
 				write: false,
 			},
 			native: {},
 		});
-		power = await this.callAPI("netRemote.play.info.name");
+		power = await this.callAPI("netRemote.play.info.album");
 		if(power.success)
 		{
-			this.setStateAsync("media.name", { val: power.result.value[0].c8_array[0].trim(), ack: true });
+			this.setStateAsync("media.album", { val: power.result.value[0].c8_array[0].trim(), ack: true });
 		}
 
 		await this.setObjectNotExistsAsync("media.title", {
@@ -943,7 +973,7 @@ class FrontierSilicon extends utils.Adapter {
 			common: {
 				name: "Volume Up",
 				type: "boolean",
-				role: "button",
+				role: "button.volume.up",
 				read: false,
 				write: true,
 			},
@@ -955,7 +985,7 @@ class FrontierSilicon extends utils.Adapter {
 			common: {
 				name: "Volume Down",
 				type: "boolean",
-				role: "button",
+				role: "button.volume.down",
 				read: false,
 				write: true,
 			},
@@ -975,7 +1005,7 @@ class FrontierSilicon extends utils.Adapter {
 			common: {
 				name: "Play",
 				type: "boolean",
-				role: "button",
+				role: "button.play",
 				read: false,
 				write: true,
 			},
@@ -987,7 +1017,7 @@ class FrontierSilicon extends utils.Adapter {
 			common: {
 				name: "Pause",
 				type: "boolean",
-				role: "button",
+				role: "button.pause",
 				read: false,
 				write: true,
 			},
@@ -999,7 +1029,7 @@ class FrontierSilicon extends utils.Adapter {
 			common: {
 				name: "Previous",
 				type: "boolean",
-				role: "button",
+				role: "button.prev",
 				read: false,
 				write: true,
 			},
@@ -1011,12 +1041,40 @@ class FrontierSilicon extends utils.Adapter {
 			common: {
 				name: "Next",
 				type: "boolean",
-				role: "button",
+				role: "button.forward",
 				read: false,
 				write: true,
 			},
 			native: {},
 		});
+		power = await this.callAPI("netRemote.play.control");
+		await this.setObjectNotExistsAsync("media.state", {
+			type: "state",
+			common: {
+				name: "State",
+				type: "number",
+				role: "media.state",
+				read: true,
+				write: true,
+			},
+			native: {},
+		});
+		if(power.success && power.value !== null)
+		{
+			switch (power.result.value[0].u8[0])
+			{
+				// Play
+				case "1":
+					this.setStateAsync("media.state", { val: 1, ack: true });
+					break;
+				// Pause
+				case "2":
+					this.setStateAsync("media.state", { val: 0, ack: true });
+					break;
+				default:
+					break;
+			}
+		}
 
 		if(this.log.level=="debug" || this.log.level=="silly")
 		{
@@ -1177,6 +1235,7 @@ class FrontierSilicon extends utils.Adapter {
 		if(result.success)
 		{
 			this.setStateAsync("audio.maxVolume", {val: result.result.value[0].u8[0]-1, ack: true});
+			this.config.VolumeMax = result.result.value[0].u8[0] - 1;
 		}
 	}
 
@@ -1365,8 +1424,6 @@ class FrontierSilicon extends utils.Adapter {
 
 				switch (item.$.node)
 				{
-					case "netremote.play.status":
-						break;
 					case "netremote.sys.state":
 						break;
 					case "netremote.sys.mode":
@@ -1411,6 +1468,9 @@ class FrontierSilicon extends utils.Adapter {
 					case "netremote.play.info.artist":
 						this.setStateAsync("media.artist", { val: item.value[0].c8_array[0].trim(), ack: true });
 						break;
+					case "netremote.play.info.album":
+						this.setStateAsync("media.album", { val: item.value[0].c8_array[0].trim(), ack: true });
+						break;
 					case "netremote.play.info.title":
 						this.setStateAsync("media.title", { val: item.value[0].c8_array[0].trim(), ack: true });
 						break;
@@ -1421,6 +1481,13 @@ class FrontierSilicon extends utils.Adapter {
 								if(result !== null && result !== undefined && result.val !== null )
 								{
 									adapter.setStateAsync("media.artist", { val: result.result.value[0].c8_array[0], ack: true });
+								}
+							});
+						this.callAPI("netRemote.play.info.album")
+							.then(function (result) {
+								if(result !== null && result !== undefined && result.val !== null )
+								{
+									adapter.setStateAsync("media.album", { val: result.result.value[0].c8_array[0], ack: true });
 								}
 							});
 						this.callAPI("netremote.sys.mode")
@@ -1444,6 +1511,21 @@ class FrontierSilicon extends utils.Adapter {
 						break;
 					case "netremote.sys.audio.mute":
 						this.setStateAsync("audio.mute", { val: item.value[0].u8[0] == 1, ack: true });
+						break;
+					case "netremote.play.status":
+						switch (item.value[0].u8[0])
+						{
+							// Play
+							case "2":
+								this.setStateAsync("media.state", { val: 1, ack: true });
+								break;
+							// Pause
+							case "3":
+								this.setStateAsync("media.state", { val: 0, ack: true });
+								break;
+							default:
+								break;
+						}
 						break;
 					case "netremote.sys.power":
 						this.setStateAsync("device.power", { val: item.value[0].u8[0] == 1, ack: true });
