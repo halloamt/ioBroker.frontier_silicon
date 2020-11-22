@@ -15,7 +15,7 @@ systemDictionary = {
 		"zh-cn": "frontier_silicon的适配器设置"
 	},
 	"SangeanNoSound": {
-		"en": "option1",
+		"en": "DAB starts without sound",
 		"de": "DAB startet ohne Sound",
 		"ru": "Опция 1",
 		"pt": "Opção 1",
@@ -27,7 +27,7 @@ systemDictionary = {
 		"zh-cn": "选项1"
 	},
 	"PIN": {
-		"en": "option1",
+		"en": "PIN",
 		"de": "PIN",
 		"ru": "Опция 1",
 		"pt": "Opção 1",

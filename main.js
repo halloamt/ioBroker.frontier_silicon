@@ -44,8 +44,8 @@ class FrontierSilicon extends utils.Adapter {
 
 		// The adapters config (in the instance object everything under the attribute "native") is accessible via
 		// this.config:
-		this.log.info("config option1: " + this.config.PIN);
-		this.log.info("config IP: " + this.config.IP);
+		//this.log.info("config PIN: " + this.config.PIN);
+		//this.log.info("config IP: " + this.config.IP);
 
 		await this.getDeviceInfo();
 		//await this.createSession();
