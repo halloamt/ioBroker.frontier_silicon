@@ -949,7 +949,7 @@ class FrontierSilicon extends utils.Adapter {
 			common: {
 				name: "Mute",
 				type: "boolean",
-				role: "switch",
+				role: "media.mute",
 				read: true,
 				write: true,
 			},
