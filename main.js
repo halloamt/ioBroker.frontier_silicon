@@ -7,6 +7,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
+const { DEFAULT_MAX_VERSION } = require("tls");
 const axios = require("axios").default;
 const xml2js = require("xml2js");
 
@@ -68,6 +69,8 @@ class FrontierSilicon extends utils.Adapter {
 		this.subscribeStates("audio.mute");
 		this.subscribeStates("audio.volume");
 		this.subscribeStates("modes.readPresets");
+		this.subscribeStates("media.control.*");
+		this.subscribeStates("audio.control.*");
 		if(this.log.level=="debug" || this.log.level=="silly")
 		{
 			this.subscribeStates("debug.resetSession");
@@ -280,6 +283,79 @@ class FrontierSilicon extends utils.Adapter {
 									adapter.setStateAsync("audio.mute", {val:state.val, ack: true});
 								}
 							});
+					}
+					else
+					{
+						switch(zustand[4])
+						{
+							case "volumeUp":
+								await this.callAPI("netRemote.nav.state", "1");
+								adapter.getStateAsync("audio.volume")
+									.then(function (result) {
+										adapter.getStateAsync("audio.maxVolume")
+											.then(function (max) {
+												if(max != null && max != undefined && max.val != null && max.val != undefined)
+												{
+													if(result != null && result != undefined && result.val != null && result.val != undefined
+														&& result.val < max.val)
+													{
+														// @ts-ignore
+														const vol = parseInt(result.val) + 1;
+														adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
+															.then(function (result) {
+																if(result.success) {
+																	adapter.setStateAsync("audio.volume", {val:vol, ack: true});
+																}
+															});
+													}
+												}
+											});
+									});
+								break;
+							case "volumeDown":
+								await this.callAPI("netRemote.nav.state", "1");
+								adapter.getStateAsync("audio.volume")
+									.then(function (result) {
+										if(result != null && result != undefined && result.val != null && result.val != undefined
+											&& result.val > 0)
+										{
+											// @ts-ignore
+											const vol = parseInt(result.val) - 1;
+											adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
+												.then(function (result) {
+													if(result.success) {
+														adapter.setStateAsync("audio.volume", {val:vol, ack: true});
+													}
+												});
+										}
+									});
+								break;
+							default:
+								break;
+						}
+					}
+					break;
+				case "media":
+					if(zustand[3] !== "control") return;
+					if(zustand[4] === "play")
+					{
+						await this.callAPI("netRemote.nav.state", "1");
+						await this.callAPI("netRemote.play.control", "1");
+					}
+					if(zustand[4] === "pause")
+					{
+						await this.callAPI("netRemote.nav.state", "1");
+						await this.callAPI("netRemote.play.control", "2");
+					}
+					if(zustand[4] === "next")
+					{
+						await this.callAPI("netRemote.nav.state", "1");
+						await this.callAPI("netRemote.play.control", "3");
+					}
+					if(zustand[4] === "previous")
+					{
+						await this.callAPI("netRemote.nav.state", "1");
+						await this.callAPI("netRemote.play.control", "4");
 					}
 					break;
 				case "debug":
@@ -854,6 +930,95 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			this.setStateAsync("audio.mute", { val: power.result.value[0].u8[0] == 1, ack: true });
 		}
+
+		await this.setObjectNotExistsAsync("audio.control", {
+			type: "channel",
+			common: {
+				name: "Media control",
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync("audio.control.volumeUp", {
+			type: "state",
+			common: {
+				name: "Volume Up",
+				type: "boolean",
+				role: "button",
+				read: false,
+				write: true,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync("audio.control.volumeDown", {
+			type: "state",
+			common: {
+				name: "Volume Down",
+				type: "boolean",
+				role: "button",
+				read: false,
+				write: true,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync("media.control", {
+			type: "channel",
+			common: {
+				name: "Media control",
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync("media.control.play", {
+			type: "state",
+			common: {
+				name: "Play",
+				type: "boolean",
+				role: "button",
+				read: false,
+				write: true,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync("media.control.pause", {
+			type: "state",
+			common: {
+				name: "Pause",
+				type: "boolean",
+				role: "button",
+				read: false,
+				write: true,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync("media.control.previous", {
+			type: "state",
+			common: {
+				name: "Previous",
+				type: "boolean",
+				role: "button",
+				read: false,
+				write: true,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync("media.control.next", {
+			type: "state",
+			common: {
+				name: "Next",
+				type: "boolean",
+				role: "button",
+				read: false,
+				write: true,
+			},
+			native: {},
+		});
+
 		if(this.log.level=="debug" || this.log.level=="silly")
 		{
 			await this.setObjectNotExistsAsync("debug", {
