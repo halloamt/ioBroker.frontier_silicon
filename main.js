@@ -1256,7 +1256,8 @@ class FrontierSilicon extends utils.Adapter {
 
 		if(conn !== null && conn !== undefined)
 		{
-			if(!conn.val || this.config.SessionID === 0 || sessionTimestamp <= Date.now()-15*60*1000)
+			if(!conn.val || this.config.SessionID === 0
+				|| sessionTimestamp <= Date.now() - this.config.RecreateSessionInterval * 60 * 1000)
 			{
 				await this.createSession();
 			}

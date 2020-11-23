@@ -152,7 +152,8 @@
 		"fsAPIURL": "",
 		"SangeanNoSound": false,
 		"ModeMaxIndex": 0,
-		"VolumeMax": 0
+		"VolumeMax": 0,
+		"RecreateSessionInterval": 60
 	},
 	"objects": [],
 	"instanceObjects": [

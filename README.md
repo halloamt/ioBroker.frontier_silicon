@@ -49,9 +49,11 @@ PRs and contructive criticism are always welcome.
 
 ## Documentation
 
-This adapter let's you control internet radios and media playsers based on Silicon Frontier chipsets. Many devices contrallabe via [Undok ](https://www.frontiersmart.com/undok) should word. Tested devices come from [Revo](https://revo.co.uk/de/products/), [Sangean](https://www.sangean.eu/products/all_product.asp) and [SilverCrest](https://www.silvercrest-multiroom.de/produkte/produktuebersicht/), others shoulld work, too.
+This adapter let's you control internet radios and media playsers based on Silicon Frontier chipsets. Many devices contrallabe via [Undok ](https://www.frontiersmart.com/undok) should word. Tested devices come from [Revo](https://revo.co.uk/de/products/), [Sangean](https://www.sangean.eu/products/all_product.asp) and [SilverCrest](https://www.silvercrest-multiroom.de/produkte/produktuebersicht/), others should work, too.
 
-After installation the device's IP and PIN must be entered in the configuration dialog. IF the radio does not play DAB after switching on via Undok or this adapter try with "DAB starts without sound" enabled. When the adapter starts for the first time it collects information about the device. For that it needs to switch through all modes. During checking setting the device will be muted for a couple of seconds to avoid disturbing sounds.
+After installation the device's IP and PIN must be entered in the configuration dialog. If the radio does not play DAB after switching on via Undok or this adapter try with "DAB starts without sound" enabled.
+
+When the adapter starts for the first time it collects information about the device. For that it needs to switch through all modes. During checking settings the device will be muted for a couple of seconds to avoid disturbing sounds.
 
 While the adapter reads the device's setting objects and states are created. States can be read-only (`ro`) or read-write (`rw`) *ok, write-only for buttons and selectedPreset is also possible*.
 
@@ -110,7 +112,7 @@ While the adapter reads the device's setting objects and states are created. Sta
 	- play
 	- previous
 
-  Do not take these names too seriously. The radio uses them differently in different modes.
+  Do not take the following names too seriously. The radio uses them differently in different modes.
 
   - album (`text, ro`)
   - artist (`text, ro`)
@@ -130,7 +132,7 @@ While the adapter reads the device's setting objects and states are created. Sta
 
   - selectPreset (`number, wo`)
 
-    Used to select a preset, do not try to read that value as it is unreliable
+    Used to select a preset, do not try to read that value as it is unreliable and cannot be read from the API.
 
   - selected (`number, rw`)
 

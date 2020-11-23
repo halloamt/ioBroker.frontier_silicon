@@ -16,14 +16,26 @@ systemDictionary = {
 	"SangeanNoSound": {
 		"en": "DAB starts without sound",
 		"de": "DAB startet ohne Sound",
-		"ru": "Опция 1",
-		"pt": "Opção 1",
-		"nl": "Optie 1",
-		"fr": "Option 1",
-		"it": "opzione 1",
-		"es": "Opción 1",
-		"pl": "opcja 1",
-		"zh-cn": "选项1"
+		"ru": "Опция 3",
+		"pt": "Opção 3",
+		"nl": "Optie 3",
+		"fr": "Option 3",
+		"it": "opzione 3",
+		"es": "Opción 3",
+		"pl": "opcja 3",
+		"zh-cn": "选项3"
+	},
+	"RecreateSessionInterval": {
+		"en": "Recreate session interval (Minuten)",
+		"de": "Gültigskeitsdauer einer Sitzungs ID  in Minuten",
+		"ru": "Опция 4",
+		"pt": "Opção 4",
+		"nl": "Optie 4",
+		"fr": "Option 4",
+		"it": "opzione 4",
+		"es": "Opción 4",
+		"pl": "opcja 4",
+		"zh-cn": "选项4"
 	},
 	"PIN": {
 		"en": "PIN",
