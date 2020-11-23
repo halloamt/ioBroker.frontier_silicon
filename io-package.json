@@ -1,8 +1,20 @@
 {
 	"common": {
 		"name": "frontier_silicon",
-		"version": "0.0.6",
+		"version": "0.0.7",
 		"news": {
+			"0.0.7": {
+				"en": "Formal but neccessary stuff for ioBroker",
+				"de": "Formalien für ioBroker, sinnvoll, aber komplex",
+				"ru": "Bugfixes",
+				"pt": "Bugfixes",
+				"nl": "Bugfixes",
+				"fr": "Bugfixes",
+				"it": "Bugfixes",
+				"es": "Bugfixes",
+				"pl": "Bugfixes",
+				"zh-cn": "Bugfixes"
+			},
 			"0.0.6": {
 				"en": "Pictures and icons",
 				"de": "Bilder und Symbole",
