@@ -124,9 +124,9 @@ While the adapter reads the device's setting objects and states are created. Sta
 
 - modes
 
- - readPresets
+  - readPresets
 
-   Re-reads all presets
+    Re-reads all presets
 
   - selectPreset (number, wo)
 
@@ -163,7 +163,7 @@ While the adapter reads the device's setting objects and states are created. Sta
       - availabe (boolean, ro)
 
 	    Indicates whether presets for this mode are available
-		
+
 	  - `{number}`
 
 	    The index of that mode. Equals `mode.*.presets.{number}` from object tree and can be written into `modes.selectPreset`.
