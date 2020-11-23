@@ -182,6 +182,10 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 
 ## Changelog
 
+### 0.0.9
+* (halloamt) Nicer readme
+* (halloamt) (Hopefully) more robust session handling.
+
 ### 0.0.7 und 0.0.8
 * (halloamt) Formal but neccessary stuff for ioBroker
 
