@@ -10,7 +10,7 @@
 
 [![NPM](https://nodei.co/npm/iobroker.frontier_silicon.png?downloads=true)](https://nodei.co/npm/iobroker.frontier_silicon/)
 
-**Tests:** ![Test and Release](https://github.com/halloamt/ioBroker.frontier_silicon/workflows/Test%20and%20Release/badge.svg)
+**Tests:** ![Test and Release](https://github.com/halloamt/ioBroker.frontier_silicon/workflows/Test%20and%20Release/badge.svg)[![Build Status](https://travis-ci.org/halloamt/ioBroker.frontier_silicon.svg?branch=master)](https://travis-ci.org/halloamt/ioBroker.frontier_silicon)
 
 ## frontier_silicon adapter for ioBroker
 
