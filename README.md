@@ -53,21 +53,21 @@ This adapter let's you control internet radios and media playsers based on Silic
 
 After installation the device's IP and PIN must be entered in the configuration dialog. IF the radio does not play DAB after switching on via Undok or this adapter try with "DAB starts without sound" enabled. When the adapter starts for the first time it collects information about the device. For that it needs to switch through all modes. During checking setting the device will be muted for a couple of seconds to avoid disturbing sounds.
 
-While the adapter reads the device's setting objects and states are created. States can be read-only (ro) or read-write (rw) *ok, write-only for buttons and selectedPreset is also possible*.
+While the adapter reads the device's setting objects and states are created. States can be read-only (`ro`) or read-write (`rw`) *ok, write-only for buttons and selectedPreset is also possible*.
 
 - audio
 
   Basic audio settings. No equlizer controls implemented yet.
 
-  - maxVolume (number, ro)
+  - maxVolume (`number, ro`)
 
     The maximum volume selectable
 
-  - mute (boolean, rw)
+  - mute (`boolean, rw`)
 
     `true` if the divice is muted, `false`otherwise
 
-  - volume (number, rw)
+  - volume (`number, rw`)
   - control
     - volumeDown and volumeUp
 	
@@ -75,29 +75,29 @@ While the adapter reads the device's setting objects and states are created. Sta
 
 - device
 
-  - friendlyName (text, rw)
-  - power (boolean, rw)
-  - radioId (test, ro)
+  - friendlyName (`text, rw`)
+  - power (`boolean, rw`)
+  - radioId (`test, ro`)
 
     My guess is that this is the MAC of the device
 
-  - version (text, ro)
+  - version (`text, ro`)
 
     Software version
 
-  - webfsapi (text, ro)
+  - webfsapi (`text, ro`)
 
     The address of the API
 
 - info
 
-  - connection (boolean, ro)
+  - connection (`boolean, ro`)
 
     Connection indicator for the adapter
 
 - media
 
-  - state (number, rw)
+  - state (`number, rw`)
 
     valid values are:
     - 0: Pause
@@ -112,15 +112,15 @@ While the adapter reads the device's setting objects and states are created. Sta
 
   Do not take these names too seriously. The radio uses them differently in different modes.
 
-  - album (text, ro)
-  - artist (text, ro)
-  - graphic (text, ro)
+  - album (`text, ro`)
+  - artist (`text, ro`)
+  - graphic (`text, ro`)
 
     Use this URL to get an album cover or a station's logo.
 
-  - name (text, ro)
-  - text (text, ro)
-  - title (text, ro)
+  - name (`text, ro`)
+  - text (`text, ro`)
+  - title (`text, ro`)
 
 - modes
 
@@ -128,29 +128,29 @@ While the adapter reads the device's setting objects and states are created. Sta
 
     Re-reads all presets
 
-  - selectPreset (number, wo)
+  - selectPreset (`number, wo`)
 
     Used to select a preset, do not try to read that value as it is unreliable
 
-  - selected (number, rw)
+  - selected (`number, rw`)
 
     Indicates or selects the selected mode. Can also be selected via `modes.{number}.switchTo`
 
   - `{number}`
 
-    - id (text, ro)
+    - id (`text, ro`)
 
 	  The name of that mode
 
-	- key (number, ro)
+	- key (`number, ro`)
 
 	  The index of that mode. Equals `mode.{number}` from object tree and can be written into `modes.selected`.
 
-	- selectable (boolean, ro)
+	- selectable (`boolean, ro`)
 
 	  `true` if this mode can be manually selected.
 
-	- streamable (boolean, ro)
+	- streamable (`boolean, ro`)
 
 	  Only present on multi-room enabled devices. `true` if this mode can be used as source for several multi-room devices.
 
@@ -160,7 +160,7 @@ While the adapter reads the device's setting objects and states are created. Sta
 	
 	- presets
 
-      - availabe (boolean, ro)
+      - availabe (`boolean, ro`)
 
 	    Indicates whether presets for this mode are available
 
@@ -168,13 +168,13 @@ While the adapter reads the device's setting objects and states are created. Sta
 
 	    The index of that mode. Equals `mode.*.presets.{number}` from object tree and can be written into `modes.selectPreset`.
 	
-	  - name (text, ro)
+	  - name (`text, ro`)
 
 	    The name of that preset
 	
 	  - switchTo
 
-	    Selects that preset and the correspinding mode.
+	    Selects that preset and the corresponding mode.
 
 Please be aware that you can sometimes choose between "pushing a button" or "setting a value". Use what is more convienient for you.
 
