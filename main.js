@@ -1413,10 +1413,10 @@ class FrontierSilicon extends utils.Adapter {
 
 	async onFSAPIMessage()
 	{
+		const adapter = this;
 		try
 		{
 			const result = await this.callAPI("", "", 0, 0, true);
-			const adapter = this;
 			let variable;
 			if(result.success)
 			{
@@ -1545,7 +1545,10 @@ class FrontierSilicon extends utils.Adapter {
 					});
 			}
 		}
-		//catch (e) {}
+		catch (e)
+		{
+			adapter.log.error(e.message);
+		}
 		finally
 		{
 			timeOutMessage = setTimeout(async () => {
