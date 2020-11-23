@@ -48,7 +48,7 @@ PRs and contructive criticism are always welcome.
 
 ## Changelog
 
-### 0.0.7
+### 0.0.7 und 0.0.8
 * (halloamt) Formal but neccessary stuff for ioBroker
 
 ### 0.0.6

@@ -1,9 +1,9 @@
 {
 	"common": {
 		"name": "frontier_silicon",
-		"version": "0.0.7",
+		"version": "0.0.8",
 		"news": {
-			"0.0.7": {
+			"0.0.8": {
 				"en": "Formal but neccessary stuff for ioBroker",
 				"de": "Formalien für ioBroker, sinnvoll, aber komplex",
 				"ru": "Bugfixes",
@@ -129,7 +129,7 @@
 		"main": "main.js",
 		"icon": "radio.png",
 		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/halloamt/ioBroker.frontier_silicon/master/admin/radio.svg",
+		"extIcon": "https://raw.githubusercontent.com/halloamt/ioBroker.frontier_silicon/master/admin/radio.png",
 		"readme": "https://github.com/halloamt/ioBroker.frontier_silicon/blob/master/README.md",
 		"loglevel": "info",
 		"mode": "daemon",
