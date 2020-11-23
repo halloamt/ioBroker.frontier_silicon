@@ -117,7 +117,7 @@
 		"main": "main.js",
 		"icon": "radio.png",
 		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/halloamt/ioBroker.frontier_silicon/master/admin/radio.png",
+		"extIcon": "https://raw.githubusercontent.com/halloamt/ioBroker.frontier_silicon/master/admin/radio.svg",
 		"readme": "https://github.com/halloamt/ioBroker.frontier_silicon/blob/master/README.md",
 		"loglevel": "info",
 		"mode": "daemon",

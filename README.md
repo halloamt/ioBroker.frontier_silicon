@@ -1,4 +1,4 @@
-![Logo](admin/frontier_silicon.png)
+![Logo](admin/radio.svg)
 # ioBroker.frontier_silicon
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.frontier_silicon.svg)](https://www.npmjs.com/package/iobroker.frontier_silicon)
@@ -27,12 +27,12 @@ PRs and contructive criticism are always welcome.
 - Preset selection
 - Notifications for several states
 - Volume control
+- Notifications
 
 ### Planned features
 
 - Auto discovery
 - More states
-- Timers for states
 - Translations
 - More Exception handling
 - Cleaner code
@@ -46,21 +46,20 @@ PRs and contructive criticism are always welcome.
 
 - Media player must be on for preset discovery
 
-## Installation
-
-	```bash
-	cd /opt
-	git clone https://github.com/halloamt/ioBroker.frontier_silicon.git
-	cd ioBroker.frontier_silicon.git
-	npm pack
-	cd ../iobroker
-	npm i ../ioBroker.frontier_silicon/iobroker.frontier_silicon-0.0.3.tgz
-	```
-
 ## Changelog
 
+### 0.0.7
+* (halloamt) Formal but neccessary stuff for ioBroker
+
+### 0.0.6
+* (halloamt) Nothing really, small stuff for npm
+
+### 0.0.5
+* (halloamt) Media state controls
+* (halloamt) Bugfixes
+
 ### 0.0.4
-* (halloamt) Media and volume control button
+* (halloamt) Media and volume control buttons
 * (halloamt) Bugfixes
 
 ### 0.0.3
