@@ -182,10 +182,8 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 
 ## Changelog
 
-### 0.0.10
-* (halloamt) Selected preset can be read now. The adapter guesses a little but this seems to work.
-
 ### 0.0.9
+* (halloamt) Selected preset can be read now. The adapter guesses a little but this seems to work.
 * (halloamt) Nicer readme
 * (halloamt) (Hopefully) more robust session handling.
 

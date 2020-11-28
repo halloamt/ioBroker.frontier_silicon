@@ -393,7 +393,6 @@ class FrontierSilicon extends utils.Adapter {
 					}
 					break;
 				case "debug":
-					//debug.resetSession
 					if(zustand[3] === "resetSession")
 					{
 						await this.createSession();
@@ -408,21 +407,6 @@ class FrontierSilicon extends utils.Adapter {
 		}
 	}
 
-	async getSelectedPreset()
-	{
-		const preset = await this.callAPI("netRemote.nav.action.selectPreset");
-		this.log.debug("Getting selected preset");
-		this.log.debug(JSON.stringify(preset));
-		if(preset.success)
-		{
-			this.log.debug(`Mode: ${preset.result.value[0].u32[0]}`);
-			this.setStateAsync("modes.selectedPreset", { val: preset.result.value[0].u32[0], ack: true });
-		}
-		else
-		{
-			this.setStateAsync("modes.selectedPreset", { val: "", ack: true });
-		}
-	}
 	makeSangeanDABPlay()
 	{
 		this.sleep(100);
@@ -806,6 +790,7 @@ class FrontierSilicon extends utils.Adapter {
 		if(power.success)
 		{
 			this.setStateAsync("media.name", { val: power.result.value[0].c8_array[0].trim(), ack: true });
+			this.UpdatePreset(power.result.value[0].c8_array[0].trim());
 		}
 
 		await this.setObjectNotExistsAsync("media.album", {
@@ -1125,6 +1110,28 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
+			await this.setObjectNotExistsAsync("debug.lastNotifyCall", {
+				type: "state",
+				common: {
+					name: "Timestamp of last notify call",
+					type: "number",
+					role: "value.time",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync("debug.lastNotifyError", {
+				type: "state",
+				common: {
+					name: "Error of last notify call",
+					type: "text",
+					role: "text",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
 		}
 		else
 		{
@@ -1425,6 +1432,10 @@ class FrontierSilicon extends utils.Adapter {
 		try
 		{
 			notifyTimestamp = Date.now();
+			if(this.log.level=="debug" || this.log.level=="silly")
+			{
+				this.setStateAsync("debug.lastNotifyCall", { val: notifyTimestamp, ack: true });
+			}	
 			const result = await this.callAPI("", "", 0, 0, true);
 			let variable;
 			if(result.success)
@@ -1560,6 +1571,7 @@ class FrontierSilicon extends utils.Adapter {
 		catch (e)
 		{
 			adapter.log.error(e.message);
+			adapter.setStateAsync("debug.lastNotifyError", { val: JSON.stringify(e), ack: true });
 		}
 		finally
 		{
