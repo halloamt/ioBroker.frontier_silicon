@@ -15,6 +15,7 @@ const xml2js = require("xml2js");
 
 let timeOutMessage;
 let sessionTimestamp = 0;
+let notifyTimestamp = 0;
 
 class FrontierSilicon extends utils.Adapter {
 
@@ -140,8 +141,9 @@ class FrontierSilicon extends utils.Adapter {
 	 * @param {ioBroker.State | null | undefined} state
 	 */
 	async onStateChange(id, state) {
-		if (!timeOutMessage) { // Keep connection alive & poll states
-			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), 1000); // Poll states every configured seconds
+		if (notifyTimestamp <= Date.now() - 32000)
+		{
+			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), 1); // Poll states every configured seconds
 		}
 		if (state) {
 			if (!id || !state || state.ack) return;
@@ -207,7 +209,7 @@ class FrontierSilicon extends utils.Adapter {
 												adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
 											}
 										});
-									adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+									//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 								}
 							});
 					}
@@ -242,7 +244,7 @@ class FrontierSilicon extends utils.Adapter {
 										.then(function (result) {
 											adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
 										});
-									adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+									//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 								}
 							});
 					}
@@ -652,6 +654,7 @@ class FrontierSilicon extends utils.Adapter {
 
 		let key = 0;
 		let name = "";
+		//presets.clear();
 
 		await this.setObjectNotExistsAsync(`modes.${mode}.presets`, {
 			type: "channel",
@@ -716,7 +719,7 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.setStateAsync(`modes.${mode}.presets.${key}.name`, { val: name.toString(), ack: true });
+			this.setStateAsync(`modes.${mode}.presets.${key}.name`, { val: name.toString().trim(), ack: true });
 			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.key`, {
 				type: "state",
 				common: {
@@ -740,6 +743,7 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
+			//presets.set(name.toString().trim(), key);
 		});
 	}
 
@@ -1417,14 +1421,10 @@ class FrontierSilicon extends utils.Adapter {
 
 	async onFSAPIMessage()
 	{
-		if (!timeOutMessage)
-		{
-			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), this.config.PollIntervall * 1000);
-		}
-
 		const adapter = this;
 		try
 		{
+			notifyTimestamp = Date.now();
 			const result = await this.callAPI("", "", 0, 0, true);
 			let variable;
 			if(result.success)
@@ -1447,8 +1447,9 @@ class FrontierSilicon extends utils.Adapter {
 										adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
 									}
 								});
-							adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+							//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 							this.getModePresets(variable, false);
+							this.UpdatePreset();
 							break;
 						case "netremote.play.serviceids.ecc":
 							break;
@@ -1473,9 +1474,10 @@ class FrontierSilicon extends utils.Adapter {
 													adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
 												}
 											});
-										adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+										//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 									}
-								});						break;
+								});
+							break;
 						case "netremote.play.info.artist":
 							this.setStateAsync("media.artist", { val: item.value[0].c8_array[0].trim(), ack: true });
 							break;
@@ -1513,9 +1515,10 @@ class FrontierSilicon extends utils.Adapter {
 													adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
 												}
 											});
-										adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+										//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 									}
 								});
+								this.UpdatePreset(item.value[0].c8_array[0].trim());
 							break;
 						case "netremote.sys.audio.volume":
 							this.setStateAsync("audio.volume", { val: item.value[0].u8[0], ack: true });
@@ -1558,7 +1561,46 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			adapter.log.error(e.message);
 		}
-		finally { }
+		finally
+		{
+			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), this.config.PollIntervall * 1000);
+		}
+	}
+
+	async UpdatePreset(name)
+	{
+		let mode = await this.getStateAsync("modes.selected");
+		if(mode !== null && mode !== undefined && mode.val !== null && mode.val !== undefined)
+		{
+			let hasPresets = await this.getStateAsync(`modes.${mode.val}.presets.available`)
+			if(hasPresets !== null && hasPresets !== undefined && hasPresets.val !== null && hasPresets.val !== undefined
+				&& hasPresets.val)
+			{
+				let i = 0;
+				while(true)
+				{
+					const preset = await this.getStateAsync(`modes.${mode.val}.presets.${i}.name`);
+					if(preset !== null && preset !== undefined && preset.val !== null && preset.val !== undefined)
+					{
+						if(name === preset.val)
+						{
+							await this.setStateAsync("modes.selectPreset", { val: i, ack:true});
+							break;
+						}
+						++i;
+					}
+					else
+					{
+						await this.setStateAsync("modes.selectPreset", { val: null, ack:true});
+						break;
+					}
+				}
+			}
+			else
+			{
+				await this.setStateAsync("modes.selectPreset", { val: null, ack:true});
+			}
+		}
 	}
 }
 

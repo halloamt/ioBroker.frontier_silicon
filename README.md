@@ -55,7 +55,7 @@ After installation the device's IP and PIN must be entered in the configuration 
 
 When the adapter starts for the first time it collects information about the device. For that it needs to switch through all modes. During checking settings the device will be muted for a few seconds to avoid disturbing sounds.
 
-While the adapter reads the device's setting objects and states are created. States can be read-only (`ro`) or read-write (`rw`) *ok, write-only for buttons and selectedPreset is also possible*.
+While the adapter reads the device's setting objects and states are created. States can be read-only (`ro`) or read-write (`rw`) *ok, write-only for buttons is also possible*.
 
 - audio
 
@@ -130,9 +130,9 @@ While the adapter reads the device's setting objects and states are created. Sta
 
     Re-reads all presets
 
-  - selectPreset (`number, wo`)
+  - selectPreset (`number, rw`)
 
-    Used to select a preset, do not try to read that value as it is unreliable and cannot be read from the API.
+    Used to get or select a preset. Be warned that the adapter guesses as this value cannot be read from the API.
 
   - selected (`number, rw`)
 
@@ -181,6 +181,9 @@ While the adapter reads the device's setting objects and states are created. Sta
 Please be aware that you can sometimes choose between "pushing a button" or "setting a value". Use what is more convenient for you.
 
 ## Changelog
+
+### 0.0.10
+* (halloamt) Selected preset can be read now. The adapter guesses a little but this seems to work.
 
 ### 0.0.9
 * (halloamt) Nicer readme
