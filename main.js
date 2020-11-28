@@ -447,7 +447,7 @@ class FrontierSilicon extends utils.Adapter {
 		let streamable = false;
 		let id = "";
 
-		await result.result.item.forEach(async item => {
+		await result.result.item.forEach(item => {
 			key = item.$.key;
 			id = "";
 			selectable = false;
@@ -477,7 +477,7 @@ class FrontierSilicon extends utils.Adapter {
 
 			if(id === "MP" && this.config.SangeanNoSound)
 			{
-				await this.setObjectNotExistsAsync(`modes.mediaplayer`, {
+				this.setObjectNotExistsAsync(`modes.mediaplayer`, {
 					type: "state",
 					common: {
 						name: "Media Player Mode Key",
@@ -488,10 +488,10 @@ class FrontierSilicon extends utils.Adapter {
 					},
 					native: {},
 				});
-				await this.setStateAsync("modes.mediaplayer", { val: key, ack: true });
+				this.setStateAsync("modes.mediaplayer", { val: key, ack: true });
 			}
 
-			await this.setObjectNotExistsAsync(`modes.${key}`, {
+			this.setObjectNotExistsAsync(`modes.${key}`, {
 				type: "channel",
 				common: {
 					name: label
@@ -499,7 +499,7 @@ class FrontierSilicon extends utils.Adapter {
 				native: {},
 			});
 
-			await this.setObjectNotExistsAsync(`modes.${key}.key`, {
+			this.setObjectNotExistsAsync(`modes.${key}.key`, {
 				type: "state",
 				common: {
 					name: "Mode Key",
@@ -510,8 +510,8 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			await this.setStateAsync(`modes.${key}.key`, { val: key, ack: true });
-			await this.setObjectNotExistsAsync(`modes.${key}.id`, {
+			this.setStateAsync(`modes.${key}.key`, { val: key, ack: true });
+			this.setObjectNotExistsAsync(`modes.${key}.id`, {
 				type: "state",
 				common: {
 					name: "Mode ID",
@@ -522,8 +522,8 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			await this.setStateAsync(`modes.${key}.id`, { val: id, ack: true });
-			await this.setObjectNotExistsAsync(`modes.${key}.label`, {
+			this.setStateAsync(`modes.${key}.id`, { val: id, ack: true });
+			this.setObjectNotExistsAsync(`modes.${key}.label`, {
 				type: "state",
 				common: {
 					name: "Mode Label",
@@ -534,8 +534,8 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			await this.setStateAsync(`modes.${key}.label`, { val: label, ack: true });
-			await this.setObjectNotExistsAsync(`modes.${key}.streamable`, {
+			this.setStateAsync(`modes.${key}.label`, { val: label, ack: true });
+			this.setObjectNotExistsAsync(`modes.${key}.streamable`, {
 				type: "state",
 				common: {
 					name: "Mode streamable",
@@ -546,8 +546,8 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			await this.setStateAsync(`modes.${key}.streamable`, { val: streamable, ack: true });
-			await this.setObjectNotExistsAsync(`modes.${key}.selectable`, {
+			this.setStateAsync(`modes.${key}.streamable`, { val: streamable, ack: true });
+			this.setObjectNotExistsAsync(`modes.${key}.selectable`, {
 				type: "state",
 				common: {
 					name: "Mode selectable",
@@ -558,10 +558,10 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			await this.setStateAsync(`modes.${key}.selectable`, { val: selectable, ack: true });
+			this.setStateAsync(`modes.${key}.selectable`, { val: selectable, ack: true });
 			if(selectable)
 			{
-				await this.setObjectNotExistsAsync(`modes.${key}.switchTo`, {
+				this.setObjectNotExistsAsync(`modes.${key}.switchTo`, {
 					type: "state",
 					common: {
 						name: "Switch to mode",
@@ -572,7 +572,7 @@ class FrontierSilicon extends utils.Adapter {
 					},
 					native: {},
 				});
-				await this.setObjectNotExistsAsync(`modes.readPresets`, {
+				this.setObjectNotExistsAsync(`modes.readPresets`, {
 					type: "state",
 					common: {
 						name: "Read presets",
@@ -668,7 +668,7 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			await this.callAPI("netRemote.sys.audio.mute", "1");
 		}
-		await result.result.item.forEach(async item => {
+		await result.result.item.forEach(item => {
 			//this.setStateAsync(`modes.${mode}.presets.available`, { val: true, ack: true });
 			key = item.$.key;
 			item.field.forEach(f => {
@@ -685,14 +685,14 @@ class FrontierSilicon extends utils.Adapter {
 			});
 
 			this.log.debug(name);
-			await this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}`, {
+			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}`, {
 				type: "channel",
 				common: {
 					name: `Preset ${key}`
 				},
 				native: {},
 			});
-			await this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.name`, {
+			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.name`, {
 				type: "state",
 				common: {
 					name: "Preset Name",
@@ -703,8 +703,8 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			await this.setStateAsync(`modes.${mode}.presets.${key}.name`, { val: name.toString().trim(), ack: true });
-			await this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.key`, {
+			this.setStateAsync(`modes.${mode}.presets.${key}.name`, { val: name.toString().trim(), ack: true });
+			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.key`, {
 				type: "state",
 				common: {
 					name: "Preset Key",
@@ -715,8 +715,8 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			await this.setStateAsync(`modes.${mode}.presets.${key}.key`, { val: key, ack: true });
-			await this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.recall`, {
+			this.setStateAsync(`modes.${mode}.presets.${key}.key`, { val: key, ack: true });
+			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.recall`, {
 				type: "state",
 				common: {
 					name: "Recall Preset",
