@@ -447,7 +447,7 @@ class FrontierSilicon extends utils.Adapter {
 		let streamable = false;
 		let id = "";
 
-		result.result.item.forEach(async item => {
+		await result.result.item.forEach(async item => {
 			key = item.$.key;
 			id = "";
 			selectable = false;
@@ -668,7 +668,7 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			await this.callAPI("netRemote.sys.audio.mute", "1");
 		}
-		result.result.item.forEach(async item => {
+		await result.result.item.forEach(async item => {
 			//this.setStateAsync(`modes.${mode}.presets.available`, { val: true, ack: true });
 			key = item.$.key;
 			item.field.forEach(f => {
