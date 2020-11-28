@@ -141,7 +141,7 @@ class FrontierSilicon extends utils.Adapter {
 	 * @param {ioBroker.State | null | undefined} state
 	 */
 	async onStateChange(id, state) {
-		if (notifyTimestamp <= Date.now() - 32000)
+		if (notifyTimestamp <= Date.now() - (this.config.PollIntervall * 1000 + 31000))
 		{
 			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), 1); // Poll states every configured seconds
 		}
@@ -162,10 +162,10 @@ class FrontierSilicon extends utils.Adapter {
 						case "power":
 							this.log.debug("Ein-/Ausschalten");
 							//const adapter = this;
-							adapter.callAPI("netRemote.sys.power", state.val ? "1" : "0")
-								.then(function (result) {
+							await adapter.callAPI("netRemote.sys.power", state.val ? "1" : "0")
+								.then(async function (result) {
 									if(result.success) {
-										adapter.setStateAsync("device.power", {val:state.val, ack: true});
+										await adapter.setStateAsync("device.power", {val:state.val, ack: true});
 									}
 								});
 
@@ -180,10 +180,10 @@ class FrontierSilicon extends utils.Adapter {
 							if(state != null && state != undefined && state.val != null && state.val != undefined)
 							{
 								const name = state.val.toString();
-								adapter.callAPI("netRemote.sys.info.friendlyName", name)
-									.then( (result) => {
+								await adapter.callAPI("netRemote.sys.info.friendlyName", name)
+									.then(async (result) => {
 										if(result.success) {
-											adapter.setStateAsync("device.friendlyName", {val:name, ack: true});
+											await adapter.setStateAsync("device.friendlyName", {val:name, ack: true});
 										}
 									});
 							}
@@ -199,14 +199,14 @@ class FrontierSilicon extends utils.Adapter {
 						// frontier_silicon.0.modes.2.switchTo
 						this.log.debug("Modus umschalten");
 						await adapter.callAPI("netRemote.sys.mode", zustand[3])
-							.then(function (result) {
+							.then(async function (result) {
 								if(result.success) {
-									adapter.setStateAsync("modes.selected", {val:zustand[3], ack: true});
-									adapter.getStateAsync(`modes.${zustand[3]}.label`)
-										.then(function (lab) {
+									await adapter.setStateAsync("modes.selected", {val:zustand[3], ack: true});
+									await adapter.getStateAsync(`modes.${zustand[3]}.label`)
+										.then(async function (lab) {
 											if(lab !== null && lab !== undefined && lab.val !== null)
 											{
-												adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
+												await adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
 											}
 										});
 									//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
@@ -217,10 +217,10 @@ class FrontierSilicon extends utils.Adapter {
 					if(zustand.length == 7 && zustand[4] === "presets" && zustand[6] === "recall")
 					{
 						await this.callAPI("netRemote.nav.state", "1");
-						adapter.callAPI("netRemote.nav.action.selectPreset", zustand[5])
-							.then(function (result) {
+						await adapter.callAPI("netRemote.nav.action.selectPreset", zustand[5])
+							.then(async function (result) {
 								if(result.success) {
-									adapter.setStateAsync("modes.selectPreset", {val:zustand[5], ack: true});
+									await adapter.setStateAsync("modes.selectPreset", {val:zustand[5], ack: true});
 								}
 							});
 						//adapter.getSelectedPreset();
@@ -230,19 +230,19 @@ class FrontierSilicon extends utils.Adapter {
 					{
 						this.log.debug("Modus umschalten");
 						await adapter.callAPI("netRemote.sys.mode", state.val.toString())
-							.then(function (result) {
+							.then(async function (result) {
 								if(result.success) {
-									adapter.setStateAsync("modes.selected", {val:state.val, ack: true});
-									adapter.getStateAsync(`modes.${state.val}.label`)
-										.then(function (lab) {
+									await adapter.setStateAsync("modes.selected", {val:state.val, ack: true});
+									await adapter.getStateAsync(`modes.${state.val}.label`)
+										.then(async function (lab) {
 											if(lab !== null && lab !== undefined && lab.val !== null)
 											{
-												adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
+												await adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
 											}
 										});
-									adapter.callAPI("netRemote.play.info.graphicUri")
-										.then(function (result) {
-											adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+										await adapter.callAPI("netRemote.play.info.graphicUri")
+										.then(async function (result) {
+											await adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
 										});
 									//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 								}
@@ -252,20 +252,20 @@ class FrontierSilicon extends utils.Adapter {
 					{
 						this.log.debug(`Selecting Preset ${state.val}`);
 						await this.callAPI("netRemote.nav.state", "1");
-						adapter.callAPI("netRemote.nav.action.selectPreset", state.val.toString())
-							.then(function (result) {
+						await adapter.callAPI("netRemote.nav.action.selectPreset", state.val.toString())
+							.then(async function (result) {
 								if(result.success) {
-									adapter.setStateAsync("modes.selectPreset", {val:state.val, ack: true});
-									adapter.callAPI("netRemote.play.info.graphicUri")
-										.then(function (result) {
-											adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+									await adapter.setStateAsync("modes.selectPreset", {val:state.val, ack: true});
+									await adapter.callAPI("netRemote.play.info.graphicUri")
+										.then(async function (result) {
+											await adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
 										});
 								}
 							});
 					}
 					else if(zustand[3] === "readPresets")
 					{
-						this.getAllPresets(true);
+						await this.getAllPresets(true);
 					}
 					break;
 				case "audio":
@@ -274,10 +274,10 @@ class FrontierSilicon extends utils.Adapter {
 						await this.callAPI("netRemote.nav.state", "1");
 						if(state.val >= 0 && state.val <= this.config.VolumeMax)
 						{
-							adapter.callAPI("netRemote.sys.audio.volume", state.val.toString())
-								.then(function (result) {
+							await adapter.callAPI("netRemote.sys.audio.volume", state.val.toString())
+								.then(async function (result) {
 									if(result.success) {
-										adapter.setStateAsync("audio.volume", {val:state.val, ack: true});
+										await adapter.setStateAsync("audio.volume", {val:state.val, ack: true});
 									}
 								});
 						}
@@ -285,10 +285,10 @@ class FrontierSilicon extends utils.Adapter {
 					else if(zustand[3] === "mute" && state.val !== null)
 					{
 						await this.callAPI("netRemote.nav.state", "1");
-						adapter.callAPI("netRemote.sys.audio.mute", state.val ? "1" : "0")
-							.then(function (result) {
+						await adapter.callAPI("netRemote.sys.audio.mute", state.val ? "1" : "0")
+							.then(async function (result) {
 								if(result.success) {
-									adapter.setStateAsync("audio.mute", {val:state.val, ack: true});
+									await adapter.setStateAsync("audio.mute", {val:state.val, ack: true});
 								}
 							});
 					}
@@ -298,17 +298,17 @@ class FrontierSilicon extends utils.Adapter {
 						{
 							case "volumeUp":
 								await this.callAPI("netRemote.nav.state", "1");
-								adapter.getStateAsync("audio.volume")
-									.then(function (result) {
+								await adapter.getStateAsync("audio.volume")
+									.then(async function (result) {
 										if(result != null && result != undefined && result.val != null && result.val != undefined
 											&& result.val < adapter.config.VolumeMax)
 										{
 											// @ts-ignore
 											const vol = parseInt(result.val) + 1;
-											adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
-												.then(function (result) {
+											await adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
+												.then(async function (result) {
 													if(result.success) {
-														adapter.setStateAsync("audio.volume", {val:vol, ack: true});
+														await adapter.setStateAsync("audio.volume", {val:vol, ack: true});
 													}
 												});
 										}
@@ -316,17 +316,17 @@ class FrontierSilicon extends utils.Adapter {
 								break;
 							case "volumeDown":
 								await this.callAPI("netRemote.nav.state", "1");
-								adapter.getStateAsync("audio.volume")
-									.then(function (result) {
+								await adapter.getStateAsync("audio.volume")
+									.then(async function (result) {
 										if(result != null && result != undefined && result.val != null && result.val != undefined
 											&& result.val > 0)
 										{
 											// @ts-ignore
 											const vol = parseInt(result.val) - 1;
-											adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
-												.then(function (result) {
+											await adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
+												.then(async function (result) {
 													if(result.success) {
-														adapter.setStateAsync("audio.volume", {val:vol, ack: true});
+														await adapter.setStateAsync("audio.volume", {val:vol, ack: true});
 													}
 												});
 										}
@@ -355,9 +355,9 @@ class FrontierSilicon extends utils.Adapter {
 						}
 						await this.callAPI("netRemote.nav.state", "1");
 						await this.callAPI("netRemote.play.control", z.toString())
-							.then(function (result) {
+							.then(async function (result) {
 								if(result.success) {
-									adapter.setStateAsync("media.state", {val:state.val, ack: true});
+									await adapter.setStateAsync("media.state", {val:state.val, ack: true});
 								}
 							});
 					}
@@ -365,9 +365,9 @@ class FrontierSilicon extends utils.Adapter {
 					{
 						await this.callAPI("netRemote.nav.state", "1");
 						await this.callAPI("netRemote.play.control", "1")
-							.then(function (result) {
+							.then(async function (result) {
 								if(result.success) {
-									adapter.setStateAsync("media.state", {val:1, ack: true});
+									await adapter.setStateAsync("media.state", {val:1, ack: true});
 								}
 							});
 					}
@@ -375,9 +375,9 @@ class FrontierSilicon extends utils.Adapter {
 					{
 						await this.callAPI("netRemote.nav.state", "1");
 						await this.callAPI("netRemote.play.control", "2")
-							.then(function (result) {
+							.then(async function (result) {
 								if(result.success) {
-									adapter.setStateAsync("media.state", {val:0, ack: true});
+									await adapter.setStateAsync("media.state", {val:0, ack: true});
 								}
 							});
 					}
@@ -414,16 +414,16 @@ class FrontierSilicon extends utils.Adapter {
 		this.callAPI("netRemote.sys.mode")
 			.then(function (result) {
 				adapter.getStateAsync(`modes.${result.result.value[0].u32[0]}.id`)
-					.then(function (res){
+					.then(async function (res){
 						if(res !== null && res !== undefined && res.val !== null && res.val === "DAB")
 						{
-							adapter.sleep(2000).then(function (){
-								adapter.getStateAsync("modes.mediaplayer")
-									.then(function (r) {
+							await adapter.sleep(2000).then(async function (){
+								await adapter.getStateAsync("modes.mediaplayer")
+									.then(async function (r) {
 										if(r !== null && r !== undefined && r.val !== null)
 										{
-											adapter.callAPI("netRemote.sys.mode", r.val.toString());
-											adapter.sleep(2000).then(function (){
+											await adapter.callAPI("netRemote.sys.mode", r.val.toString());
+											await adapter.sleep(2000).then(function (){
 												adapter.callAPI("netRemote.sys.mode", result.result.value[0].u32[0]);
 											});
 										}
@@ -488,7 +488,7 @@ class FrontierSilicon extends utils.Adapter {
 					},
 					native: {},
 				});
-				this.setStateAsync("modes.mediaplayer", { val: key, ack: true });
+				await this.setStateAsync("modes.mediaplayer", { val: key, ack: true });
 			}
 
 			await this.setObjectNotExistsAsync(`modes.${key}`, {
@@ -1319,7 +1319,7 @@ class FrontierSilicon extends utils.Adapter {
 			}
 			this.log.debug(url);
 			await axios.get(url)
-				.then(async data => {
+				.then(data => {
 				//log.debug(device.)
 					const parser = new xml2js.Parser();
 					parser.parseStringPromise(data.data).then(function (result) {
@@ -1363,7 +1363,7 @@ class FrontierSilicon extends utils.Adapter {
 			url = `${this.config.fsAPIURL}/CREATE_SESSION?pin=${this.config.PIN}`;
 			log.debug(url);
 			await axios.get(url)
-				.then(async device => {
+				.then(device => {
 				//log.debug(device.)
 					const parser = new xml2js.Parser();
 					parser.parseStringPromise(device.data).then(function (result) {

@@ -180,7 +180,7 @@
 		},
 		{
 			"_id": "device",
-			"type": "channel",
+			"type": "device",
 			"common": {
 				"name": "Gerät"
 			},
