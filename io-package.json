@@ -165,7 +165,8 @@
 		"SangeanNoSound": false,
 		"ModeMaxIndex": 0,
 		"VolumeMax": 0,
-		"RecreateSessionInterval": 60
+		"RecreateSessionInterval": 60,
+		"PollIntervall": 1
 	},
 	"objects": [],
 	"instanceObjects": [

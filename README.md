@@ -10,7 +10,7 @@
 
 [![NPM](https://nodei.co/npm/iobroker.frontier_silicon.png?downloads=true)](https://nodei.co/npm/iobroker.frontier_silicon/)
 
-**Tests:** ![Test and Release](https://github.com/halloamt/ioBroker.frontier_silicon/workflows/Test%20and%20Release/badge.svg)[![Build Status](https://travis-ci.org/halloamt/ioBroker.frontier_silicon.svg?branch=master)](https://travis-ci.org/halloamt/ioBroker.frontier_silicon)
+**Tests:** ![Test and Release](https://github.com/halloamt/ioBroker.frontier_silicon/workflows/Test%20and%20Release/badge.svg) [![Build Status](https://travis-ci.org/halloamt/ioBroker.frontier_silicon.svg?branch=master)](https://travis-ci.org/halloamt/ioBroker.frontier_silicon)
 
 ## frontier_silicon adapter for ioBroker
 
@@ -49,17 +49,17 @@ PRs and contructive criticism are always welcome.
 
 ## Documentation
 
-This adapter let's you control internet radios and media playsers based on Silicon Frontier chipsets. Many devices contrallabe via [Undok ](https://www.frontiersmart.com/undok) should word. Tested devices come from [Revo](https://revo.co.uk/de/products/), [Sangean](https://www.sangean.eu/products/all_product.asp) and [SilverCrest](https://www.silvercrest-multiroom.de/produkte/produktuebersicht/), others should work, too.
+This adapter let's you control internet radios and media playsers based on Silicon Frontier chipsets. Many devices which can be controlled via [Undok](https://www.frontiersmart.com/undok) should work. Tested devices come from [Revo](https://revo.co.uk/de/products/), [Sangean](https://www.sangean.eu/products/all_product.asp) and [SilverCrest](https://www.silvercrest-multiroom.de/produkte/produktuebersicht/), others should work, too.
 
 After installation the device's IP and PIN must be entered in the configuration dialog. If the radio does not play DAB after switching on via Undok or this adapter try with "DAB starts without sound" enabled.
 
-When the adapter starts for the first time it collects information about the device. For that it needs to switch through all modes. During checking settings the device will be muted for a couple of seconds to avoid disturbing sounds.
+When the adapter starts for the first time it collects information about the device. For that it needs to switch through all modes. During checking settings the device will be muted for a few seconds to avoid disturbing sounds.
 
 While the adapter reads the device's setting objects and states are created. States can be read-only (`ro`) or read-write (`rw`) *ok, write-only for buttons and selectedPreset is also possible*.
 
 - audio
 
-  Basic audio settings. No equlizer controls implemented yet.
+  Basic audio settings. No equalizer controls implemented yet.
 
   - maxVolume (`number, ro`)
 
@@ -103,14 +103,14 @@ While the adapter reads the device's setting objects and states are created. Sta
 
     valid values are:
     - 0: Pause
-	- 1: Play
+	  - 1: Play
 
   - control
 
     - next
-	- plause
-	- play
-	- previous
+	  - plause
+	  - play
+	  - previous
 
   Do not take the following names too seriously. The radio uses them differently in different modes.
 
@@ -142,43 +142,43 @@ While the adapter reads the device's setting objects and states are created. Sta
 
     - id (`text, ro`)
 
-	  The name of that mode
+	    The name of that mode
 
-	- key (`number, ro`)
+	  - key (`number, ro`)
 
-	  The index of that mode. Equals `mode.{number}` from object tree and can be written into `modes.selected`.
-
-	- selectable (`boolean, ro`)
-
-	  `true` if this mode can be manually selected.
-
-	- streamable (`boolean, ro`)
-
-	  Only present on multi-room enabled devices. `true` if this mode can be used as source for several multi-room devices.
-
-	- switchTo
-
-	  Selects that mode.
-	
-	- presets
-
+	    The index of that mode. Equals `mode.{number}` from object tree and can be written into `modes.selected`.
+      
+	  - selectable (`boolean, ro`)
+      
+	    `true` if this mode can be manually selected.
+      
+	  - streamable (`boolean, ro`)
+      
+	    Only present on multi-room enabled devices. `true` if this mode can be used as source for several multi-room devices.
+      
+	  - switchTo
+      
+	    Selects that mode.
+	    
+	  - presets
+      
       - availabe (`boolean, ro`)
 
-	    Indicates whether presets for this mode are available
+  	    Indicates whether presets for this mode are available
+      
+	    - `{number}`
 
-	  - `{number}`
+	      The index of that mode. Equals `mode.*.presets.{number}` from object tree and can be written into `modes.selectPreset`.
+	    
+	    - name (`text, ro`)
 
-	    The index of that mode. Equals `mode.*.presets.{number}` from object tree and can be written into `modes.selectPreset`.
-	
-	  - name (`text, ro`)
+	      The name of that preset
+	    
+	    - switchTo
 
-	    The name of that preset
-	
-	  - switchTo
+	      Selects that preset and the corresponding mode.
 
-	    Selects that preset and the corresponding mode.
-
-Please be aware that you can sometimes choose between "pushing a button" or "setting a value". Use what is more convienient for you.
+Please be aware that you can sometimes choose between "pushing a button" or "setting a value". Use what is more convenient for you.
 
 ## Changelog
 

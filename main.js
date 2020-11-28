@@ -140,6 +140,9 @@ class FrontierSilicon extends utils.Adapter {
 	 * @param {ioBroker.State | null | undefined} state
 	 */
 	async onStateChange(id, state) {
+		if (!timeOutMessage) { // Keep connection alive & poll states
+			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), 1000); // Poll states every configured seconds
+		}
 		if (state) {
 			if (!id || !state || state.ack) return;
 			// The state was changed
@@ -1414,6 +1417,11 @@ class FrontierSilicon extends utils.Adapter {
 
 	async onFSAPIMessage()
 	{
+		if (!timeOutMessage)
+		{
+			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), this.config.PollIntervall * 1000);
+		}
+
 		const adapter = this;
 		try
 		{
@@ -1550,12 +1558,7 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			adapter.log.error(e.message);
 		}
-		finally
-		{
-			timeOutMessage = setTimeout(async () => {
-				await this.onFSAPIMessage();
-			}, 1 * 1000);
-		}
+		finally { }
 	}
 }
 
