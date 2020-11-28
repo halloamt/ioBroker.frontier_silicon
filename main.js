@@ -1575,6 +1575,7 @@ class FrontierSilicon extends utils.Adapter {
 		}
 		finally
 		{
+			clearTimeout(timeOutMessage);
 			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), this.config.PollIntervall * 1000);
 		}
 	}
