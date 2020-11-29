@@ -26,7 +26,7 @@ systemDictionary = {
 		"zh-cn": "选项3"
 	},
 	"PollIntervall": {
-		"en": "Wati time between notifies (Sekunden)",
+		"en": "Wait time between notifies (Sekunden)",
 		"de": "Wartezeit zwischen Notifies (Sekunden)",
 		"ru": "Опция 4",
 		"pt": "Opção 4",
@@ -36,7 +36,7 @@ systemDictionary = {
 		"es": "Opción 4",
 		"pl": "opcja 4",
 		"zh-cn": "选项4"
-	}
+	},
 	"RecreateSessionInterval": {
 		"en": "Recreate session interval (Minuten)",
 		"de": "Gültigskeitsdauer einer Sitzungs ID  in Minuten",
