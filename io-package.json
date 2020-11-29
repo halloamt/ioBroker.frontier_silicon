@@ -1,7 +1,7 @@
 {
 	"common": {
 		"name": "frontier_silicon",
-		"version": "0.0.9-2",
+		"version": "0.0.9-3",
 		"news": {
 			"0.0.9": {
 				"en": "Nicer Readme and (hopefully) more robust session handling",
