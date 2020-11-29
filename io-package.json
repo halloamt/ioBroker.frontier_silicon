@@ -1,31 +1,31 @@
 {
     "common": {
         "name": "frontier_silicon",
-        "version": "0.0.9-2",
+        "version": "0.0.10",
         "news": {
-            "0.0.9-2": {
-                "en": "news",
-                "de": "neues",
-                "ru": "новое",
-                "pt": "novidades",
-                "nl": "nieuws",
-                "fr": "nouvelles",
-                "it": "notizie",
-                "es": "noticias",
-                "pl": "nowości",
-                "zh-cn": "新"
+            "0.0.10": {
+                "en": "Übersetzungen",
+                "de": "Übersetzungen",
+                "ru": "Übersetzungen",
+                "pt": "Übersetzungen",
+                "nl": "Übersetzungen",
+                "fr": "Übersetzungen",
+                "it": "Übersetzungen",
+                "es": "Übersetzungen",
+                "pl": "Übersetzungen",
+                "zh-cn": "Übersetzungen"
             },
             "0.0.9": {
                 "en": "Nicer Readme and (hopefully) more robust session handling",
                 "de": "Schöneres Readme und (hoffentlich) robusteres Sessionverhalten",
-                "ru": "Bugfixes",
-                "pt": "Bugfixes",
-                "nl": "Bugfixes",
-                "fr": "Bugfixes",
-                "it": "Bugfixes",
-                "es": "Bugfixes",
-                "pl": "Bugfixes",
-                "zh-cn": "Bugfixes"
+                "ru": "Nicer Readme and (hopefully) more robust session handling",
+                "pt": "Nicer Readme and (hopefully) more robust session handling",
+                "nl": "Nicer Readme and (hopefully) more robust session handling",
+                "fr": "Nicer Readme and (hopefully) more robust session handling",
+                "it": "Nicer Readme and (hopefully) more robust session handling",
+                "es": "Nicer Readme and (hopefully) more robust session handling",
+                "pl": "Nicer Readme and (hopefully) more robust session handling",
+                "zh-cn": "Nicer Readme and (hopefully) more robust session handling"
             },
             "0.0.8": {
                 "en": "Formal but neccessary stuff for ioBroker",
