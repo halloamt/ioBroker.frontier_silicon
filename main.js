@@ -1599,21 +1599,21 @@ class FrontierSilicon extends utils.Adapter {
 					{
 						if(name === preset.val)
 						{
-							this.setStateAsync("modes.selectPreset", { val: i, ack:true});
+							await this.setStateAsync("modes.selectPreset", { val: i, ack:true});
 							break;
 						}
 						++i;
 					}
 					else
 					{
-						this.setStateAsync("modes.selectPreset", { val: null, ack:true});
+						await this.setStateAsync("modes.selectPreset", { val: null, ack:true});
 						break;
 					}
 				}
 			}
 			else
 			{
-				this.setStateAsync("modes.selectPreset", { val: null, ack:true});
+				await this.setStateAsync("modes.selectPreset", { val: null, ack:true});
 			}
 		}
 	}
