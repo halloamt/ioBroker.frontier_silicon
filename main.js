@@ -16,6 +16,8 @@ const xml2js = require("xml2js");
 let timeOutMessage;
 let sessionTimestamp = 0;
 let notifyTimestamp = 0;
+let lastSleepClear = 0;
+let sleeps = new Map();
 
 class FrontierSilicon extends utils.Adapter {
 
@@ -111,6 +113,11 @@ class FrontierSilicon extends utils.Adapter {
 			// ...
 			// clearInterval(interval1);
 			clearTimeout(timeOutMessage);
+			sleeps.forEach((value, key , sleeps) => 
+				{
+					clearTimeout(value);
+				});
+			sleeps.clear();
 
 			callback();
 		} catch (e) {
@@ -1421,14 +1428,37 @@ class FrontierSilicon extends utils.Adapter {
 
 	async sleep(ms)
 	{
+		const ts = Date.now();
 		return new Promise((resolve) => {
+			sleeps.set(ts, resolve);
 			setTimeout(resolve, ms);
-		});
+		});;
 	}
 
 	async onFSAPIMessage()
 	{
 		const adapter = this;
+		if(lastSleepClear <= Date.now() - 10 * 60 * 1000)
+		{
+			lastSleepClear = Date.now();
+			adapter.log.debug("Clearing sleeps");
+			if(sleeps.size > 0)
+			try
+			{
+				const timers = [ ];
+				sleeps.forEach((value, key , sleeps) => 
+				{
+					if(key <= Date.now() - 900 * 1000)
+					{
+						clearTimeout(value);
+						timers.push(key);
+					}
+				});
+				timers.forEach((value, index, array) => sleeps.delete(index));
+			}
+			finally {}
+		}
+
 		try
 		{
 			notifyTimestamp = Date.now();
