@@ -1580,19 +1580,20 @@ class FrontierSilicon extends utils.Adapter {
 		}
 	}
 
-	UpdatePreset(name)
+	async UpdatePreset(name)
 	{
-		let mode = this.getStateAsync("modes.selected");
+		if(name === undefined) return;
+		let mode = await this.getStateAsync("modes.selected");
 		if(mode !== null && mode !== undefined && mode.val !== null && mode.val !== undefined)
 		{
-			let hasPresets = this.getStateAsync(`modes.${mode.val}.presets.available`)
+			let hasPresets = await this.getStateAsync(`modes.${mode.val}.presets.available`)
 			if(hasPresets !== null && hasPresets !== undefined && hasPresets.val !== null && hasPresets.val !== undefined
 				&& hasPresets.val)
 			{
 				let i = 0;
 				while(true)
 				{
-					const preset = this.getStateAsync(`modes.${mode.val}.presets.${i}.name`);
+					const preset = await this.getStateAsync(`modes.${mode.val}.presets.${i}.name`);
 					if(preset !== null && preset !== undefined && preset.val !== null && preset.val !== undefined
 						&& preset.val !== "")
 					{
