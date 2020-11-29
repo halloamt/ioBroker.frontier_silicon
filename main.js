@@ -414,16 +414,16 @@ class FrontierSilicon extends utils.Adapter {
 		this.callAPI("netRemote.sys.mode")
 			.then(function (result) {
 				adapter.getStateAsync(`modes.${result.result.value[0].u32[0]}.id`)
-					.then(async function (res){
+					.then(function (res){
 						if(res !== null && res !== undefined && res.val !== null && res.val === "DAB")
 						{
-							await adapter.sleep(2000).then(async function (){
-								await adapter.getStateAsync("modes.mediaplayer")
-									.then(async function (r) {
+							adapter.sleep(2000).then(function (){
+								adapter.getStateAsync("modes.mediaplayer")
+									.then(function (r) {
 										if(r !== null && r !== undefined && r.val !== null)
 										{
-											await adapter.callAPI("netRemote.sys.mode", r.val.toString());
-											await adapter.sleep(2000).then(function (){
+											adapter.callAPI("netRemote.sys.mode", r.val.toString());
+											adapter.sleep(2000).then(function (){
 												adapter.callAPI("netRemote.sys.mode", result.result.value[0].u32[0]);
 											});
 										}
@@ -1580,38 +1580,38 @@ class FrontierSilicon extends utils.Adapter {
 		}
 	}
 
-	async UpdatePreset(name)
+	UpdatePreset(name)
 	{
-		let mode = await this.getStateAsync("modes.selected");
+		let mode = this.getStateAsync("modes.selected");
 		if(mode !== null && mode !== undefined && mode.val !== null && mode.val !== undefined)
 		{
-			let hasPresets = await this.getStateAsync(`modes.${mode.val}.presets.available`)
+			let hasPresets = this.getStateAsync(`modes.${mode.val}.presets.available`)
 			if(hasPresets !== null && hasPresets !== undefined && hasPresets.val !== null && hasPresets.val !== undefined
 				&& hasPresets.val)
 			{
 				let i = 0;
 				while(true)
 				{
-					const preset = await this.getStateAsync(`modes.${mode.val}.presets.${i}.name`);
+					const preset = this.getStateAsync(`modes.${mode.val}.presets.${i}.name`);
 					if(preset !== null && preset !== undefined && preset.val !== null && preset.val !== undefined)
 					{
 						if(name === preset.val)
 						{
-							await this.setStateAsync("modes.selectPreset", { val: i, ack:true});
+							this.setStateAsync("modes.selectPreset", { val: i, ack:true});
 							break;
 						}
 						++i;
 					}
 					else
 					{
-						await this.setStateAsync("modes.selectPreset", { val: null, ack:true});
+						this.setStateAsync("modes.selectPreset", { val: null, ack:true});
 						break;
 					}
 				}
 			}
 			else
 			{
-				await this.setStateAsync("modes.selectPreset", { val: null, ack:true});
+				this.setStateAsync("modes.selectPreset", { val: null, ack:true});
 			}
 		}
 	}
