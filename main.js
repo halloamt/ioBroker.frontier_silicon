@@ -1466,14 +1466,14 @@ class FrontierSilicon extends utils.Adapter {
 							break;
 						case "netremote.play.info.text":
 							await this.setStateAsync("media.text", { val: item.value[0].c8_array[0].trim(), ack: true });
-							this.callAPI("netRemote.play.info.artist")
+							await this.callAPI("netRemote.play.info.artist")
 								.then(function (result) {
 									if(result !== null && result !== undefined && result.val !== null )
 									{
 										adapter.setStateAsync("media.artist", { val: result.result.value[0].c8_array[0], ack: true });
 									}
 								});
-							this.callAPI("netremote.sys.mode")
+							await this.callAPI("netremote.sys.mode")
 								.then(function (result) {
 									if(result !== null && result !== undefined && result.val !== null )
 									{
@@ -1500,21 +1500,21 @@ class FrontierSilicon extends utils.Adapter {
 							break;
 						case "netremote.play.info.name":
 							await this.setStateAsync("media.name", { val: item.value[0].c8_array[0].trim(), ack: true });
-							this.callAPI("netRemote.play.info.artist")
+							await this.callAPI("netRemote.play.info.artist")
 								.then(function (result) {
 									if(result !== null && result !== undefined && result.val !== null )
 									{
 										adapter.setStateAsync("media.artist", { val: result.result.value[0].c8_array[0], ack: true });
 									}
 								});
-							this.callAPI("netRemote.play.info.album")
+							await this.callAPI("netRemote.play.info.album")
 								.then(function (result) {
 									if(result !== null && result !== undefined && result.val !== null )
 									{
 										adapter.setStateAsync("media.album", { val: result.result.value[0].c8_array[0], ack: true });
 									}
 								});
-							this.callAPI("netremote.sys.mode")
+							await this.callAPI("netremote.sys.mode")
 								.then(function (result) {
 									if(result !== null && result !== undefined && result.val !== null )
 									{
@@ -1529,7 +1529,7 @@ class FrontierSilicon extends utils.Adapter {
 										//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
 									}
 								});
-								await this.UpdatePreset(item.value[0].c8_array[0].trim());
+							await this.UpdatePreset(item.value[0].c8_array[0].trim());
 							break;
 						case "netremote.sys.audio.volume":
 							await this.setStateAsync("audio.volume", { val: item.value[0].u8[0], ack: true });
@@ -1593,7 +1593,8 @@ class FrontierSilicon extends utils.Adapter {
 				while(true)
 				{
 					const preset = this.getStateAsync(`modes.${mode.val}.presets.${i}.name`);
-					if(preset !== null && preset !== undefined && preset.val !== null && preset.val !== undefined)
+					if(preset !== null && preset !== undefined && preset.val !== null && preset.val !== undefined
+						&& preset.val !== "")
 					{
 						if(name === preset.val)
 						{
