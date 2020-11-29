@@ -108,9 +108,9 @@ While the adapter reads the device's setting objects and states are created. Sta
   - control
 
     - next
-	  - plause
-	  - play
-	  - previous
+    - plause
+    - play
+    - previous
 
   Do not take the following names too seriously. The radio uses them differently in different modes.
 
@@ -141,8 +141,8 @@ While the adapter reads the device's setting objects and states are created. Sta
   - `{number}`
 
     - id (`text, ro`)
-
-	    The name of that mode
+    
+      The name of that mode
 
     - key (`number, ro`)
 
@@ -168,15 +168,19 @@ While the adapter reads the device's setting objects and states are created. Sta
       
       - `{number}`
 
-        The index of that mode. Equals `mode.*.presets.{number}` from object tree and can be written into `modes.selectPreset`.
-	    
-      - name (`text, ro`)
+        The index of that preset. Equals `mode.*.presets.{number}.key`.
 
-        The name of that preset
-	    
-      - switchTo
+        - key
+	
+          The index of that preset. Equals `mode.*.presets.{number}` from object tree and can be written into `modes.selectPreset`.
+	
+        - name (`text, ro`)
 
-        Selects that preset and the corresponding mode.
+          The name of that preset
+	    
+        - switchTo
+
+          Selects that preset and the corresponding mode.
 
 Please be aware that you can sometimes choose between "pushing a button" or "setting a value". Use what is more convenient for you.
 
