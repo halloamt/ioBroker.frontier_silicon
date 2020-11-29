@@ -25,6 +25,7 @@
     "@iobroker/adapter-core": "^2.4.0",
     "axios": "^0.21.0",
     "fecha": "^4.2.0",
+    "gulp-cli": "^2.3.0",
     "jslint": "^0.12.1",
     "lookup": "^0.1.0",
     "xml2js": "^0.4.23"
