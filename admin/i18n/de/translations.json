@@ -1,0 +1,8 @@
+{
+    "PIN": "PIN",
+    "PollIntervall": "Wartezeit zwischen Notifies (Sekunden)",
+    "RecreateSessionInterval": "Gültigskeitsdauer einer Sitzungs ID in Minuten",
+    "SangeanNoSound": "DAB startet ohne Sound",
+    "frontier_silicon adapter settings": "Adaptereinstellungen für frontier_silicon",
+    "ip": "IP-Adresse"
+}

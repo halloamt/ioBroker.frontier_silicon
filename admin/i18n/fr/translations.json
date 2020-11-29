@@ -1,0 +1,8 @@
+{
+    "PIN": "ÉPINGLE",
+    "PollIntervall": "Temps d'attente entre les notifications (Sekunden)",
+    "RecreateSessionInterval": "Recréer l'intervalle de session (Minuten)",
+    "SangeanNoSound": "Le DAB démarre sans son",
+    "frontier_silicon adapter settings": "Paramètres de l'adaptateur pour frontier_silicon",
+    "ip": "IP"
+}

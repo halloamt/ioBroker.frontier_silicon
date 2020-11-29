@@ -1,76 +1,11 @@
-"use strict";
+/*global systemDictionary:true */
+'use strict';
 
 systemDictionary = {
-	"frontier_silicon adapter settings": {
-		"en": "Adapter settings for frontier_silicon",
-		"de": "Adaptereinstellungen für frontier_silicon",
-		"ru": "Настройки адаптера для frontier_silicon",
-		"pt": "Configurações do adaptador para frontier_silicon",
-		"nl": "Adapterinstellingen voor frontier_silicon",
-		"fr": "Paramètres d'adaptateur pour frontier_silicon",
-		"it": "Impostazioni dell'adattatore per frontier_silicon",
-		"es": "Ajustes del adaptador para frontier_silicon",
-		"pl": "Ustawienia adaptera dla frontier_silicon",
-		"zh-cn": "frontier_silicon的适配器设置"
-	},
-	"SangeanNoSound": {
-		"en": "DAB starts without sound",
-		"de": "DAB startet ohne Sound",
-		"ru": "DAB starts without sound",
-		"pt": "DAB starts without sound",
-		"nl": "DAB starts without sound",
-		"fr": "DAB starts without sound",
-		"it": "DAB starts without sound",
-		"es": "DAB starts without sound",
-		"pl": "DAB starts without sound",
-		"zh-cn": "DAB starts without sound"
-	},
-	"PollIntervall": {
-		"en": "Wait time between notifies (Sekunden)",
-		"de": "Wartezeit zwischen Notifies (Sekunden)",
-		"ru": "Wait time between notifies (Sekunden)",
-		"pt": "Wait time between notifies (Sekunden)",
-		"nl": "Wait time between notifies (Sekunden)",
-		"fr": "Wait time between notifies (Sekunden)",
-		"it": "Wait time between notifies (Sekunden)",
-		"es": "Wait time between notifies (Sekunden)",
-		"pl": "Wait time between notifies (Sekunden)",
-		"zh-cn": "Wait time between notifies (Sekunden)"
-	},
-	"RecreateSessionInterval": {
-		"en": "Recreate session interval (Minuten)",
-		"de": "Gültigskeitsdauer einer Sitzungs ID  in Minuten",
-		"ru": "Recreate session interval (Minuten)",
-		"pt": "Recreate session interval (Minuten)",
-		"nl": "Recreate session interval (Minuten)",
-		"fr": "Recreate session interval (Minuten)",
-		"it": "Recreate session interval (Minuten)",
-		"es": "Recreate session interval (Minuten)",
-		"pl": "Recreate session interval (Minuten)",
-		"zh-cn": "Recreate session interval (Minuten)"
-	},
-	"PIN": {
-		"en": "PIN",
-		"de": "PIN",
-		"ru": "PIN",
-		"pt": "PIN",
-		"nl": "PIN",
-		"fr": "PIN",
-		"it": "PIN",
-		"es": "PIN",
-		"pl": "PIN",
-		"zh-cn": "PIN"
-	},
-	"ip": {
-		"en": "IP",
-		"de": "IP-Adresse",
-		"ru": "opIP-Adressetion2",
-		"pt": "IP-Adresse",
-		"nl": "IP-Adresse",
-		"fr": "IP-Adresse",
-		"it": "IP-Adresse",
-		"es": "IP-Adresse",
-		"pl": "IP-Adresse",
-		"zh-cn": "IP-Adresse"
-	}
+    "PIN": {                                         "en": "PIN",                                             "de": "PIN",                                             "ru": "ШТЫРЬ",                                           "pt": "PIN",                                             "nl": "PIN",                                             "fr": "ÉPINGLE",                                         "it": "PIN",                                             "es": "ALFILER",                                         "pl": "KOŁEK",                                           "zh-cn": "销"},
+    "PollIntervall": {                               "en": "Wait time between notifies (Sekunden)",           "de": "Wartezeit zwischen Notifies (Sekunden)",          "ru": "Время ожидания между уведомлениями (Секунден)",   "pt": "Tempo de espera entre notificações (Sekunden)",   "nl": "Wachttijd tussen meldingen (Sekunden)",           "fr": "Temps d'attente entre les notifications (Sekunden)", "it": "Tempo di attesa tra le notifiche (Sekunden)",     "es": "Tiempo de espera entre notificaciones (Sekunden)", "pl": "Czas oczekiwania między powiadomieniami (Sekunden)", "zh-cn": "通知之间的等待时间（Sekunden）"},
+    "RecreateSessionInterval": {                     "en": "Recreate session interval (Minuten)",             "de": "Gültigskeitsdauer einer Sitzungs ID in Minuten",  "ru": "Восстановить интервал сеанса (минут)",            "pt": "Recriar o intervalo da sessão (Minuten)",         "nl": "Sessie-interval opnieuw maken (minuten)",         "fr": "Recréer l'intervalle de session (Minuten)",       "it": "Ricrea l'intervallo della sessione (Minuten)",    "es": "Recrear el intervalo de la sesión (Minuten)",     "pl": "Ponownie utwórz interwał sesji (Minuten)",        "zh-cn": "重新创建会话间隔（分钟）"},
+    "SangeanNoSound": {                              "en": "DAB starts without sound",                        "de": "DAB startet ohne Sound",                          "ru": "DAB запускается без звука",                       "pt": "DAB começa sem som",                              "nl": "DAB start zonder geluid",                         "fr": "Le DAB démarre sans son",                         "it": "DAB si avvia senza audio",                        "es": "DAB comienza sin sonido",                         "pl": "DAB uruchamia się bez dźwięku",                   "zh-cn": "DAB开始时没有声音"},
+    "frontier_silicon adapter settings": {           "en": "Adapter settings for frontier_silicon",           "de": "Adaptereinstellungen für frontier_silicon",       "ru": "Настройки адаптера для frontier_silicon",         "pt": "Configurações do adaptador para frontier_silicon", "nl": "Adapterinstellingen voor frontier_silicon",       "fr": "Paramètres de l'adaptateur pour frontier_silicon", "it": "Impostazioni dell'adattatore per frontier_silicon", "es": "Configuración del adaptador para frontier_silicon", "pl": "Ustawienia adaptera dla frontier_silicon",        "zh-cn": "frontier_silicon的适配器设置"},
+    "ip": {                                          "en": "IP",                                              "de": "IP-Adresse",                                      "ru": "IP",                                              "pt": "IP",                                              "nl": "IK P",                                            "fr": "IP",                                              "it": "IP",                                              "es": "IP",                                              "pl": "IP",                                              "zh-cn": "知识产权"},
 };
