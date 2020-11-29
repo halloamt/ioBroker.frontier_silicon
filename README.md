@@ -49,7 +49,7 @@ PRs and contructive criticism are always welcome.
 
 ## Documentation
 
-This adapter let's you control internet radios and media playsers based on Silicon Frontier chipsets. Many devices which can be controlled via [Undok](https://www.frontiersmart.com/undok) should work. Tested devices come from [Revo](https://revo.co.uk/de/products/), [Sangean](https://www.sangean.eu/products/all_product.asp) and [SilverCrest](https://www.silvercrest-multiroom.de/produkte/produktuebersicht/), others should work, too.
+This adapter lets you control internet radios and media playsers based on Frontier Silicon chipsets. Many devices which can be controlled via [Undok](https://www.frontiersmart.com/undok) should work. Tested devices come from [Revo](https://revo.co.uk/de/products/), [Sangean](https://www.sangean.eu/products/all_product.asp) and [SilverCrest](https://www.silvercrest-multiroom.de/produkte/produktuebersicht/), others should work, too.
 
 After installation the device's IP and PIN must be entered in the configuration dialog. If the radio does not play DAB after switching on via Undok or this adapter try with "DAB starts without sound" enabled.
 
@@ -67,7 +67,7 @@ While the adapter reads the device's setting objects and states are created. Sta
 
   - mute (`boolean, rw`)
 
-    `true` if the divice is muted, `false`otherwise
+    `true` if the device is muted, `false`otherwise
 
   - volume (`number, rw`)
   - control
@@ -103,7 +103,7 @@ While the adapter reads the device's setting objects and states are created. Sta
 
     valid values are:
     - 0: Pause
-	  - 1: Play
+    - 1: Play
 
   - control
 
@@ -144,39 +144,39 @@ While the adapter reads the device's setting objects and states are created. Sta
 
 	    The name of that mode
 
-	  - key (`number, ro`)
+    - key (`number, ro`)
 
-	    The index of that mode. Equals `mode.{number}` from object tree and can be written into `modes.selected`.
+      The index of that mode. Equals `mode.{number}` from object tree and can be written into `modes.selected`.
       
-	  - selectable (`boolean, ro`)
+    - selectable (`boolean, ro`)
       
-	    `true` if this mode can be manually selected.
+      `true` if this mode can be manually selected.
       
-	  - streamable (`boolean, ro`)
+    - streamable (`boolean, ro`)
       
-	    Only present on multi-room enabled devices. `true` if this mode can be used as source for several multi-room devices.
+      Only present on multi-room enabled devices. `true` if this mode can be used as source for several multi-room devices.
+  
+    - switchTo
       
-	  - switchTo
-      
-	    Selects that mode.
+      Selects that mode.
 	    
-	  - presets
+    - presets
       
       - availabe (`boolean, ro`)
 
-  	    Indicates whether presets for this mode are available
+        Indicates whether presets for this mode are available
       
-	    - `{number}`
+      - `{number}`
 
-	      The index of that mode. Equals `mode.*.presets.{number}` from object tree and can be written into `modes.selectPreset`.
+        The index of that mode. Equals `mode.*.presets.{number}` from object tree and can be written into `modes.selectPreset`.
 	    
-	    - name (`text, ro`)
+      - name (`text, ro`)
 
-	      The name of that preset
+        The name of that preset
 	    
-	    - switchTo
+      - switchTo
 
-	      Selects that preset and the corresponding mode.
+        Selects that preset and the corresponding mode.
 
 Please be aware that you can sometimes choose between "pushing a button" or "setting a value". Use what is more convenient for you.
 
@@ -186,6 +186,8 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 * (halloamt) Selected preset can be read now. The adapter guesses a little but this seems to work.
 * (halloamt) Nicer readme
 * (halloamt) (Hopefully) more robust session handling.
+* (halloamt) Long polling should work more reliably
+* (halloamt) Sleep timers are cleared on `onUnload`
 
 ### 0.0.7 und 0.0.8
 * (halloamt) Formal but neccessary stuff for ioBroker

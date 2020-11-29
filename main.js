@@ -148,8 +148,9 @@ class FrontierSilicon extends utils.Adapter {
 	 * @param {ioBroker.State | null | undefined} state
 	 */
 	async onStateChange(id, state) {
-		if (notifyTimestamp <= Date.now() - (this.config.PollIntervall * 1000 + 31000))
+		if (notifyTimestamp <= Date.now() - (this.config.PollIntervall * 1000 + 40000))
 		{
+			clearTimeout(timeOutMessage);
 			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), 1); // Poll states every configured seconds
 		}
 		if (state) {
@@ -1443,20 +1444,20 @@ class FrontierSilicon extends utils.Adapter {
 			lastSleepClear = Date.now();
 			adapter.log.debug("Clearing sleeps");
 			if(sleeps.size > 0)
-			try
-			{
-				const timers = [ ];
-				sleeps.forEach((value, key , sleeps) => 
+				try
 				{
-					if(key <= Date.now() - 900 * 1000)
+					const timers = [ ];
+					sleeps.forEach((value, key , sleeps) => 
 					{
-						clearTimeout(value);
-						timers.push(key);
-					}
-				});
-				timers.forEach((value, index, array) => sleeps.delete(index));
-			}
-			finally {}
+						if(key <= Date.now() - 900 * 1000)
+						{
+							clearTimeout(value);
+							timers.push(key);
+						}
+					});
+					timers.forEach((value, index, array) => sleeps.delete(index));
+				}
+				finally {}
 		}
 
 		try
