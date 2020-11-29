@@ -1571,7 +1571,10 @@ class FrontierSilicon extends utils.Adapter {
 		catch (e)
 		{
 			adapter.log.error(e.message);
-			await adapter.setStateAsync("debug.lastNotifyError", { val: JSON.stringify(e), ack: true });
+			if(this.log.level=="debug" || this.log.level=="silly")
+			{
+				await adapter.setStateAsync("debug.lastNotifyError", { val: JSON.stringify(e), ack: true });
+			}
 		}
 		finally
 		{
