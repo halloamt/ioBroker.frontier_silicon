@@ -22,3 +22,4 @@ http://192.168.178.26/fsapi/SET/netRemote.sys.power?pin=7389&sid=883168529&value
 Doku
 https://github.com/flammy/fsapi/blob/master/FSAPI.md
 https://www.niehoff.nl/producthandleiding/PMR4000RMKII-03.pdf
+https://github.com/z1c0/FsApi/blob/master/FsApi/Command.cs
