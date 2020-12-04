@@ -18,6 +18,7 @@ let sessionTimestamp = 0;
 let notifyTimestamp = 0;
 let lastSleepClear = 0;
 let sleeps = new Map();
+let polling = false;
 
 class FrontierSilicon extends utils.Adapter {
 
@@ -1133,7 +1134,7 @@ class FrontierSilicon extends utils.Adapter {
 				type: "state",
 				common: {
 					name: "Error of last notify call",
-					type: "text",
+					type: "string",
 					role: "text",
 					read: true,
 					write: false,
@@ -1438,179 +1439,184 @@ class FrontierSilicon extends utils.Adapter {
 
 	async onFSAPIMessage()
 	{
-		const adapter = this;
-		if(lastSleepClear <= Date.now() - 10 * 60 * 1000)
+		if(!polling)
 		{
-			lastSleepClear = Date.now();
-			adapter.log.debug("Clearing sleeps");
-			if(sleeps.size > 0)
-				try
-				{
-					const timers = [ ];
-					sleeps.forEach((value, key , sleeps) => 
+			polling = true;
+			const adapter = this;
+			if(lastSleepClear <= Date.now() - 10 * 60 * 1000)
+			{
+				lastSleepClear = Date.now();
+				adapter.log.debug("Clearing sleeps");
+				if(sleeps.size > 0)
+					try
 					{
-						if(key <= Date.now() - 900 * 1000)
+						const timers = [ ];
+						sleeps.forEach((value, key , sleeps) => 
 						{
-							clearTimeout(value);
-							timers.push(key);
+							if(key <= Date.now() - 900 * 1000)
+							{
+								clearTimeout(value);
+								timers.push(key);
+							}
+						});
+						timers.forEach((value, index, array) => sleeps.delete(index));
+					}
+					finally {}
+			}
+
+			try
+			{
+				notifyTimestamp = Date.now();
+				if(this.log.level=="debug" || this.log.level=="silly")
+				{
+					this.setStateAsync("debug.lastNotifyCall", { val: notifyTimestamp, ack: true });
+				}	
+				const result = await this.callAPI("", "", 0, 0, true);
+				let variable;
+				if(result.success)
+				{
+					//this.log.debug(JSON.stringify(result.result));
+					result.result.notify.forEach(async item => {
+						this.log.debug(`Item: ${item.$.node} - ${JSON.stringify(item.value)}`);
+
+						switch (item.$.node)
+						{
+							case "netremote.sys.state":
+								break;
+							case "netremote.sys.mode":
+								variable = item.value[0].u32[0];
+								await this.setStateAsync("modes.selected", { val: variable, ack: true });
+								await this.getStateAsync(`modes.${variable}.label`)
+									.then(function (result) {
+										if(result !== null && result !== undefined && result.val !== null )
+										{
+											adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
+										}
+									});
+								//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+								await this.getModePresets(variable, false);
+								await this.UpdatePreset();
+								break;
+							case "netremote.play.serviceids.ecc":
+								break;
+							case "netremote.play.info.text":
+								await this.setStateAsync("media.text", { val: item.value[0].c8_array[0].trim(), ack: true });
+								await this.callAPI("netRemote.play.info.artist")
+									.then(function (result) {
+										if(result !== null && result !== undefined && result.val !== null )
+										{
+											adapter.setStateAsync("media.artist", { val: result.result.value[0].c8_array[0], ack: true });
+										}
+									});
+								await this.callAPI("netremote.sys.mode")
+									.then(function (result) {
+										if(result !== null && result !== undefined && result.val !== null )
+										{
+											adapter.setStateAsync("modes.selected", { val: variable, ack: true });
+											adapter.getStateAsync(`modes.${variable}.label`)
+												.then(function (result) {
+													if(result !== null && result !== undefined && result.val !== null )
+													{
+														adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
+													}
+												});
+											//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+										}
+									});
+								break;
+							case "netremote.play.info.artist":
+								await this.setStateAsync("media.artist", { val: item.value[0].c8_array[0].trim(), ack: true });
+								break;
+							case "netremote.play.info.album":
+								await this.setStateAsync("media.album", { val: item.value[0].c8_array[0].trim(), ack: true });
+								break;
+							case "netremote.play.info.title":
+								await this.setStateAsync("media.title", { val: item.value[0].c8_array[0].trim(), ack: true });
+								break;
+							case "netremote.play.info.name":
+								await this.setStateAsync("media.name", { val: item.value[0].c8_array[0].trim(), ack: true });
+								await this.callAPI("netRemote.play.info.artist")
+									.then(function (result) {
+										if(result !== null && result !== undefined && result.val !== null )
+										{
+											adapter.setStateAsync("media.artist", { val: result.result.value[0].c8_array[0], ack: true });
+										}
+									});
+								await this.callAPI("netRemote.play.info.album")
+									.then(function (result) {
+										if(result !== null && result !== undefined && result.val !== null )
+										{
+											adapter.setStateAsync("media.album", { val: result.result.value[0].c8_array[0], ack: true });
+										}
+									});
+								await this.callAPI("netremote.sys.mode")
+									.then(function (result) {
+										if(result !== null && result !== undefined && result.val !== null )
+										{
+											adapter.setStateAsync("modes.selected", { val: variable, ack: true });
+											adapter.getStateAsync(`modes.${variable}.label`)
+												.then(function (result) {
+													if(result !== null && result !== undefined && result.val !== null )
+													{
+														adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
+													}
+												});
+											//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
+										}
+									});
+								await this.UpdatePreset(item.value[0].c8_array[0].trim());
+								break;
+							case "netremote.sys.audio.volume":
+								await this.setStateAsync("audio.volume", { val: item.value[0].u8[0], ack: true });
+								break;
+							case "netremote.sys.audio.mute":
+								await this.setStateAsync("audio.mute", { val: item.value[0].u8[0] == 1, ack: true });
+								break;
+							case "netremote.play.status":
+								switch (item.value[0].u8[0])
+								{
+									// Play
+									case "2":
+										await this.setStateAsync("media.state", { val: 1, ack: true });
+										break;
+									// Pause
+									case "3":
+										await this.setStateAsync("media.state", { val: 0, ack: true });
+										break;
+									default:
+										break;
+								}
+								break;
+							case "netremote.sys.power":
+								await this.setStateAsync("device.power", { val: item.value[0].u8[0] == 1, ack: true });
+								break;
+							case "netremote.play.info.graphicuri":
+								await this.setStateAsync("media.graphic", { val: item.value[0].c8_array[0].trim(), ack: true });
+								break;
+							default:
+								break;
 						}
 					});
-					timers.forEach((value, index, array) => sleeps.delete(index));
+					this.callAPI("netRemote.play.info.graphicUri")
+						.then(async function (result) {
+							await adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
+						});
 				}
-				finally {}
-		}
-
-		try
-		{
-			notifyTimestamp = Date.now();
-			if(this.log.level=="debug" || this.log.level=="silly")
-			{
-				this.setStateAsync("debug.lastNotifyCall", { val: notifyTimestamp, ack: true });
-			}	
-			const result = await this.callAPI("", "", 0, 0, true);
-			let variable;
-			if(result.success)
-			{
-				//this.log.debug(JSON.stringify(result.result));
-				result.result.notify.forEach(async item => {
-					this.log.debug(`Item: ${item.$.node} - ${JSON.stringify(item.value)}`);
-
-					switch (item.$.node)
-					{
-						case "netremote.sys.state":
-							break;
-						case "netremote.sys.mode":
-							variable = item.value[0].u32[0];
-							await this.setStateAsync("modes.selected", { val: variable, ack: true });
-							await this.getStateAsync(`modes.${variable}.label`)
-								.then(function (result) {
-									if(result !== null && result !== undefined && result.val !== null )
-									{
-										adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
-									}
-								});
-							//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
-							await this.getModePresets(variable, false);
-							await this.UpdatePreset();
-							break;
-						case "netremote.play.serviceids.ecc":
-							break;
-						case "netremote.play.info.text":
-							await this.setStateAsync("media.text", { val: item.value[0].c8_array[0].trim(), ack: true });
-							await this.callAPI("netRemote.play.info.artist")
-								.then(function (result) {
-									if(result !== null && result !== undefined && result.val !== null )
-									{
-										adapter.setStateAsync("media.artist", { val: result.result.value[0].c8_array[0], ack: true });
-									}
-								});
-							await this.callAPI("netremote.sys.mode")
-								.then(function (result) {
-									if(result !== null && result !== undefined && result.val !== null )
-									{
-										adapter.setStateAsync("modes.selected", { val: variable, ack: true });
-										adapter.getStateAsync(`modes.${variable}.label`)
-											.then(function (result) {
-												if(result !== null && result !== undefined && result.val !== null )
-												{
-													adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
-												}
-											});
-										//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
-									}
-								});
-							break;
-						case "netremote.play.info.artist":
-							await this.setStateAsync("media.artist", { val: item.value[0].c8_array[0].trim(), ack: true });
-							break;
-						case "netremote.play.info.album":
-							await this.setStateAsync("media.album", { val: item.value[0].c8_array[0].trim(), ack: true });
-							break;
-						case "netremote.play.info.title":
-							await this.setStateAsync("media.title", { val: item.value[0].c8_array[0].trim(), ack: true });
-							break;
-						case "netremote.play.info.name":
-							await this.setStateAsync("media.name", { val: item.value[0].c8_array[0].trim(), ack: true });
-							await this.callAPI("netRemote.play.info.artist")
-								.then(function (result) {
-									if(result !== null && result !== undefined && result.val !== null )
-									{
-										adapter.setStateAsync("media.artist", { val: result.result.value[0].c8_array[0], ack: true });
-									}
-								});
-							await this.callAPI("netRemote.play.info.album")
-								.then(function (result) {
-									if(result !== null && result !== undefined && result.val !== null )
-									{
-										adapter.setStateAsync("media.album", { val: result.result.value[0].c8_array[0], ack: true });
-									}
-								});
-							await this.callAPI("netremote.sys.mode")
-								.then(function (result) {
-									if(result !== null && result !== undefined && result.val !== null )
-									{
-										adapter.setStateAsync("modes.selected", { val: variable, ack: true });
-										adapter.getStateAsync(`modes.${variable}.label`)
-											.then(function (result) {
-												if(result !== null && result !== undefined && result.val !== null )
-												{
-													adapter.setStateAsync("modes.selectedLabel", { val: result.val, ack: true });
-												}
-											});
-										//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
-									}
-								});
-							await this.UpdatePreset(item.value[0].c8_array[0].trim());
-							break;
-						case "netremote.sys.audio.volume":
-							await this.setStateAsync("audio.volume", { val: item.value[0].u8[0], ack: true });
-							break;
-						case "netremote.sys.audio.mute":
-							await this.setStateAsync("audio.mute", { val: item.value[0].u8[0] == 1, ack: true });
-							break;
-						case "netremote.play.status":
-							switch (item.value[0].u8[0])
-							{
-								// Play
-								case "2":
-									await this.setStateAsync("media.state", { val: 1, ack: true });
-									break;
-								// Pause
-								case "3":
-									await this.setStateAsync("media.state", { val: 0, ack: true });
-									break;
-								default:
-									break;
-							}
-							break;
-						case "netremote.sys.power":
-							await this.setStateAsync("device.power", { val: item.value[0].u8[0] == 1, ack: true });
-							break;
-						case "netremote.play.info.graphicuri":
-							await this.setStateAsync("media.graphic", { val: item.value[0].c8_array[0].trim(), ack: true });
-							break;
-						default:
-							break;
-					}
-				});
-				this.callAPI("netRemote.play.info.graphicUri")
-					.then(async function (result) {
-						await adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
-					});
 			}
-		}
-		catch (e)
-		{
-			adapter.log.error(e.message);
-			if(this.log.level=="debug" || this.log.level=="silly")
+			catch (e)
 			{
-				await adapter.setStateAsync("debug.lastNotifyError", { val: JSON.stringify(e), ack: true });
+				adapter.log.error(e.message);
+				if(this.log.level=="debug" || this.log.level=="silly")
+				{
+					await adapter.setStateAsync("debug.lastNotifyError", { val: JSON.stringify(e), ack: true });
+				}
 			}
-		}
-		finally
-		{
-			clearTimeout(timeOutMessage);
-			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), this.config.PollIntervall * 1000);
+			finally
+			{
+				clearTimeout(timeOutMessage);
+				timeOutMessage = setTimeout(() => this.onFSAPIMessage(), this.config.PollIntervall * 1000);
+				polling = false;
+			}
 		}
 	}
 
