@@ -13,7 +13,8 @@
                 "it": "Übersetzungen",
                 "es": "Übersetzungen",
                 "pl": "Übersetzungen",
-                "zh-cn": "Übersetzungen"
+                "zh-cn": "Übersetzungen",
+                "uk": "Übersetzungen"
             },
             "0.0.9": {
                 "en": "Nicer Readme and (hopefully) more robust session handling",
@@ -25,7 +26,8 @@
                 "it": "Nicer Readme and (hopefully) more robust session handling",
                 "es": "Nicer Readme and (hopefully) more robust session handling",
                 "pl": "Nicer Readme and (hopefully) more robust session handling",
-                "zh-cn": "Nicer Readme and (hopefully) more robust session handling"
+                "zh-cn": "Nicer Readme and (hopefully) more robust session handling",
+                "uk": "Кращий Readme і (сподіваюся) більш надійна обробка сеансу"
             },
             "0.0.8": {
                 "en": "Formal but neccessary stuff for ioBroker",
@@ -37,7 +39,8 @@
                 "it": "Bugfixes",
                 "es": "Bugfixes",
                 "pl": "Bugfixes",
-                "zh-cn": "Bugfixes"
+                "zh-cn": "Bugfixes",
+                "uk": "Формальні, але необхідні речі для ioBroker"
             },
             "0.0.6": {
                 "en": "Pictures and icons",
@@ -49,7 +52,8 @@
                 "it": "Bugfixes",
                 "es": "Bugfixes",
                 "pl": "Bugfixes",
-                "zh-cn": "Bugfixes"
+                "zh-cn": "Bugfixes",
+                "uk": "Картинки та іконки"
             },
             "0.0.5": {
                 "en": "Even more controls, Bugfixes",
@@ -61,7 +65,8 @@
                 "it": "Bugfixes",
                 "es": "Bugfixes",
                 "pl": "Bugfixes",
-                "zh-cn": "Bugfixes"
+                "zh-cn": "Bugfixes",
+                "uk": "Ще більше елементів керування, виправлення помилок"
             },
             "0.0.4": {
                 "en": "Volume and other controls, Bugfixes",
@@ -73,7 +78,8 @@
                 "it": "Bugfixes",
                 "es": "Bugfixes",
                 "pl": "Bugfixes",
-                "zh-cn": "Bugfixes"
+                "zh-cn": "Bugfixes",
+                "uk": "Гучність та інші елементи керування, виправлення помилок"
             },
             "0.0.3": {
                 "en": "Bugfixes",
@@ -85,7 +91,8 @@
                 "it": "Bugfixes",
                 "es": "Bugfixes",
                 "pl": "Bugfixes",
-                "zh-cn": "Bugfixes"
+                "zh-cn": "Bugfixes",
+                "uk": "Виправлення помилок"
             },
             "0.0.2": {
                 "en": "Presets and notifications",
@@ -97,7 +104,8 @@
                 "it": "Presets and notifications",
                 "es": "Presets and notifications",
                 "pl": "Presets and notifications",
-                "zh-cn": "Presets and notifications"
+                "zh-cn": "Presets and notifications",
+                "uk": "Попередні налаштування та сповіщення"
             },
             "0.0.1": {
                 "en": "initial release",
@@ -109,10 +117,10 @@
                 "it": "Versione iniziale",
                 "es": "Versión inicial",
                 "pl": "Pierwsze wydanie",
-                "zh-cn": "首次出版"
+                "zh-cn": "首次出版",
+                "uk": "початковий випуск"
             }
         },
-        "title": "Frontier Silicon",
         "titleLang": {
             "en": "Frontier Silicon",
             "de": "Frontier Silicon",
@@ -123,7 +131,8 @@
             "it": "Frontier Silicon",
             "es": "Silicio de frontera",
             "pl": "Frontier Silicon",
-            "zh-cn": "前沿硅"
+            "zh-cn": "前沿硅",
+            "uk": "Frontier Silicon"
         },
         "desc": {
             "en": "Provides support for media players equipped with a Frontier Silicon chipset using FSAPI.",
@@ -135,7 +144,8 @@
             "it": "Fornisce supporto per lettori multimediali dotati di chipset Frontier Silicon utilizzando FSAPI.",
             "es": "Brinda soporte para reproductores multimedia equipados con un chipset Frontier Silicon que usa FSAPI.",
             "pl": "Zapewnia obsługę odtwarzaczy multimedialnych wyposażonych w chipset Frontier Silicon korzystających z FSAPI.",
-            "zh-cn": "为配备有使用FSAPI的Frontier Silicon芯片组的媒体播放器提供支持。"
+            "zh-cn": "为配备有使用FSAPI的Frontier Silicon芯片组的媒体播放器提供支持。",
+            "uk": "Забезпечує підтримку медіаплеєрів, оснащених чіпсетом Frontier Silicon, що використовує FSAPI."
         },
         "authors": [
             "halloamt <iobroker@halloserv.de>"

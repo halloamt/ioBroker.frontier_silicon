@@ -1387,13 +1387,14 @@ class FrontierSilicon extends utils.Adapter {
 				.then(device => {
 				//log.debug(device.)
 					const parser = new xml2js.Parser();
-					parser.parseStringPromise(device.data).then(function (result) {
-						log.debug(result.fsapiResponse.sessionId);
-						dev.Session = result.fsapiResponse.sessionId;
-						log.debug("Session created");
-						connected = true;
-						sessionTimestamp = Date.now();
-					})
+					parser.parseStringPromise(device.data)
+						.then(function (result) {
+							log.debug(result.fsapiResponse.sessionId);
+							dev.Session = result.fsapiResponse.sessionId;
+							log.debug("Session created");
+							connected = true;
+							sessionTimestamp = Date.now();
+						})
 						.catch(function (err) {
 							// Failed});
 							log.debug(JSON.stringify(err));

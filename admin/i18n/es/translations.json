@@ -1,7 +1,7 @@
 {
     "PIN": "ALFILER",
     "PollIntervall": "Tiempo de espera entre notificaciones (Sekunden)",
-    "RecreateSessionInterval": "Recrear el intervalo de la sesión (Minuten)",
+    "RecreateSessionInterval": "Recrear intervalo de sesión (Minuten)",
     "SangeanNoSound": "DAB comienza sin sonido",
     "frontier_silicon adapter settings": "Configuración del adaptador para frontier_silicon",
     "ip": "IP"

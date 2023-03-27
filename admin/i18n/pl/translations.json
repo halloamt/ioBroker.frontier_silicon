@@ -1,7 +1,7 @@
 {
-    "PIN": "KOŁEK",
+    "PIN": "SZPILKA",
     "PollIntervall": "Czas oczekiwania między powiadomieniami (Sekunden)",
-    "RecreateSessionInterval": "Ponownie utwórz interwał sesji (Minuten)",
+    "RecreateSessionInterval": "Odtwórz interwał sesji (minuty)",
     "SangeanNoSound": "DAB uruchamia się bez dźwięku",
     "frontier_silicon adapter settings": "Ustawienia adaptera dla frontier_silicon",
     "ip": "IP"

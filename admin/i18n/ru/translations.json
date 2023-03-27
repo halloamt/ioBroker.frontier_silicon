@@ -1,7 +1,7 @@
 {
-    "PIN": "ШТЫРЬ",
-    "PollIntervall": "Время ожидания между уведомлениями (Секунден)",
-    "RecreateSessionInterval": "Восстановить интервал сеанса (минут)",
+    "PIN": "ПРИКОЛОТЬ",
+    "PollIntervall": "Время ожидания между уведомлениями (секунден)",
+    "RecreateSessionInterval": "Восстановить интервал сеанса (минуты)",
     "SangeanNoSound": "DAB запускается без звука",
     "frontier_silicon adapter settings": "Настройки адаптера для frontier_silicon",
     "ip": "IP"

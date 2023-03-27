@@ -1,0 +1,8 @@
+{
+    "PIN": "PIN-код",
+    "PollIntervall": "Час очікування між повідомленнями (Sekunden)",
+    "RecreateSessionInterval": "Відновити інтервал сеансу (хвилини)",
+    "SangeanNoSound": "DAB запускається без звуку",
+    "frontier_silicon adapter settings": "Налаштування адаптера для frontier_silicon",
+    "ip": "IP"
+}
