@@ -1155,7 +1155,7 @@ class FrontierSilicon extends utils.Adapter {
 		}
 		catch (err)
 		{
-			this.log.error(err.message , err.stack);
+			this.log.error("Error in discoverState(): " + err.message + err.stack);
 		}
 
 	}
@@ -1234,7 +1234,7 @@ class FrontierSilicon extends utils.Adapter {
 		if(dev.webfsapi !== null)
 		{
 			await this.setStateAsync("device.webfsapi", { val: dev.webfsapi.toString(), ack: true });
-			this.config.fsAPIURL = dev.webfsapi;
+			this.config.fsAPIURL = dev.webfsapi.toString();
 		}
 
 		await this.setObjectNotExistsAsync("device.radioId", {
@@ -1409,7 +1409,7 @@ class FrontierSilicon extends utils.Adapter {
 						return;
 					}
 				});
-			this.config.SessionID = dev.Session;
+			this.config.SessionID = Number(dev.Session);
 			//this.config.SessionTS = Date.now();
 			await this.setStateAsync("info.connection", connected, true);
 			if(this.log.level=="debug" || this.log.level=="silly")
@@ -1477,7 +1477,7 @@ class FrontierSilicon extends utils.Adapter {
 					native: {},
 				});
 
-				await this.setStateAsync("debug.session", {val: dev.Session, ack: true});
+				await this.setStateAsync("debug.session", {val: Number(dev.Session), ack: true});
 				await this.setStateAsync("debug.sessionCreationTime", { val: sessionTimestamp, ack: true});
 
 			}
