@@ -6,7 +6,7 @@
     "name": "halloamt",
     "email": "iobroker@halloserv.de"
   },
-  "homepage": "https://github.com/halloamt/ioBroker.frontier_silicon",
+  "homepage": "https://github.com/iobroker-community-adapters/ioBroker.frontier_silicon",
   "license": "MIT",
   "keywords": [
     "frontier silicon",
@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/halloamt/ioBroker.frontier_silicon.git"
+    "url": "git+https://github.com/iobroker-community-adapters/ioBroker.frontier_silicon.git"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.4.0",
