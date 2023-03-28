@@ -1,6 +1,6 @@
 # ioBroker.frontier_silicon
 
-![Logo](admin/radio.svg)
+![Logo](admin/radio.png)
 
 ## ioBroker adapter for Frontier SmartRadio
 
