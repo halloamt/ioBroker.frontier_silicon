@@ -191,7 +191,6 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 
 - (pdbjjens) Updated dependencies
 - (pdbjjens) New: Use adapter-dev instead of gulp translate
-- (pdbjjens) New: Use JSON config
 - (pdbjjens) Fix: Prevent js-controller >=3.2.x warnings regarding non-existent objects and typeErrors
 
 ### 0.0.10 (2020-11-29)
