@@ -741,8 +741,6 @@ class FrontierSilicon extends utils.Adapter {
 		result.result.item.forEach(item => {
 			//this.setStateAsync(`modes.${mode}.presets.available`, { val: true, ack: true });
 			key = item.$.key;
-
-			this.log.debug(name);
 			let pro = this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}`, {
 				type: "channel",
 				common: {
@@ -797,9 +795,7 @@ class FrontierSilicon extends utils.Adapter {
 			//this.setStateAsync(`modes.${mode}.presets.available`, { val: true, ack: true });
 			key = item.$.key;
 			item.field.forEach(f => {
-				//this.log.debug(key.toString());
-				//this.log.debug(JSON.stringify(item));
-				//this.log.debug(JSON.stringify(f));
+				//this.log.debug("Preset key: " + key.toString() + " Item: " + JSON.stringify(item) + " f: " + JSON.stringify(f));
 				switch (f.$.name) {
 					case "name":
 						name = f.c8_array[0];
@@ -808,7 +804,7 @@ class FrontierSilicon extends utils.Adapter {
 						break;
 				}
 			});
-
+			this.log.debug(`Preset of Mode: ${mode} with key: ${key} set to ${name.toString().trim()}`);
 
 			let prom = this.setStateAsync(`modes.${mode}.presets.${key}.name`, { val: name.toString().trim(), ack: true });
 			proms.push(prom);

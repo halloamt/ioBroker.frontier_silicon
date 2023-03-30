@@ -189,7 +189,8 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 
 ### __WORK IN PROGRESS__ 2023 maintenance release
 
-- (pdbjjens) Updated dependencies
+- (pdbjjens) New: Transfer of adapter to community
+- (pdbjjens) New: Updated dependencies
 - (pdbjjens) New: Use adapter-dev instead of gulp translate
 - (pdbjjens) Fix: Prevent js-controller >=3.2.x warnings regarding non-existent objects and typeErrors
 
