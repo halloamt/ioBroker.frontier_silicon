@@ -1,8 +1,13 @@
 {
-    "PIN": "别针",
-    "PollIntervall": "通知之间的等待时间（Sekunden）",
-    "RecreateSessionInterval": "重新创建会话间隔（分钟）",
-    "SangeanNoSound": "DAB 无声启动",
-    "frontier_silicon adapter settings": "frontier_silicon 的适配器设置",
-    "ip": "知识产权"
+    "Options": "选项",
+    "IP address": "IP地址",
+    "IPV4 address of your media player e.g. 192.168.123.123": "您的媒体播放器的 IPV4 地址，例如192.168.123.123",
+    "PIN code": "PIN码",
+    "PIN of your media player, default is 1234": "媒体播放器的 PIN，默认为 1234",
+    "No sound": "没有声音",
+    "Check this box only if your media player starts DAB without sound": "仅当您的媒体播放器无声启动 DAB 时才选中此框",
+    "Session refresh interval": "会话刷新间隔",
+    "Validity period of a session in minutes": "会话的有效期（分钟）",
+    "Polling interval": "轮询间隔",
+    "Status polling interval in seconds": "状态轮询间隔（以秒为单位）"
 }

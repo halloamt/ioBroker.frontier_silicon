@@ -1,8 +1,13 @@
 {
-    "PIN": "PIN-код",
-    "PollIntervall": "Час очікування між повідомленнями (Sekunden)",
-    "RecreateSessionInterval": "Відновити інтервал сеансу (хвилини)",
-    "SangeanNoSound": "DAB запускається без звуку",
-    "frontier_silicon adapter settings": "Налаштування адаптера для frontier_silicon",
-    "ip": "IP"
+    "Options": "Опції",
+    "IP address": "IP-адреса",
+    "IPV4 address of your media player e.g. 192.168.123.123": "Адреса IPV4 вашого медіаплеєра, напр. 192.168.123.123",
+    "PIN code": "PIN-код",
+    "PIN of your media player, default is 1234": "PIN медіаплеєра, за замовчуванням 1234",
+    "No sound": "Ні звуку",
+    "Check this box only if your media player starts DAB without sound": "Поставте цей прапорець, лише якщо медіаплеєр запускає DAB без звуку",
+    "Session refresh interval": "Інтервал оновлення сесії",
+    "Validity period of a session in minutes": "Термін дії сеансу в хвилинах",
+    "Polling interval": "Інтервал опитування",
+    "Status polling interval in seconds": "Інтервал опитування статусу в секундах"
 }

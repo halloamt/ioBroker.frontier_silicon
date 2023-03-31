@@ -186,6 +186,14 @@ While the adapter reads the device's setting objects and states are created. Sta
 Please be aware that you can sometimes choose between "pushing a button" or "setting a value". Use what is more convenient for you.
 
 ## Changelog
+<!--
+	Placeholder for the next version (at the beginning of the line):
+	### **WORK IN PROGRESS**
+-->
+### **WORK IN PROGRESS**
+
+- (pdbjjens) New: json config UI
+
 ### 0.0.11 (2023-03-30) 2023 maintenance release
 
 - (pdbjjens) New: Transfer of adapter to community

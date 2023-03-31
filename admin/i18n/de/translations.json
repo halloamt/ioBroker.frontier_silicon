@@ -1,8 +1,13 @@
 {
-    "PIN": "STIFT",
-    "PollIntervall": "Wartezeit zwischen Benachrichtigungen (Sekunden)",
-    "RecreateSessionInterval": "Sitzungsintervall neu erstellen (Minuten)",
-    "SangeanNoSound": "DAB startet ohne Ton",
-    "frontier_silicon adapter settings": "Adaptereinstellungen für frontier_silicon",
-    "ip": "IP"
+    "Options": "Optionen",
+    "IP address": "IP Adresse",
+    "IPV4 address of your media player e.g. 192.168.123.123": "IPV4-Adresse Ihres Mediaplayers z.B. 192.168.123.123",
+    "PIN code": "Geheimzahl",
+    "PIN of your media player, default is 1234": "PIN Ihres Mediaplayers, Standard ist 1234",
+    "No sound": "Keinen Ton",
+    "Check this box only if your media player starts DAB without sound": "Aktivieren Sie dieses Kontrollkästchen nur, wenn Ihr Mediaplayer DAB ohne Ton startet",
+    "Session refresh interval": "Sitzungsaktualisierungsintervall",
+    "Validity period of a session in minutes": "Gültigkeitsdauer einer Sitzung in Minuten",
+    "Polling interval": "Abrufintervall",
+    "Status polling interval in seconds": "Statusabfrageintervall in Sekunden"
 }

@@ -1,223 +1,237 @@
 {
-  "common": {
-    "name": "frontier_silicon",
-    "version": "0.0.11",
-    "news": {
-      "0.0.11": {
-        "en": "New: Transfer of adapter to community\nNew: Updated dependencies\nNew: Use adapter-dev instead of gulp translate\nFix: Prevent js-controller >=3.2.x warnings regarding non-existent objects and typeErrors",
-        "de": "Neu: Transfer von Adapter zur Community\nNeu: Aktualisierte Abhängigkeiten\nNeu: Verwenden Sie Adapter-dev anstelle von gulp translate\nFix: Verhindern js-controller =>3.2.x Warnungen bezüglich nicht vorhandener Objekte und TypErrors",
-        "ru": "Новый: Передача адаптера в сообщество\nНовый: Обновленные зависимости\nНовый: Используйте адаптер-dev вместо gulp перевести\nИсправление: Предотвращение js-controller =>3.2.x предупреждения относительно несущих объектов и типаErrors",
-        "pt": "Novo: Transferência de adaptador para a comunidade\nNovo: Dependências atualizadas\nNovo: Use o adaptador-dev em vez de gulp traduzir\nFix: Prevenir js-controller =>3.2.x advertências sobre objetos não existentes e typeErrors",
-        "nl": "Vertaling:\nOpgewaardeerde afhankelijkheid\nGebruik adapter-dev in plaats van gulp vertaal\nVertaling:",
-        "fr": "Nouveau: Transfert de l'adaptateur à la communauté\nNouveau: dépendances actualisées\nNouveau: Utilisez adaptateur-dev au lieu de traduire gulp\nCorrection : Prévenir les avertissements de js-controller =>3.2.x concernant les objets et types inexistants",
-        "it": "Nuovo: Trasferimento dell'adattatore alla comunità\nNuovo: dipendenze aggiornate\nNuovo: Utilizzare adattatore-dev invece di gulp tradurre\nFisso: Prevenire js-controller =>3.2.x avvisi relativi a oggetti e tipi non esistenti",
-        "es": "Nuevo: Transferencia de adaptador a la comunidad\nNuevas: dependencias actualizadas\nNuevo: Usar adaptador-dev en lugar de traducir gulp\nFijación: Prevenga js-controller = ratio3.2.x advertencias sobre objetos inexistentes y tipoErrors",
-        "pl": "Nowy: Transfer adapter do społeczności\nNowy: upoważnienie\nNowy: Zastosowanie adapter-dev zamiast gulpów\nFix: Prevent js-controller =>3.2.x ostrzega o nieistniejących obiektach i typErrors",
-        "uk": "Новий: Передача адаптера в громаду\nНові: Оновлені залежності\nНовий: Використовуйте адаптер-dev замість гіпульти перекладу\nВиправлення: Запобігання js-controller =>3.2.x попередження щодо неіснуючих об'єктів та типів",
-        "zh-cn": "新:向社区转移适应人员\n新的:最新情况\n新的:使用适应器而不是固体字。\nFix:关于不存在物体和类型Errors的预防措施=3.2.x 警告"
-      },
-      "0.0.10": {
-        "en": "Translations",
-        "de": "Übersetzungen",
-        "ru": "Переводы",
-        "pt": "Traduções",
-        "nl": "Vertaling:",
-        "fr": "Traductions",
-        "it": "Traduzioni",
-        "es": "Traducciones",
-        "pl": "Przekład",
-        "uk": "Переклади",
-        "zh-cn": "笔译"
-      },
-      "0.0.9": {
-        "en": "Nicer readme and (hopefully) more robust session handling",
-        "de": "Schöneres readme und (hoffentlich) robusteres Session Handling",
-        "ru": "Nicer readme и (надежно) более прочная обработка сеансов",
-        "pt": "Limão mais agradável e (hopely) manipulação de sessão mais robusta",
-        "nl": "Mooier voorgelezen en meer robuuste sessie",
-        "fr": "Nicer readme et (hopefully) la manipulation de session plus robuste",
-        "it": "Più bello lettura e (sperato) più robusta manipolazione della sessione",
-        "es": "Lindo readme y (esperadamente) más robusto manejo de sesión",
-        "pl": "Nicer przeczytał i (pomyślnie) bardziej solidny sesyjny charakter",
-        "uk": "Хороший читме і (повно) більш надійний процес сеансу",
-        "zh-cn": "尼亚区读者和(希望)更强的会议"
-      },
-      "0.0.8": {
-        "en": "Formal but neccessary stuff for ioBroker",
-        "de": "Formales, aber notwendiges Material für ioBroker",
-        "ru": "Формальные, но необходимые вещи для ioBroker",
-        "pt": "Material formal mas necessário para ioBroker",
-        "nl": "Formal maar neccessary spul voor ioBroker",
-        "fr": "Des trucs formels mais neccessaires pour ioBroker",
-        "it": "Roba formale ma neccessaria per ioBroker",
-        "es": "Cosas formales pero no exitosas para ioBroker",
-        "pl": "Formalny, lecz niekomercyjny materiał dla ioBrokera",
-        "uk": "Формальні але необхідні речі для ioBroker",
-        "zh-cn": "Broker的原状但必要性障碍"
-      },
-      "0.0.6": {
-        "en": "Pictures and icons",
-        "de": "Bilder und Icons",
-        "ru": "Фотографии и иконки",
-        "pt": "Fotos e ícones",
-        "nl": "Foto's en iconen",
-        "fr": "Images et icônes",
-        "it": "Immagini e icone",
-        "es": "Fotos e iconos",
-        "pl": "Zdjęcia i ikony",
-        "uk": "Фотографії та іконки",
-        "zh-cn": "家具和设备"
-      },
-      "0.0.5": {
-        "en": "Even more buttons, bugfixes",
-        "de": "Noch mehr Tasten, Bugfixes",
-        "ru": "Еще больше кнопок, багфиксов",
-        "pt": "Ainda mais botões, correções de bugs",
-        "nl": "Nog meer knoppen",
-        "fr": "Encore plus de boutons, bugfixes",
-        "it": "Ancora più pulsanti, bugfix",
-        "es": "Aún más botones, bugfixes",
-        "pl": "Nawet inne przyciski, trąbka",
-        "uk": "Ще більше кнопок, фіксаторів",
-        "zh-cn": "甚至更多的州,黑暗"
-      },
-      "0.0.4": {
-        "en": "Volume and other buttons, bugfixes",
-        "de": "Lautstärke und andere Tasten, Bugfixes",
-        "ru": "Объем и другие кнопки, багфиксы",
-        "pt": "Volume e outros botões, correções de bugs",
-        "nl": "Volume en andere knoppen",
-        "fr": "Volume et autres boutons, bugfixes",
-        "it": "Volume e altri pulsanti, bugfix",
-        "es": "Volumen y otros botones, bugfixes",
-        "pl": "Volume i inne przycisk",
-        "uk": "Об'єм і інші кнопки, фіксатори",
-        "zh-cn": "卷和其他但顿、布格"
-      }
+    "common": {
+        "name": "frontier_silicon",
+        "version": "0.0.11",
+        "news": {
+            "0.0.11": {
+                "en": "New: Transfer of adapter to community\nNew: Updated dependencies\nNew: Use adapter-dev instead of gulp translate\nFix: Prevent js-controller >=3.2.x warnings regarding non-existent objects and typeErrors",
+                "de": "Neu: Transfer von Adapter zur Community\nNeu: Aktualisierte Abhängigkeiten\nNeu: Verwenden Sie Adapter-dev anstelle von gulp translate\nFix: Verhindern js-controller =>3.2.x Warnungen bezüglich nicht vorhandener Objekte und TypErrors",
+                "ru": "Новый: Передача адаптера в сообщество\nНовый: Обновленные зависимости\nНовый: Используйте адаптер-dev вместо gulp перевести\nИсправление: Предотвращение js-controller =>3.2.x предупреждения относительно несущих объектов и типаErrors",
+                "pt": "Novo: Transferência de adaptador para a comunidade\nNovo: Dependências atualizadas\nNovo: Use o adaptador-dev em vez de gulp traduzir\nFix: Prevenir js-controller =>3.2.x advertências sobre objetos não existentes e typeErrors",
+                "nl": "Vertaling:\nOpgewaardeerde afhankelijkheid\nGebruik adapter-dev in plaats van gulp vertaal\nVertaling:",
+                "fr": "Nouveau: Transfert de l'adaptateur à la communauté\nNouveau: dépendances actualisées\nNouveau: Utilisez adaptateur-dev au lieu de traduire gulp\nCorrection : Prévenir les avertissements de js-controller =>3.2.x concernant les objets et types inexistants",
+                "it": "Nuovo: Trasferimento dell'adattatore alla comunità\nNuovo: dipendenze aggiornate\nNuovo: Utilizzare adattatore-dev invece di gulp tradurre\nFisso: Prevenire js-controller =>3.2.x avvisi relativi a oggetti e tipi non esistenti",
+                "es": "Nuevo: Transferencia de adaptador a la comunidad\nNuevas: dependencias actualizadas\nNuevo: Usar adaptador-dev en lugar de traducir gulp\nFijación: Prevenga js-controller = ratio3.2.x advertencias sobre objetos inexistentes y tipoErrors",
+                "pl": "Nowy: Transfer adapter do społeczności\nNowy: upoważnienie\nNowy: Zastosowanie adapter-dev zamiast gulpów\nFix: Prevent js-controller =>3.2.x ostrzega o nieistniejących obiektach i typErrors",
+                "uk": "Новий: Передача адаптера в громаду\nНові: Оновлені залежності\nНовий: Використовуйте адаптер-dev замість гіпульти перекладу\nВиправлення: Запобігання js-controller =>3.2.x попередження щодо неіснуючих об'єктів та типів",
+                "zh-cn": "新:向社区转移适应人员\n新的:最新情况\n新的:使用适应器而不是固体字。\nFix:关于不存在物体和类型Errors的预防措施=3.2.x 警告"
+            },
+            "0.0.10": {
+                "en": "Translations",
+                "de": "Übersetzungen",
+                "ru": "Переводы",
+                "pt": "Traduções",
+                "nl": "Vertaling:",
+                "fr": "Traductions",
+                "it": "Traduzioni",
+                "es": "Traducciones",
+                "pl": "Przekład",
+                "uk": "Переклади",
+                "zh-cn": "笔译"
+            },
+            "0.0.9": {
+                "en": "Nicer readme and (hopefully) more robust session handling",
+                "de": "Schöneres readme und (hoffentlich) robusteres Session Handling",
+                "ru": "Nicer readme и (надежно) более прочная обработка сеансов",
+                "pt": "Limão mais agradável e (hopely) manipulação de sessão mais robusta",
+                "nl": "Mooier voorgelezen en meer robuuste sessie",
+                "fr": "Nicer readme et (hopefully) la manipulation de session plus robuste",
+                "it": "Più bello lettura e (sperato) più robusta manipolazione della sessione",
+                "es": "Lindo readme y (esperadamente) más robusto manejo de sesión",
+                "pl": "Nicer przeczytał i (pomyślnie) bardziej solidny sesyjny charakter",
+                "uk": "Хороший читме і (повно) більш надійний процес сеансу",
+                "zh-cn": "尼亚区读者和(希望)更强的会议"
+            },
+            "0.0.8": {
+                "en": "Formal but neccessary stuff for ioBroker",
+                "de": "Formales, aber notwendiges Material für ioBroker",
+                "ru": "Формальные, но необходимые вещи для ioBroker",
+                "pt": "Material formal mas necessário para ioBroker",
+                "nl": "Formal maar neccessary spul voor ioBroker",
+                "fr": "Des trucs formels mais neccessaires pour ioBroker",
+                "it": "Roba formale ma neccessaria per ioBroker",
+                "es": "Cosas formales pero no exitosas para ioBroker",
+                "pl": "Formalny, lecz niekomercyjny materiał dla ioBrokera",
+                "uk": "Формальні але необхідні речі для ioBroker",
+                "zh-cn": "Broker的原状但必要性障碍"
+            },
+            "0.0.6": {
+                "en": "Pictures and icons",
+                "de": "Bilder und Icons",
+                "ru": "Фотографии и иконки",
+                "pt": "Fotos e ícones",
+                "nl": "Foto's en iconen",
+                "fr": "Images et icônes",
+                "it": "Immagini e icone",
+                "es": "Fotos e iconos",
+                "pl": "Zdjęcia i ikony",
+                "uk": "Фотографії та іконки",
+                "zh-cn": "家具和设备"
+            },
+            "0.0.5": {
+                "en": "Even more buttons, bugfixes",
+                "de": "Noch mehr Tasten, Bugfixes",
+                "ru": "Еще больше кнопок, багфиксов",
+                "pt": "Ainda mais botões, correções de bugs",
+                "nl": "Nog meer knoppen",
+                "fr": "Encore plus de boutons, bugfixes",
+                "it": "Ancora più pulsanti, bugfix",
+                "es": "Aún más botones, bugfixes",
+                "pl": "Nawet inne przyciski, trąbka",
+                "uk": "Ще більше кнопок, фіксаторів",
+                "zh-cn": "甚至更多的州,黑暗"
+            },
+            "0.0.4": {
+                "en": "Volume and other buttons, bugfixes",
+                "de": "Lautstärke und andere Tasten, Bugfixes",
+                "ru": "Объем и другие кнопки, багфиксы",
+                "pt": "Volume e outros botões, correções de bugs",
+                "nl": "Volume en andere knoppen",
+                "fr": "Volume et autres boutons, bugfixes",
+                "it": "Volume e altri pulsanti, bugfix",
+                "es": "Volumen y otros botones, bugfixes",
+                "pl": "Volume i inne przycisk",
+                "uk": "Об'єм і інші кнопки, фіксатори",
+                "zh-cn": "卷和其他但顿、布格"
+            }
+        },
+        "titleLang": {
+            "en": "Frontier Silicon",
+            "de": "Frontier Silicon",
+            "ru": "Frontier Silicon",
+            "pt": "Frontier Silicon",
+            "nl": "Frontier Silicium",
+            "fr": "Frontier Silicon",
+            "it": "Frontier Silicon",
+            "es": "Silicio de frontera",
+            "pl": "Frontier Silicon",
+            "zh-cn": "前沿硅",
+            "uk": "Frontier Silicon"
+        },
+        "desc": {
+            "en": "Provides support for media players equipped with a Frontier Silicon chipset using FSAPI.",
+            "de": "Bietet Unterstützung für Mediaplayer, die mit einem Frontier Silicon-Chipsatz mit FSAPI ausgestattet sind.",
+            "ru": "Обеспечивает поддержку медиаплееров, оснащенных чипсетом Frontier Silicon, с использованием FSAPI.",
+            "pt": "Fornece suporte para media players equipados com um chipset Frontier Silicon usando FSAPI.",
+            "nl": "Biedt ondersteuning voor mediaspelers die zijn uitgerust met een Frontier Silicon-chipset die FSAPI gebruikt.",
+            "fr": "Prend en charge les lecteurs multimédias équipés d'un chipset Frontier Silicon utilisant FSAPI.",
+            "it": "Fornisce supporto per lettori multimediali dotati di chipset Frontier Silicon utilizzando FSAPI.",
+            "es": "Brinda soporte para reproductores multimedia equipados con un chipset Frontier Silicon que usa FSAPI.",
+            "pl": "Zapewnia obsługę odtwarzaczy multimedialnych wyposażonych w chipset Frontier Silicon korzystających z FSAPI.",
+            "zh-cn": "为配备有使用FSAPI的Frontier Silicon芯片组的媒体播放器提供支持。",
+            "uk": "Забезпечує підтримку медіаплеєрів, оснащених чіпсетом Frontier Silicon, що використовує FSAPI."
+        },
+        "authors": [
+            "halloamt <iobroker@halloserv.de>",
+            "pdbjjens <jjensen@t-online.de>"
+        ],
+        "keywords": [
+            "frontier silicon",
+            "media player",
+            "fsapi",
+            "internet radio",
+            "radio",
+            "music player"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "radio.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.frontier_silicon/master/admin/radio.png",
+        "readme": "https://github.com/iobroker-community-adapters/ioBroker.frontier_silicon/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "multimedia",
+        "compact": true,
+        "connectionType": "local",
+        "dataSource": "poll",
+        "materialize": true,
+        "adminUI": {
+            "config": "json"
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=4.0.15"
+            }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=5.2.28"
+            }
+        ]
     },
-    "titleLang": {
-      "en": "Frontier Silicon",
-      "de": "Frontier Silicon",
-      "ru": "Frontier Silicon",
-      "pt": "Frontier Silicon",
-      "nl": "Frontier Silicium",
-      "fr": "Frontier Silicon",
-      "it": "Frontier Silicon",
-      "es": "Silicio de frontera",
-      "pl": "Frontier Silicon",
-      "zh-cn": "前沿硅",
-      "uk": "Frontier Silicon"
-    },
-    "desc": {
-      "en": "Provides support for media players equipped with a Frontier Silicon chipset using FSAPI.",
-      "de": "Bietet Unterstützung für Mediaplayer, die mit einem Frontier Silicon-Chipsatz mit FSAPI ausgestattet sind.",
-      "ru": "Обеспечивает поддержку медиаплееров, оснащенных чипсетом Frontier Silicon, с использованием FSAPI.",
-      "pt": "Fornece suporte para media players equipados com um chipset Frontier Silicon usando FSAPI.",
-      "nl": "Biedt ondersteuning voor mediaspelers die zijn uitgerust met een Frontier Silicon-chipset die FSAPI gebruikt.",
-      "fr": "Prend en charge les lecteurs multimédias équipés d'un chipset Frontier Silicon utilisant FSAPI.",
-      "it": "Fornisce supporto per lettori multimediali dotati di chipset Frontier Silicon utilizzando FSAPI.",
-      "es": "Brinda soporte para reproductores multimedia equipados con un chipset Frontier Silicon que usa FSAPI.",
-      "pl": "Zapewnia obsługę odtwarzaczy multimedialnych wyposażonych w chipset Frontier Silicon korzystających z FSAPI.",
-      "zh-cn": "为配备有使用FSAPI的Frontier Silicon芯片组的媒体播放器提供支持。",
-      "uk": "Забезпечує підтримку медіаплеєрів, оснащених чіпсетом Frontier Silicon, що використовує FSAPI."
-    },
-    "authors": [
-      "halloamt <iobroker@halloserv.de>"
+    "protectedNative": [
+        "PIN"
     ],
-    "keywords": [
-      "frontier silicon",
-      "media player",
-      "fsapi",
-      "internet radio",
-      "radio",
-      "music player"
+    "encryptedNative": [
+        "PIN"
     ],
-    "license": "MIT",
-    "platform": "Javascript/Node.js",
-    "main": "main.js",
-    "icon": "radio.png",
-    "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.frontier_silicon/master/admin/radio.png",
-    "readme": "https://github.com/iobroker-community-adapters/ioBroker.frontier_silicon/blob/master/README.md",
-    "loglevel": "info",
-    "mode": "daemon",
-    "type": "multimedia",
-    "compact": true,
-    "connectionType": "local",
-    "dataSource": "poll",
-    "materialize": true,
-    "materializeTab": true,
-    "dependencies": [
-      {
-        "js-controller": ">=2.0.0"
-      }
+    "native": {
+        "PIN": "1234",
+        "IP": "",
+        "SessionID": 0,
+        "fsAPIURL": "",
+        "SangeanNoSound": false,
+        "ModeMaxIndex": 0,
+        "VolumeMax": 0,
+        "RecreateSessionInterval": 60,
+        "PollIntervall": 1
+    },
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "device",
+            "type": "device",
+            "common": {
+                "name": "Gerät"
+            },
+            "native": {}
+        },
+        {
+            "_id": "modes",
+            "type": "channel",
+            "common": {
+                "name": "Modi"
+            },
+            "native": {}
+        },
+        {
+            "_id": "audio",
+            "type": "channel",
+            "common": {
+                "name": "Audio settings"
+            },
+            "native": {}
+        },
+        {
+            "_id": "media",
+            "type": "channel",
+            "common": {
+                "name": "Media information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "Device or service connected",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
     ]
-  },
-  "native": {
-    "PIN": 1234,
-    "IP": "192.168.178.34",
-    "SessionID": 0,
-    "fsAPIURL": "",
-    "SangeanNoSound": false,
-    "ModeMaxIndex": 0,
-    "VolumeMax": 0,
-    "RecreateSessionInterval": 60,
-    "PollIntervall": 1
-  },
-  "objects": [],
-  "instanceObjects": [
-    {
-      "_id": "info",
-      "type": "channel",
-      "common": {
-        "name": "Information"
-      },
-      "native": {}
-    },
-    {
-      "_id": "device",
-      "type": "device",
-      "common": {
-        "name": "Gerät"
-      },
-      "native": {}
-    },
-    {
-      "_id": "modes",
-      "type": "channel",
-      "common": {
-        "name": "Modi"
-      },
-      "native": {}
-    },
-    {
-      "_id": "audio",
-      "type": "channel",
-      "common": {
-        "name": "Audio settings"
-      },
-      "native": {}
-    },
-    {
-      "_id": "media",
-      "type": "channel",
-      "common": {
-        "name": "Media information"
-      },
-      "native": {}
-    },
-    {
-      "_id": "info.connection",
-      "type": "state",
-      "common": {
-        "role": "indicator.connected",
-        "name": "Device or service connected",
-        "type": "boolean",
-        "read": true,
-        "write": false,
-        "def": false
-      },
-      "native": {}
-    }
-  ]
 }

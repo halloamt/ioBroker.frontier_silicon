@@ -1,8 +1,13 @@
 {
-    "PIN": "ALFINETE",
-    "PollIntervall": "Tempo de espera entre as notificações (Sekunden)",
-    "RecreateSessionInterval": "Recriar intervalo de sessão (minutos)",
-    "SangeanNoSound": "DAB começa sem som",
-    "frontier_silicon adapter settings": "Configurações do adaptador para frontier_silicon",
-    "ip": "IP"
+    "Options": "Opções",
+    "IP address": "endereço de IP",
+    "IPV4 address of your media player e.g. 192.168.123.123": "Endereço IPV4 do seu reprodutor de mídia, por exemplo 192.168.123.123",
+    "PIN code": "Código PIN",
+    "PIN of your media player, default is 1234": "PIN do seu reprodutor de mídia, o padrão é 1234",
+    "No sound": "sem som",
+    "Check this box only if your media player starts DAB without sound": "Marque esta caixa apenas se o seu reprodutor de mídia iniciar o DAB sem som",
+    "Session refresh interval": "Intervalo de atualização da sessão",
+    "Validity period of a session in minutes": "Período de validade de uma sessão em minutos",
+    "Polling interval": "Intervalo de sondagem",
+    "Status polling interval in seconds": "Intervalo de pesquisa de status em segundos"
 }
