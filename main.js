@@ -50,7 +50,10 @@ class FrontierSilicon extends utils.Adapter {
 		// this.config:
 		//this.log.info("config PIN: " + this.config.PIN);
 		//this.log.info("config IP: " + this.config.IP);
-
+		if (!this.config.IP) {
+            this.log.error(`Server IP is empty - please check instance configuration of ${this.namespace}`);
+            return;
+        }
 		await this.getDeviceInfo();
 		//await this.createSession();
 		await this.discoverDeviceFeatures();
