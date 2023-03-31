@@ -1,8 +1,13 @@
 {
-    "PIN": "PIN",
-    "PollIntervall": "Wachttijd tussen meldingen (Sekunden)",
-    "RecreateSessionInterval": "Sessie-interval opnieuw maken (minuten)",
-    "SangeanNoSound": "DAB start zonder geluid",
-    "frontier_silicon adapter settings": "Adapterinstellingen voor frontier_silicon",
-    "ip": "IK P"
+    "Options": "Opties",
+    "IP address": "IP adres",
+    "IPV4 address of your media player e.g. 192.168.123.123": "IPV4-adres van uw mediaspeler b.v. 192.168.123.123",
+    "PIN code": "Pincode",
+    "PIN of your media player, default is 1234": "Pincode van uw mediaspeler, standaard is 1234",
+    "No sound": "Geen geluid",
+    "Check this box only if your media player starts DAB without sound": "Vink dit vakje alleen aan als uw mediaspeler DAB start zonder geluid",
+    "Session refresh interval": "Sessie vernieuwingsinterval",
+    "Validity period of a session in minutes": "Geldigheidsduur van een sessie in minuten",
+    "Polling interval": "Polling-interval",
+    "Status polling interval in seconds": "Status polling-interval in seconden"
 }

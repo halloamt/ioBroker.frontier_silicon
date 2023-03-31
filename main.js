@@ -17,7 +17,7 @@ let timeOutMessage;
 let sessionTimestamp = 0;
 let notifyTimestamp = 0;
 let lastSleepClear = 0;
-let sleeps = new Map();
+const sleeps = new Map();
 let polling = false;
 
 class FrontierSilicon extends utils.Adapter {
@@ -44,25 +44,38 @@ class FrontierSilicon extends utils.Adapter {
 		// Initialize your adapter here
 
 		// Reset the connection indicator during startup
-		this.setState("info.connection", false, true);
+		await this.setStateAsync("info.connection", false, true);
 
 		// The adapters config (in the instance object everything under the attribute "native") is accessible via
 		// this.config:
 		//this.log.info("config PIN: " + this.config.PIN);
 		//this.log.info("config IP: " + this.config.IP);
+		if (!this.config.IP) {
+            this.log.error(`Server IP is empty - please check instance configuration of ${this.namespace}`);
+            return;
+        }
+		if (!this.config.PIN) {
+            this.log.error(`PIN code is empty - please check instance configuration of ${this.namespace}`);
+            return;
+        }
 
 		await this.getDeviceInfo();
 		//await this.createSession();
-		await this.discoverState();
 		await this.discoverDeviceFeatures();
+		await this.discoverState();
+
 		await this.getAllPresets(false);
 
 		this.onFSAPIMessage();
-		// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-		//this.subscribeStates("testVariable");
-		// You can also add a subscription for multiple states. The following line watches all states starting with "lights."
+		// In order to get state updates, you need to subscribe to them.
+		// The following line adds a subscription for our variable we have created above.
+		// this.subscribeStates("testVariable");
+		// You can also add a subscription for multiple states.
+		// The following line watches all states starting with "lights."
 		// this.subscribeStates("lights.*");
-		// Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
+		// Or, if you really must, you can also watch all states.
+		// Don't do this if you don't need to.
+		// Otherwise this will cause a lot of unnecessary load on the system:
 		this.subscribeStates("device.power");
 		this.subscribeStates("device.friendlyName");
 		this.subscribeStates("modes.*.switchTo");
@@ -114,10 +127,10 @@ class FrontierSilicon extends utils.Adapter {
 			// ...
 			// clearInterval(interval1);
 			clearTimeout(timeOutMessage);
-			sleeps.forEach((value, key , sleeps) => 
-				{
-					clearTimeout(value);
-				});
+			sleeps.forEach((value, key , sleeps) =>
+			{
+				clearTimeout(value);
+			});
 			sleeps.clear();
 
 			callback();
@@ -192,7 +205,7 @@ class FrontierSilicon extends utils.Adapter {
 								await adapter.callAPI("netRemote.sys.info.friendlyName", name)
 									.then(async (result) => {
 										if(result.success) {
-											await adapter.setStateAsync("device.friendlyName", {val:name, ack: true});
+											await adapter.setStateAsync("device.friendlyName", {val:name.toString(), ack: true});
 										}
 									});
 							}
@@ -210,7 +223,7 @@ class FrontierSilicon extends utils.Adapter {
 						await adapter.callAPI("netRemote.sys.mode", zustand[3])
 							.then(async function (result) {
 								if(result.success) {
-									await adapter.setStateAsync("modes.selected", {val:zustand[3], ack: true});
+									await adapter.setStateAsync("modes.selected", {val:Number(zustand[3]), ack: true});
 									await adapter.getStateAsync(`modes.${zustand[3]}.label`)
 										.then(async function (lab) {
 											if(lab !== null && lab !== undefined && lab.val !== null)
@@ -241,7 +254,7 @@ class FrontierSilicon extends utils.Adapter {
 						await adapter.callAPI("netRemote.sys.mode", state.val.toString())
 							.then(async function (result) {
 								if(result.success) {
-									await adapter.setStateAsync("modes.selected", {val:state.val, ack: true});
+									await adapter.setStateAsync("modes.selected", {val:Number(state.val), ack: true});
 									await adapter.getStateAsync(`modes.${state.val}.label`)
 										.then(async function (lab) {
 											if(lab !== null && lab !== undefined && lab.val !== null)
@@ -249,7 +262,7 @@ class FrontierSilicon extends utils.Adapter {
 												await adapter.setStateAsync("modes.selectedLabel", {val:lab.val, ack: true});
 											}
 										});
-										await adapter.callAPI("netRemote.play.info.graphicUri")
+									await adapter.callAPI("netRemote.play.info.graphicUri")
 										.then(async function (result) {
 											await adapter.setStateAsync("media.graphic", { val: result.result.value[0].c8_array[0].trim(), ack: true });
 										});
@@ -286,7 +299,7 @@ class FrontierSilicon extends utils.Adapter {
 							await adapter.callAPI("netRemote.sys.audio.volume", state.val.toString())
 								.then(async function (result) {
 									if(result.success) {
-										await adapter.setStateAsync("audio.volume", {val:state.val, ack: true});
+										await adapter.setStateAsync("audio.volume", {val:Number(state.val), ack: true});
 									}
 								});
 						}
@@ -317,7 +330,7 @@ class FrontierSilicon extends utils.Adapter {
 											await adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
 												.then(async function (result) {
 													if(result.success) {
-														await adapter.setStateAsync("audio.volume", {val:vol, ack: true});
+														await adapter.setStateAsync("audio.volume", {val:Number(vol), ack: true});
 													}
 												});
 										}
@@ -335,7 +348,7 @@ class FrontierSilicon extends utils.Adapter {
 											await adapter.callAPI("netRemote.sys.audio.volume", vol.toString())
 												.then(async function (result) {
 													if(result.success) {
-														await adapter.setStateAsync("audio.volume", {val:vol, ack: true});
+														await adapter.setStateAsync("audio.volume", {val:Number(vol), ack: true});
 													}
 												});
 										}
@@ -455,8 +468,10 @@ class FrontierSilicon extends utils.Adapter {
 		let label = "";
 		let streamable = false;
 		let id = "";
+		const proms = [];
+		const promo = [];
 
-		await result.result.item.forEach(item => {
+		result.result.item.forEach(item => {
 			key = item.$.key;
 			id = "";
 			selectable = false;
@@ -483,10 +498,10 @@ class FrontierSilicon extends utils.Adapter {
 
 			this.log.debug(`ModeMaxIndex: ${this.config.ModeMaxIndex} - Key: ${key}`);
 			if(this.config.ModeMaxIndex === undefined || this.config.ModeMaxIndex < key) this.config.ModeMaxIndex = key;
-
+			let pro;
 			if(id === "MP" && this.config.SangeanNoSound)
 			{
-				this.setObjectNotExistsAsync(`modes.mediaplayer`, {
+				pro = this.setObjectNotExistsAsync(`modes.mediaplayer`, {
 					type: "state",
 					common: {
 						name: "Media Player Mode Key",
@@ -497,18 +512,19 @@ class FrontierSilicon extends utils.Adapter {
 					},
 					native: {},
 				});
-				this.setStateAsync("modes.mediaplayer", { val: key, ack: true });
+				promo.push(pro);
 			}
 
-			this.setObjectNotExistsAsync(`modes.${key}`, {
+			pro = this.setObjectNotExistsAsync(`modes.${key}`, {
 				type: "channel",
 				common: {
 					name: label
 				},
 				native: {},
 			});
+			promo.push(pro);
 
-			this.setObjectNotExistsAsync(`modes.${key}.key`, {
+			pro = this.setObjectNotExistsAsync(`modes.${key}.key`, {
 				type: "state",
 				common: {
 					name: "Mode Key",
@@ -519,8 +535,9 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.setStateAsync(`modes.${key}.key`, { val: key, ack: true });
-			this.setObjectNotExistsAsync(`modes.${key}.id`, {
+			promo.push(pro);
+
+			pro = this.setObjectNotExistsAsync(`modes.${key}.id`, {
 				type: "state",
 				common: {
 					name: "Mode ID",
@@ -531,8 +548,9 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.setStateAsync(`modes.${key}.id`, { val: id, ack: true });
-			this.setObjectNotExistsAsync(`modes.${key}.label`, {
+			promo.push(pro);
+
+			pro = this.setObjectNotExistsAsync(`modes.${key}.label`, {
 				type: "state",
 				common: {
 					name: "Mode Label",
@@ -543,8 +561,9 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.setStateAsync(`modes.${key}.label`, { val: label, ack: true });
-			this.setObjectNotExistsAsync(`modes.${key}.streamable`, {
+			promo.push(pro);
+
+			pro = this.setObjectNotExistsAsync(`modes.${key}.streamable`, {
 				type: "state",
 				common: {
 					name: "Mode streamable",
@@ -555,8 +574,9 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.setStateAsync(`modes.${key}.streamable`, { val: streamable, ack: true });
-			this.setObjectNotExistsAsync(`modes.${key}.selectable`, {
+			promo.push(pro);
+
+			pro = this.setObjectNotExistsAsync(`modes.${key}.selectable`, {
 				type: "state",
 				common: {
 					name: "Mode selectable",
@@ -567,10 +587,11 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.setStateAsync(`modes.${key}.selectable`, { val: selectable, ack: true });
+			promo.push(pro);
+
 			if(selectable)
 			{
-				this.setObjectNotExistsAsync(`modes.${key}.switchTo`, {
+				pro = this.setObjectNotExistsAsync(`modes.${key}.switchTo`, {
 					type: "state",
 					common: {
 						name: "Switch to mode",
@@ -581,7 +602,9 @@ class FrontierSilicon extends utils.Adapter {
 					},
 					native: {},
 				});
-				this.setObjectNotExistsAsync(`modes.readPresets`, {
+				promo.push(pro);
+
+				pro = this.setObjectNotExistsAsync(`modes.readPresets`, {
 					type: "state",
 					common: {
 						name: "Read presets",
@@ -592,9 +615,53 @@ class FrontierSilicon extends utils.Adapter {
 					},
 					native: {},
 				});
+				promo.push(pro);
 			}
 			this.log.debug(`ID: ${id} - Selectable: ${selectable} - Label: ${label} - Key: ${key}`);
 		});
+		await Promise.all(promo);
+		result.result.item.forEach(item => {
+			key = item.$.key;
+			id = "";
+			selectable = false;
+			label = "";
+			streamable = false;
+			item.field.forEach(f => {
+				switch (f.$.name) {
+					case "id":
+						id = f.c8_array[0];
+						break;
+					case "selectable":
+						selectable = f.u8[0] == 1;
+						break;
+					case "label":
+						label = f.c8_array[0];
+						break;
+					case "streamable":
+						streamable = f.u8[0] == 1;
+						break;
+					default:
+						break;
+				}
+			});
+			let prom;
+			if(id === "MP" && this.config.SangeanNoSound)
+			{
+				prom = this.setStateAsync("modes.mediaplayer", { val: key, ack: true });
+				proms.push(prom);
+			}
+			prom = this.setStateAsync(`modes.${key}.key`, { val: Number(key), ack: true });
+			proms.push(prom);
+			prom = this.setStateAsync(`modes.${key}.id`, { val: id, ack: true });
+			proms.push(prom);
+			prom = this.setStateAsync(`modes.${key}.label`, { val: label, ack: true });
+			proms.push(prom);
+			prom = this.setStateAsync(`modes.${key}.streamable`, { val: streamable, ack: true });
+			proms.push(prom);
+			prom = this.setStateAsync(`modes.${key}.selectable`, { val: selectable, ack: true });
+			proms.push(prom);
+		});
+		await Promise.all(proms);
 	}
 
 	/**
@@ -677,31 +744,20 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			await this.callAPI("netRemote.sys.audio.mute", "1");
 		}
-		await result.result.item.forEach(item => {
+		const proms = [];
+		const promo = [];
+		result.result.item.forEach(item => {
 			//this.setStateAsync(`modes.${mode}.presets.available`, { val: true, ack: true });
 			key = item.$.key;
-			item.field.forEach(f => {
-				//this.log.debug(key.toString());
-				//this.log.debug(JSON.stringify(item));
-				//this.log.debug(JSON.stringify(f));
-				switch (f.$.name) {
-					case "name":
-						name = f.c8_array[0];
-						break;
-					default:
-						break;
-				}
-			});
-
-			this.log.debug(name);
-			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}`, {
+			let pro = this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}`, {
 				type: "channel",
 				common: {
 					name: `Preset ${key}`
 				},
 				native: {},
 			});
-			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.name`, {
+			promo.push(pro);
+			pro = this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.name`, {
 				type: "state",
 				common: {
 					name: "Preset Name",
@@ -712,8 +768,8 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.setStateAsync(`modes.${mode}.presets.${key}.name`, { val: name.toString().trim(), ack: true });
-			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.key`, {
+			promo.push(pro);
+			pro = this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.key`, {
 				type: "state",
 				common: {
 					name: "Preset Key",
@@ -724,8 +780,8 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
-			this.setStateAsync(`modes.${mode}.presets.${key}.key`, { val: key, ack: true });
-			this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.recall`, {
+			promo.push(pro);
+			pro = this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.recall`, {
 				type: "state",
 				common: {
 					name: "Recall Preset",
@@ -736,8 +792,34 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
+			promo.push(pro);
 			//presets.set(name.toString().trim(), key);
+
+
 		});
+		// Wait for all object creation processes
+		await Promise.all(promo);
+		result.result.item.forEach(item => {
+			//this.setStateAsync(`modes.${mode}.presets.available`, { val: true, ack: true });
+			key = item.$.key;
+			item.field.forEach(f => {
+				//this.log.debug("Preset key: " + key.toString() + " Item: " + JSON.stringify(item) + " f: " + JSON.stringify(f));
+				switch (f.$.name) {
+					case "name":
+						name = f.c8_array[0];
+						break;
+					default:
+						break;
+				}
+			});
+			this.log.debug(`Preset of Mode: ${mode} with key: ${key} set to ${name.toString().trim()}`);
+
+			let prom = this.setStateAsync(`modes.${mode}.presets.${key}.name`, { val: name.toString().trim(), ack: true });
+			proms.push(prom);
+			prom = this.setStateAsync(`modes.${mode}.presets.${key}.key`, { val: Number(key), ack: true });
+			proms.push(prom);
+		});
+		await Promise.all(proms);
 	}
 
 	/**
@@ -745,395 +827,83 @@ class FrontierSilicon extends utils.Adapter {
 	 */
 	async discoverState()
 	{
-		//const log = this.log;
-		await this.setObjectNotExistsAsync("device.power", {
-			type: "state",
-			common: {
-				name: "Power",
-				type: "boolean",
-				role: "switch.power",
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
-
-		let power = await this.callAPI("netRemote.sys.power");
-		this.log.debug(JSON.stringify(power));
-		if(power.success)
-		{
-			this.log.debug(`Power: ${power.result.value[0].u8[0] == 1}`);
-			await this.setStateAsync("device.power", { val: power.result.value[0].u8[0] == 1, ack: true });
-		}
-
-		await this.setObjectNotExistsAsync("modes.selected", {
-			type: "state",
-			common: {
-				name: "Mode",
-				type: "number",
-				role: "media.input",
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
-		power = await this.callAPI("netRemote.sys.mode");
-		if(power.success)
-		{
-			this.log.debug(`Mode: ${power.result.value[0].u32[0]}`);
-			await this.setStateAsync("modes.selected", { val: power.result.value[0].u32[0], ack: true });
-		}
-
-		await this.setObjectNotExistsAsync("media.name", {
-			type: "state",
-			common: {
-				name: "Media name",
-				type: "string",
-				role: "text",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-		power = await this.callAPI("netRemote.play.info.name");
-		if(power.success)
-		{
-			this.setStateAsync("media.name", { val: power.result.value[0].c8_array[0].trim(), ack: true });
-			await this.UpdatePreset(power.result.value[0].c8_array[0].trim());
-		}
-
-		await this.setObjectNotExistsAsync("media.album", {
-			type: "state",
-			common: {
-				name: "Media name",
-				type: "string",
-				role: "media.album",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-		power = await this.callAPI("netRemote.play.info.album");
-		if(power.success)
-		{
-			await this.setStateAsync("media.album", { val: power.result.value[0].c8_array[0].trim(), ack: true });
-		}
-
-		await this.setObjectNotExistsAsync("media.title", {
-			type: "state",
-			common: {
-				name: "Media title",
-				type: "string",
-				role: "media.title",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-		power = await this.callAPI("netRemote.play.info.title");
-		if(power.success)
-		{
-			await this.setStateAsync("media.title", { val: power.result.value[0].c8_array[0].trim(), ack: true });
-		}
-
-		await this.setObjectNotExistsAsync("media.artist", {
-			type: "state",
-			common: {
-				name: "Media artist",
-				type: "string",
-				role: "media.artist",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-		power = await this.callAPI("netRemote.play.info.artist");
-		if(power.success)
-		{
-			await this.setStateAsync("media.artist", { val: power.result.value[0].c8_array[0].trim(), ack: true });
-		}
-
-		await this.setObjectNotExistsAsync("media.text", {
-			type: "state",
-			common: {
-				name: "Media text",
-				type: "string",
-				role: "text",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-		power = await this.callAPI("netRemote.play.info.text");
-		if(power.success)
-		{
-			await this.setStateAsync("media.text", { val: power.result.value[0].c8_array[0].trim(), ack: true });
-		}
-
-		await this.setObjectNotExistsAsync("media.graphic", {
-			type: "state",
-			common: {
-				name: "Media text",
-				type: "string",
-				role: "media.cover",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-		power = await this.callAPI("netRemote.play.info.graphicUri");
-		if(power.success)
-		{
-			await this.setStateAsync("media.graphic", { val: power.result.value[0].c8_array[0].trim(), ack: true });
-		}
-
-		await this.setObjectNotExistsAsync("modes.selectPreset", {
-			type: "state",
-			common: {
-				name: "Mode",
-				type: "string",
-				role: "media.track",
-				read: false,
-				write: true,
-			},
-			native: {},
-		});
-		//this.getSelectedPreset();
-
-		await this.setObjectNotExistsAsync("modes.selectedLabel", {
-			type: "state",
-			common: {
-				name: "Mode",
-				type: "string",
-				role: "media.input",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
 		try
 		{
-			power.value = await this.getStateAsync(`modes.${power.result.value[0].u32[0]}.label`);
-			if(power.success && power.value !== null)
-			{
-				this.log.debug(`Mode: ${power.value.val}`);
-				await this.setStateAsync("modes.selectedLabel", { val: power.value.val, ack: true });
-			}
-		}
-		catch (ex)
-		{
-			this.log.debug(ex.message);
-		}
-
-		//netRemote.sys.audio.volume
-		power = await this.callAPI("netRemote.sys.audio.volume");
-		await this.setObjectNotExistsAsync("audio.volume", {
-			type: "state",
-			common: {
-				name: "Volume",
-				type: "number",
-				role: "level.volume",
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
-		if(power.success && power.value !== null)
-		{
-			await this.setStateAsync("audio.volume", { val: power.result.value[0].u8[0], ack: true });
-		}
-
-		//netRemote.sys.audio.mute
-		power = await this.callAPI("netRemote.sys.audio.mute");
-		await this.setObjectNotExistsAsync("audio.mute", {
-			type: "state",
-			common: {
-				name: "Mute",
-				type: "boolean",
-				role: "media.mute",
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
-		if(power.success && power.value !== null)
-		{
-			await this.setStateAsync("audio.mute", { val: power.result.value[0].u8[0] == 1, ack: true });
-		}
-
-		await this.setObjectNotExistsAsync("audio.control", {
-			type: "channel",
-			common: {
-				name: "Media control",
-			},
-			native: {},
-		});
-
-		await this.setObjectNotExistsAsync("audio.control.volumeUp", {
-			type: "state",
-			common: {
-				name: "Volume Up",
-				type: "boolean",
-				role: "button.volume.up",
-				read: false,
-				write: true,
-			},
-			native: {},
-		});
-
-		await this.setObjectNotExistsAsync("audio.control.volumeDown", {
-			type: "state",
-			common: {
-				name: "Volume Down",
-				type: "boolean",
-				role: "button.volume.down",
-				read: false,
-				write: true,
-			},
-			native: {},
-		});
-
-		await this.setObjectNotExistsAsync("media.control", {
-			type: "channel",
-			common: {
-				name: "Media control",
-			},
-			native: {},
-		});
-
-		await this.setObjectNotExistsAsync("media.control.play", {
-			type: "state",
-			common: {
-				name: "Play",
-				type: "boolean",
-				role: "button.play",
-				read: false,
-				write: true,
-			},
-			native: {},
-		});
-
-		await this.setObjectNotExistsAsync("media.control.pause", {
-			type: "state",
-			common: {
-				name: "Pause",
-				type: "boolean",
-				role: "button.pause",
-				read: false,
-				write: true,
-			},
-			native: {},
-		});
-
-		await this.setObjectNotExistsAsync("media.control.previous", {
-			type: "state",
-			common: {
-				name: "Previous",
-				type: "boolean",
-				role: "button.prev",
-				read: false,
-				write: true,
-			},
-			native: {},
-		});
-
-		await this.setObjectNotExistsAsync("media.control.next", {
-			type: "state",
-			common: {
-				name: "Next",
-				type: "boolean",
-				role: "button.forward",
-				read: false,
-				write: true,
-			},
-			native: {},
-		});
-		power = await this.callAPI("netRemote.play.control");
-		await this.setObjectNotExistsAsync("media.state", {
-			type: "state",
-			common: {
-				name: "State",
-				type: "number",
-				role: "media.state",
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
-		if(power.success && power.value !== null)
-		{
-			switch (power.result.value[0].u8[0])
-			{
-				// Play
-				case "1":
-					await this.setStateAsync("media.state", { val: 1, ack: true });
-					break;
-				// Pause
-				case "2":
-					await this.setStateAsync("media.state", { val: 0, ack: true });
-					break;
-				default:
-					break;
-			}
-		}
-
-		if(this.log.level=="debug" || this.log.level=="silly")
-		{
-			await this.setObjectNotExistsAsync("debug", {
-				type: "channel",
+			//const log = this.log;
+			await this.setObjectNotExistsAsync("device.power", {
+				type: "state",
 				common: {
-					name: "Debugging Tools",
+					name: "Power",
+					type: "boolean",
+					role: "switch.power",
+					read: true,
+					write: true,
 				},
 				native: {},
 			});
-			await this.setObjectNotExistsAsync("debug.resetSession", {
+			let power = await this.callAPI("netRemote.sys.power");
+			this.log.debug(JSON.stringify(power));
+			if(power.success)
+			{
+				this.log.debug(`Power: ${power.result.value[0].u8[0] == 1}`);
+				await this.setStateAsync("device.power", { val: power.result.value[0].u8[0] == 1, ack: true });
+			}
+
+			await this.setObjectNotExistsAsync("modes.selected", {
 				type: "state",
 				common: {
-					name: "Reset Session",
-					type: "boolean",
-					role: "button",
+					name: "Mode",
+					type: "number",
+					role: "media.input",
+					read: true,
+					write: true,
+				},
+				native: {},
+			});
+			power = await this.callAPI("netRemote.sys.mode");
+			let modeSelected = null;
+			if(power.success)
+			{
+				modeSelected = power.result.value[0].u32[0];
+				this.log.debug(`Mode1: ${modeSelected}`);
+				await this.setStateAsync("modes.selected", { val: Number(modeSelected), ack: true });
+			}
+
+			await this.setObjectNotExistsAsync("modes.selectedLabel", {
+				type: "state",
+				common: {
+					name: "Mode",
+					type: "string",
+					role: "media.input",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			const modeLabel = await this.getStateAsync(`modes.${modeSelected}.label`);
+			this.log.debug("modeLabel: " +  JSON.stringify(modeLabel));
+			if (power.success && modeLabel !== null)
+			{
+				this.log.debug(`ModeLabel: ${modeLabel.val}`);
+				await this.setStateAsync("modes.selectedLabel", { val: modeLabel.val, ack: true });
+			}
+			await this.setObjectNotExistsAsync("modes.selectPreset", {
+				type: "state",
+				common: {
+					name: "Mode",
+					type: "number",
+					role: "media.track",
 					read: false,
 					write: true,
 				},
 				native: {},
 			});
-			await this.setObjectNotExistsAsync("debug.session", {
+			//this.getSelectedPreset();
+
+			await this.setObjectNotExistsAsync("media.name", {
 				type: "state",
 				common: {
-					name: "Session ID",
-					type: "number",
-					role: "value",
-					read: true,
-					write: false,
-				},
-				native: {},
-			});
-			await this.setObjectNotExistsAsync("debug.sessionCreationTime", {
-				type: "state",
-				common: {
-					name: "Session Timestamp",
-					type: "number",
-					role: "value.time",
-					read: true,
-					write: false,
-				},
-				native: {},
-			});
-			await this.setObjectNotExistsAsync("debug.lastNotifyCall", {
-				type: "state",
-				common: {
-					name: "Timestamp of last notify call",
-					type: "number",
-					role: "value.time",
-					read: true,
-					write: false,
-				},
-				native: {},
-			});
-			await this.setObjectNotExistsAsync("debug.lastNotifyError", {
-				type: "state",
-				common: {
-					name: "Error of last notify call",
+					name: "Media name",
 					type: "string",
 					role: "text",
 					read: true,
@@ -1141,11 +911,257 @@ class FrontierSilicon extends utils.Adapter {
 				},
 				native: {},
 			});
+			power = await this.callAPI("netRemote.play.info.name");
+			if(power.success)
+			{
+				this.setStateAsync("media.name", { val: power.result.value[0].c8_array[0].trim(), ack: true });
+				await this.UpdatePreset(power.result.value[0].c8_array[0].trim());
+			}
+
+			await this.setObjectNotExistsAsync("media.album", {
+				type: "state",
+				common: {
+					name: "Media name",
+					type: "string",
+					role: "media.album",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			power = await this.callAPI("netRemote.play.info.album");
+			if(power.success)
+			{
+				await this.setStateAsync("media.album", { val: power.result.value[0].c8_array[0].trim(), ack: true });
+			}
+
+			await this.setObjectNotExistsAsync("media.title", {
+				type: "state",
+				common: {
+					name: "Media title",
+					type: "string",
+					role: "media.title",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			power = await this.callAPI("netRemote.play.info.title");
+			if(power.success)
+			{
+				await this.setStateAsync("media.title", { val: power.result.value[0].c8_array[0].trim(), ack: true });
+			}
+
+			await this.setObjectNotExistsAsync("media.artist", {
+				type: "state",
+				common: {
+					name: "Media artist",
+					type: "string",
+					role: "media.artist",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			power = await this.callAPI("netRemote.play.info.artist");
+			if(power.success)
+			{
+				await this.setStateAsync("media.artist", { val: power.result.value[0].c8_array[0].trim(), ack: true });
+			}
+
+			await this.setObjectNotExistsAsync("media.text", {
+				type: "state",
+				common: {
+					name: "Media text",
+					type: "string",
+					role: "text",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			power = await this.callAPI("netRemote.play.info.text");
+			if(power.success)
+			{
+				await this.setStateAsync("media.text", { val: power.result.value[0].c8_array[0].trim(), ack: true });
+			}
+
+			await this.setObjectNotExistsAsync("media.graphic", {
+				type: "state",
+				common: {
+					name: "Media text",
+					type: "string",
+					role: "media.cover",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			power = await this.callAPI("netRemote.play.info.graphicUri");
+			if(power.success)
+			{
+				await this.setStateAsync("media.graphic", { val: power.result.value[0].c8_array[0].trim(), ack: true });
+			}
+
+			//netRemote.sys.audio.volume
+			power = await this.callAPI("netRemote.sys.audio.volume");
+			await this.setObjectNotExistsAsync("audio.volume", {
+				type: "state",
+				common: {
+					name: "Volume",
+					type: "number",
+					role: "level.volume",
+					read: true,
+					write: true,
+				},
+				native: {},
+			});
+			if(power.success && power.value !== null)
+			{
+				await this.setStateAsync("audio.volume", { val: Number(power.result.value[0].u8[0]), ack: true });
+			}
+
+			//netRemote.sys.audio.mute
+			power = await this.callAPI("netRemote.sys.audio.mute");
+			await this.setObjectNotExistsAsync("audio.mute", {
+				type: "state",
+				common: {
+					name: "Mute",
+					type: "boolean",
+					role: "media.mute",
+					read: true,
+					write: true,
+				},
+				native: {},
+			});
+			if(power.success && power.value !== null)
+			{
+				await this.setStateAsync("audio.mute", { val: power.result.value[0].u8[0] == 1, ack: true });
+			}
+
+			await this.setObjectNotExistsAsync("audio.control", {
+				type: "channel",
+				common: {
+					name: "Media control",
+				},
+				native: {},
+			});
+
+			await this.setObjectNotExistsAsync("audio.control.volumeUp", {
+				type: "state",
+				common: {
+					name: "Volume Up",
+					type: "boolean",
+					role: "button.volume.up",
+					read: false,
+					write: true,
+				},
+				native: {},
+			});
+
+			await this.setObjectNotExistsAsync("audio.control.volumeDown", {
+				type: "state",
+				common: {
+					name: "Volume Down",
+					type: "boolean",
+					role: "button.volume.down",
+					read: false,
+					write: true,
+				},
+				native: {},
+			});
+
+			await this.setObjectNotExistsAsync("media.control", {
+				type: "channel",
+				common: {
+					name: "Media control",
+				},
+				native: {},
+			});
+
+			await this.setObjectNotExistsAsync("media.control.play", {
+				type: "state",
+				common: {
+					name: "Play",
+					type: "boolean",
+					role: "button.play",
+					read: false,
+					write: true,
+				},
+				native: {},
+			});
+
+			await this.setObjectNotExistsAsync("media.control.pause", {
+				type: "state",
+				common: {
+					name: "Pause",
+					type: "boolean",
+					role: "button.pause",
+					read: false,
+					write: true,
+				},
+				native: {},
+			});
+
+			await this.setObjectNotExistsAsync("media.control.previous", {
+				type: "state",
+				common: {
+					name: "Previous",
+					type: "boolean",
+					role: "button.prev",
+					read: false,
+					write: true,
+				},
+				native: {},
+			});
+
+			await this.setObjectNotExistsAsync("media.control.next", {
+				type: "state",
+				common: {
+					name: "Next",
+					type: "boolean",
+					role: "button.forward",
+					read: false,
+					write: true,
+				},
+				native: {},
+			});
+			power = await this.callAPI("netRemote.play.control");
+			await this.setObjectNotExistsAsync("media.state", {
+				type: "state",
+				common: {
+					name: "State",
+					type: "number",
+					role: "media.state",
+					read: true,
+					write: true,
+				},
+				native: {},
+			});
+			if(power.success && power.value !== null)
+			{
+				switch (power.result.value[0].u8[0])
+				{
+				// Play
+					case "1":
+						await this.setStateAsync("media.state", { val: 1, ack: true });
+						break;
+						// Pause
+					case "2":
+						await this.setStateAsync("media.state", { val: 0, ack: true });
+						break;
+					default:
+						break;
+				}
+			}
+
+
 		}
-		else
+		catch (err)
 		{
-			await this.deleteChannel("debug");
+			this.log.error("Error in discoverState(): " + err.message + err.stack);
 		}
+
 	}
 
 	/**
@@ -1213,16 +1229,16 @@ class FrontierSilicon extends utils.Adapter {
 
 		if(dev.friendlyName !== null)
 		{
-			await this.setStateAsync("device.friendlyName", { val: dev.friendlyName, ack: true });
+			await this.setStateAsync("device.friendlyName", { val: dev.friendlyName.toString(), ack: true });
 		}
 		if(dev.version !== null)
 		{
-			await this.setStateAsync("device.version", { val: dev.version, ack: true });
+			await this.setStateAsync("device.version", { val: dev.version.toString(), ack: true });
 		}
 		if(dev.webfsapi !== null)
 		{
-			await this.setStateAsync("device.webfsapi", { val: dev.webfsapi, ack: true });
-			this.config.fsAPIURL = dev.webfsapi;
+			await this.setStateAsync("device.webfsapi", { val: dev.webfsapi.toString(), ack: true });
+			this.config.fsAPIURL = dev.webfsapi.toString();
 		}
 
 		await this.setObjectNotExistsAsync("device.radioId", {
@@ -1375,13 +1391,14 @@ class FrontierSilicon extends utils.Adapter {
 				.then(device => {
 				//log.debug(device.)
 					const parser = new xml2js.Parser();
-					parser.parseStringPromise(device.data).then(function (result) {
-						log.debug(result.fsapiResponse.sessionId);
-						dev.Session = result.fsapiResponse.sessionId;
-						log.debug("Session created");
-						connected = true;
-						sessionTimestamp = Date.now();
-					})
+					parser.parseStringPromise(device.data)
+						.then(function (result) {
+							log.debug(result.fsapiResponse.sessionId);
+							dev.Session = result.fsapiResponse.sessionId;
+							log.debug("Session created");
+							connected = true;
+							sessionTimestamp = Date.now();
+						})
 						.catch(function (err) {
 							// Failed});
 							log.debug(JSON.stringify(err));
@@ -1397,14 +1414,83 @@ class FrontierSilicon extends utils.Adapter {
 						return;
 					}
 				});
-			this.config.SessionID = dev.Session;
+			this.config.SessionID = Number(dev.Session);
 			//this.config.SessionTS = Date.now();
-			await this.setState("info.connection", connected, true);
+			await this.setStateAsync("info.connection", connected, true);
 			if(this.log.level=="debug" || this.log.level=="silly")
 			{
-				await this.setStateAsync("debug.session", {val: dev.Session, ack: true});
+				await this.setObjectNotExistsAsync("debug", {
+					type: "channel",
+					common: {
+						name: "Debugging Tools",
+					},
+					native: {},
+				});
+				await this.setObjectNotExistsAsync("debug.resetSession", {
+					type: "state",
+					common: {
+						name: "Reset Session",
+						type: "boolean",
+						role: "button",
+						read: false,
+						write: true,
+					},
+					native: {},
+				});
+				await this.setObjectNotExistsAsync("debug.session", {
+					type: "state",
+					common: {
+						name: "Session ID",
+						type: "number",
+						role: "value",
+						read: true,
+						write: false,
+					},
+					native: {},
+				});
+				await this.setObjectNotExistsAsync("debug.sessionCreationTime", {
+					type: "state",
+					common: {
+						name: "Session Timestamp",
+						type: "number",
+						role: "value.time",
+						read: true,
+						write: false,
+					},
+					native: {},
+				});
+				await this.setObjectNotExistsAsync("debug.lastNotifyCall", {
+					type: "state",
+					common: {
+						name: "Timestamp of last notify call",
+						type: "number",
+						role: "value.time",
+						read: true,
+						write: false,
+					},
+					native: {},
+				});
+				await this.setObjectNotExistsAsync("debug.lastNotifyError", {
+					type: "state",
+					common: {
+						name: "Error of last notify call",
+						type: "string",
+						role: "text",
+						read: true,
+						write: false,
+					},
+					native: {},
+				});
+
+				await this.setStateAsync("debug.session", {val: Number(dev.Session), ack: true});
 				await this.setStateAsync("debug.sessionCreationTime", { val: sessionTimestamp, ack: true});
+
 			}
+			else
+			{
+				await this.deleteChannelAsync("debug");
+			}
+
 			await this.sleep(200);
 		}
 	}
@@ -1451,7 +1537,7 @@ class FrontierSilicon extends utils.Adapter {
 					try
 					{
 						const timers = [ ];
-						sleeps.forEach((value, key , sleeps) => 
+						sleeps.forEach((value, key , sleeps) =>
 						{
 							if(key <= Date.now() - 900 * 1000)
 							{
@@ -1470,9 +1556,9 @@ class FrontierSilicon extends utils.Adapter {
 				if(this.log.level=="debug" || this.log.level=="silly")
 				{
 					this.setStateAsync("debug.lastNotifyCall", { val: notifyTimestamp, ack: true });
-				}	
+				}
 				const result = await this.callAPI("", "", 0, 0, true);
-				let variable;
+
 				if(result.success)
 				{
 					//this.log.debug(JSON.stringify(result.result));
@@ -1484,9 +1570,8 @@ class FrontierSilicon extends utils.Adapter {
 							case "netremote.sys.state":
 								break;
 							case "netremote.sys.mode":
-								variable = item.value[0].u32[0];
-								await this.setStateAsync("modes.selected", { val: variable, ack: true });
-								await this.getStateAsync(`modes.${variable}.label`)
+								await this.setStateAsync("modes.selected", { val: Number(item.value[0].u32[0]), ack: true });
+								await this.getStateAsync(`modes.${item.value[0].u32[0]}.label`)
 									.then(function (result) {
 										if(result !== null && result !== undefined && result.val !== null )
 										{
@@ -1494,7 +1579,7 @@ class FrontierSilicon extends utils.Adapter {
 										}
 									});
 								//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
-								await this.getModePresets(variable, false);
+								await this.getModePresets(item.value[0].u32[0], false);
 								await this.UpdatePreset();
 								break;
 							case "netremote.play.serviceids.ecc":
@@ -1512,8 +1597,8 @@ class FrontierSilicon extends utils.Adapter {
 									.then(function (result) {
 										if(result !== null && result !== undefined && result.val !== null )
 										{
-											adapter.setStateAsync("modes.selected", { val: variable, ack: true });
-											adapter.getStateAsync(`modes.${variable}.label`)
+											adapter.setStateAsync("modes.selected", { val: Number(result.result.value[0].u32[0]), ack: true });
+											adapter.getStateAsync(`modes.${result.result.value[0].u32[0]}.label`)
 												.then(function (result) {
 													if(result !== null && result !== undefined && result.val !== null )
 													{
@@ -1553,8 +1638,8 @@ class FrontierSilicon extends utils.Adapter {
 									.then(function (result) {
 										if(result !== null && result !== undefined && result.val !== null )
 										{
-											adapter.setStateAsync("modes.selected", { val: variable, ack: true });
-											adapter.getStateAsync(`modes.${variable}.label`)
+											adapter.setStateAsync("modes.selected", { val: Number(result.result.value[0].u32[0]), ack: true });
+											adapter.getStateAsync(`modes.${result.result.value[0].u32[0]}.label`)
 												.then(function (result) {
 													if(result !== null && result !== undefined && result.val !== null )
 													{
@@ -1567,7 +1652,7 @@ class FrontierSilicon extends utils.Adapter {
 								await this.UpdatePreset(item.value[0].c8_array[0].trim());
 								break;
 							case "netremote.sys.audio.volume":
-								await this.setStateAsync("audio.volume", { val: item.value[0].u8[0], ack: true });
+								await this.setStateAsync("audio.volume", { val: Number(item.value[0].u8[0]), ack: true });
 								break;
 							case "netremote.sys.audio.mute":
 								await this.setStateAsync("audio.mute", { val: item.value[0].u8[0] == 1, ack: true });
@@ -1623,10 +1708,10 @@ class FrontierSilicon extends utils.Adapter {
 	async UpdatePreset(name)
 	{
 		if(name === undefined) return;
-		let mode = await this.getStateAsync("modes.selected");
+		const mode = await this.getStateAsync("modes.selected");
 		if(mode !== null && mode !== undefined && mode.val !== null && mode.val !== undefined)
 		{
-			let hasPresets = await this.getStateAsync(`modes.${mode.val}.presets.available`)
+			const hasPresets = await this.getStateAsync(`modes.${mode.val}.presets.available`)
 			if(hasPresets !== null && hasPresets !== undefined && hasPresets.val !== null && hasPresets.val !== undefined
 				&& hasPresets.val)
 			{

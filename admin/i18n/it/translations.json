@@ -1,8 +1,13 @@
 {
-    "PIN": "PIN",
-    "PollIntervall": "Tempo di attesa tra le notifiche (Sekunden)",
-    "RecreateSessionInterval": "Ricrea l'intervallo della sessione (Minuten)",
-    "SangeanNoSound": "DAB si avvia senza audio",
-    "frontier_silicon adapter settings": "Impostazioni dell'adattatore per frontier_silicon",
-    "ip": "IP"
+    "Options": "Opzioni",
+    "IP address": "indirizzo IP",
+    "IPV4 address of your media player e.g. 192.168.123.123": "Indirizzo IPV4 del tuo lettore multimediale, ad es. 192.168.123.123",
+    "PIN code": "Codice PIN",
+    "PIN of your media player, default is 1234": "PIN del tuo lettore multimediale, il valore predefinito è 1234",
+    "No sound": "Nessun suono",
+    "Check this box only if your media player starts DAB without sound": "Seleziona questa casella solo se il tuo lettore multimediale avvia DAB senza audio",
+    "Session refresh interval": "Intervallo di aggiornamento della sessione",
+    "Validity period of a session in minutes": "Periodo di validità di una sessione in minuti",
+    "Polling interval": "Intervallo di polling",
+    "Status polling interval in seconds": "Intervallo di polling dello stato in secondi"
 }
