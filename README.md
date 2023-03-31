@@ -1,3 +1,8 @@
+Hello,
+
+due to time restrictions of my days this repo ist archived. Use the new one, thanks to @pdbjjens.
+https://github.com/iobroker-community-adapters/ioBroker.frontier_silicon
+
 ![Logo](admin/radio.svg)
 # ioBroker.frontier_silicon
 
