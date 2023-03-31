@@ -54,6 +54,11 @@ class FrontierSilicon extends utils.Adapter {
             this.log.error(`Server IP is empty - please check instance configuration of ${this.namespace}`);
             return;
         }
+		if (!this.config.PIN) {
+            this.log.error(`PIN code is empty - please check instance configuration of ${this.namespace}`);
+            return;
+        }
+
 		await this.getDeviceInfo();
 		//await this.createSession();
 		await this.discoverDeviceFeatures();

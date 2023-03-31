@@ -168,7 +168,7 @@
         "PIN"
     ],
     "native": {
-        "PIN": "1234",
+        "PIN": "",
         "IP": "",
         "SessionID": 0,
         "fsAPIURL": "",
