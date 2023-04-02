@@ -192,6 +192,7 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 -->
 ### **WORK IN PROGRESS**
 
+- (pdbjjens) Breaking Changes: node>=14, js-contoller>=4 and admin>=5 required
 - (pdbjjens) New: json config UI
 
 ### 0.0.11 (2023-03-30) 2023 maintenance release
