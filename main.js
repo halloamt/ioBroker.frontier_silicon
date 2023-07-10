@@ -8,6 +8,7 @@
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
 const axios = require("axios").default;
+// @ts-ignore
 const xml2js = require("xml2js");
 
 // Load your modules here, e.g.:
@@ -62,6 +63,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.getDeviceInfo();
 		}
 		catch (err) {
+			// @ts-ignore
 			this.log.error(err);
 			return;
 		}
@@ -133,7 +135,8 @@ class FrontierSilicon extends utils.Adapter {
 			// ...
 			// clearInterval(interval1);
 			clearTimeout(timeOutMessage);
-			sleeps.forEach((value, key , sleeps) =>
+			// @ts-ignore
+			sleeps.forEach((value) =>
 			{
 				clearTimeout(value);
 			});
@@ -248,7 +251,7 @@ class FrontierSilicon extends utils.Adapter {
 						await adapter.callAPI("netRemote.nav.action.selectPreset", zustand[5])
 							.then(async function (result) {
 								if(result.success) {
-									await adapter.setStateAsync("modes.selectPreset", {val:zustand[5], ack: true});
+									await adapter.setStateAsync("modes.selectPreset", {val:Number(zustand[5]), ack: true});
 								}
 							});
 						//adapter.getSelectedPreset();
@@ -300,6 +303,7 @@ class FrontierSilicon extends utils.Adapter {
 					if(zustand[3] === "volume" && state.val !== null)
 					{
 						await this.callAPI("netRemote.nav.state", "1");
+						// @ts-ignore
 						if(state.val >= 0 && state.val <= this.config.VolumeMax)
 						{
 							await adapter.callAPI("netRemote.sys.audio.volume", state.val.toString())
@@ -329,6 +333,7 @@ class FrontierSilicon extends utils.Adapter {
 								await adapter.getStateAsync("audio.volume")
 									.then(async function (result) {
 										if(result != null && result != undefined && result.val != null && result.val != undefined
+											// @ts-ignore
 											&& result.val < adapter.config.VolumeMax)
 										{
 											// @ts-ignore
@@ -347,6 +352,7 @@ class FrontierSilicon extends utils.Adapter {
 								await adapter.getStateAsync("audio.volume")
 									.then(async function (result) {
 										if(result != null && result != undefined && result.val != null && result.val != undefined
+											// @ts-ignore
 											&& result.val > 0)
 										{
 											// @ts-ignore
@@ -890,7 +896,9 @@ class FrontierSilicon extends utils.Adapter {
 			this.log.debug("modeLabel: " +  JSON.stringify(modeLabel));
 			if (power.success && modeLabel !== null)
 			{
+				// @ts-ignore
 				this.log.debug(`ModeLabel: ${modeLabel.val}`);
+				// @ts-ignore
 				await this.setStateAsync("modes.selectedLabel", { val: modeLabel.val, ack: true });
 			}
 			await this.setObjectNotExistsAsync("modes.selectPreset", {
@@ -1165,6 +1173,7 @@ class FrontierSilicon extends utils.Adapter {
 		}
 		catch (err)
 		{
+			// @ts-ignore
 			this.log.error("Error in discoverState(): " + err.message + err.stack);
 		}
 
@@ -1482,6 +1491,7 @@ class FrontierSilicon extends utils.Adapter {
 			}
 			catch (err) {
 			// createSession failed});
+				// @ts-ignore
 				log.error(err);
 				log.info("No session created");
 			}
@@ -1530,7 +1540,8 @@ class FrontierSilicon extends utils.Adapter {
 					try
 					{
 						const timers = [ ];
-						sleeps.forEach((value, key , sleeps) =>
+						// @ts-ignore
+						sleeps.forEach((value, key) =>
 						{
 							if(key <= Date.now() - 900 * 1000)
 							{
@@ -1538,9 +1549,10 @@ class FrontierSilicon extends utils.Adapter {
 								timers.push(key);
 							}
 						});
-						timers.forEach((value, index, array) => sleeps.delete(index));
+						// @ts-ignore
+						timers.forEach((value, index) => sleeps.delete(index));
 					}
-					finally {}
+					finally { /* empty */ }
 			}
 
 			try
@@ -1683,6 +1695,7 @@ class FrontierSilicon extends utils.Adapter {
 			}
 			catch (e)
 			{
+				// @ts-ignore
 				adapter.log.error(e.message);
 				if(this.log.level=="debug" || this.log.level=="silly")
 				{
@@ -1704,11 +1717,12 @@ class FrontierSilicon extends utils.Adapter {
 		const mode = await this.getStateAsync("modes.selected");
 		if(mode !== null && mode !== undefined && mode.val !== null && mode.val !== undefined)
 		{
-			const hasPresets = await this.getStateAsync(`modes.${mode.val}.presets.available`)
+			const hasPresets = await this.getStateAsync(`modes.${mode.val}.presets.available`);
 			if(hasPresets !== null && hasPresets !== undefined && hasPresets.val !== null && hasPresets.val !== undefined
 				&& hasPresets.val)
 			{
 				let i = 0;
+				// eslint-disable-next-line no-constant-condition
 				while(true)
 				{
 					const preset = await this.getStateAsync(`modes.${mode.val}.presets.${i}.name`);
