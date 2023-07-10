@@ -51,15 +51,21 @@ class FrontierSilicon extends utils.Adapter {
 		//this.log.info("config PIN: " + this.config.PIN);
 		//this.log.info("config IP: " + this.config.IP);
 		if (!this.config.IP) {
-            this.log.error(`Server IP is empty - please check instance configuration of ${this.namespace}`);
-            return;
-        }
+			this.log.error(`Server IP is empty - please check instance configuration of ${this.namespace}`);
+			return;
+		}
 		if (!this.config.PIN) {
-            this.log.error(`PIN code is empty - please check instance configuration of ${this.namespace}`);
-            return;
-        }
+			this.log.error(`PIN code is empty - please check instance configuration of ${this.namespace}`);
+			return;
+		}
+		try {
+			await this.getDeviceInfo();
+		}
+		catch (err) {
+			this.log.error(err);
+			return;
+		}
 
-		await this.getDeviceInfo();
 		//await this.createSession();
 		await this.discoverDeviceFeatures();
 		await this.discoverState();
@@ -691,7 +697,7 @@ class FrontierSilicon extends utils.Adapter {
 			if(!force)
 			{
 				mode = await this.getStateAsync(`modes.${i}.presets.available`);
-				this.log.debug(JSON.stringify(mode));
+				//this.log.debug(JSON.stringify(mode));
 				if(mode !== null) continue;
 			}
 			await this.getModePresets(i, unmute);
@@ -842,7 +848,7 @@ class FrontierSilicon extends utils.Adapter {
 				native: {},
 			});
 			let power = await this.callAPI("netRemote.sys.power");
-			this.log.debug(JSON.stringify(power));
+			//this.log.debug(JSON.stringify(power));
 			if(power.success)
 			{
 				this.log.debug(`Power: ${power.result.value[0].u8[0] == 1}`);
@@ -1170,111 +1176,112 @@ class FrontierSilicon extends utils.Adapter {
 	async getDeviceInfo()
 	{
 		const log = this.log;
-		await this.setObjectNotExistsAsync("device.friendlyName", {
-			type: "state",
-			common: {
-				name: "Friendly Name",
-				type: "string",
-				role: "info.name",
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
-
-		await this.setObjectNotExistsAsync("device.webfsapi", {
-			type: "state",
-			common: {
-				name: "Web FSAPI URL",
-				type: "string",
-				role: "info.address",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-
-		await this.setObjectNotExistsAsync("device.version", {
-			type: "state",
-			common: {
-				name: "SW Version",
-				type: "string",
-				role: "text",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-
 		const dev = {};
-
-		await axios.get(`http://${this.config.IP}/devices`)
-			.then(async device => {
+		try
+		{
+			await axios.get(`http://${this.config.IP}/devices`)
+				.then(async device => {
 				//log.debug(device.)
-				const parser = new xml2js.Parser();
-				parser.parseStringPromise(device.data).then(function (result) {
-					log.debug(result.netRemote.friendlyName);
-					dev.friendlyName = result.netRemote.friendlyName;
-					dev.version = result.netRemote.version;
-					dev.webfsapi = result.netRemote.webfsapi;
-					log.debug("Hallo PARSER");
+					const parser = new xml2js.Parser();
+					parser.parseStringPromise(device.data)
+						.then(function (result) {
+							log.debug(result.netRemote.friendlyName);
+							dev.friendlyName = result.netRemote.friendlyName;
+							dev.version = result.netRemote.version;
+							dev.webfsapi = result.netRemote.webfsapi;
+						});
+				});
 
-				})
-					.catch(function (err) {
-					// Failed});
-						log.debug(JSON.stringify(err));
-						log.debug("Hallo FEHLER");
-					});
+			await this.setObjectNotExistsAsync("device.friendlyName", {
+				type: "state",
+				common: {
+					name: "Friendly Name",
+					type: "string",
+					role: "info.name",
+					read: true,
+					write: true,
+				},
+				native: {},
 			});
 
-		if(dev.friendlyName !== null)
-		{
-			await this.setStateAsync("device.friendlyName", { val: dev.friendlyName.toString(), ack: true });
-		}
-		if(dev.version !== null)
-		{
-			await this.setStateAsync("device.version", { val: dev.version.toString(), ack: true });
-		}
-		if(dev.webfsapi !== null)
-		{
-			await this.setStateAsync("device.webfsapi", { val: dev.webfsapi.toString(), ack: true });
-			this.config.fsAPIURL = dev.webfsapi.toString();
-		}
+			await this.setObjectNotExistsAsync("device.webfsapi", {
+				type: "state",
+				common: {
+					name: "Web FSAPI URL",
+					type: "string",
+					role: "info.address",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
 
-		await this.setObjectNotExistsAsync("device.radioId", {
-			type: "state",
-			common: {
-				name: "Radio ID",
-				type: "string",
-				role: "text",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-		let result = await this.callAPI("netRemote.sys.info.radioId");
-		if(result.success)
-		{
-			await this.setStateAsync("device.radioId", {val: result.result.value[0].c8_array[0], ack: true});
-		}
+			await this.setObjectNotExistsAsync("device.version", {
+				type: "state",
+				common: {
+					name: "SW Version",
+					type: "string",
+					role: "text",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
 
-		//netRemote.sys.caps.volumeSteps
-		await this.setObjectNotExistsAsync("audio.maxVolume", {
-			type: "state",
-			common: {
-				name: "Max Volume setting",
-				type: "number",
-				role: "value.max",
-				read: true,
-				write: false,
-			},
-			native: {},
-		});
-		result = await this.callAPI("netRemote.sys.caps.volumeSteps");
-		if(result.success)
+			if(dev.friendlyName !== null || dev.friendlyName !== undefined)
+			{
+				await this.setStateAsync("device.friendlyName", { val: dev.friendlyName.toString(), ack: true });
+			}
+			if(dev.version !== null || dev.version !== undefined)
+			{
+				await this.setStateAsync("device.version", { val: dev.version.toString(), ack: true });
+			}
+			if(dev.webfsapi !== null || dev.webfsapi !== undefined)
+			{
+				await this.setStateAsync("device.webfsapi", { val: dev.webfsapi.toString(), ack: true });
+				this.config.fsAPIURL = dev.webfsapi.toString();
+			}
+
+			await this.setObjectNotExistsAsync("device.radioId", {
+				type: "state",
+				common: {
+					name: "Radio ID",
+					type: "string",
+					role: "text",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			let result = await this.callAPI("netRemote.sys.info.radioId");
+			if(result.success)
+			{
+				await this.setStateAsync("device.radioId", {val: result.result.value[0].c8_array[0], ack: true});
+			}
+
+			//netRemote.sys.caps.volumeSteps
+			await this.setObjectNotExistsAsync("audio.maxVolume", {
+				type: "state",
+				common: {
+					name: "Max Volume setting",
+					type: "number",
+					role: "value.max",
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			result = await this.callAPI("netRemote.sys.caps.volumeSteps");
+			if(result.success)
+			{
+				await this.setStateAsync("audio.maxVolume", {val: result.result.value[0].u8[0]-1, ack: true});
+				this.config.VolumeMax = result.result.value[0].u8[0] - 1;
+			}
+		}
+		catch (err)
 		{
-			await this.setStateAsync("audio.maxVolume", {val: result.result.value[0].u8[0]-1, ack: true});
-			this.config.VolumeMax = result.result.value[0].u8[0] - 1;
+			this.log.info(`Device ${this.config.IP} not reachable`);
+			throw err;
 		}
 	}
 
@@ -1306,7 +1313,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.createSession();
 		}
 		conn = await this.getStateAsync("info.connection");
-		this.log.debug(JSON.stringify(conn));
+		//this.log.debug(JSON.stringify(conn));
 		if(conn !== null && conn !== undefined && conn.val)
 		{
 			let url = "";
@@ -1343,30 +1350,23 @@ class FrontierSilicon extends utils.Adapter {
 				url = `${this.config.fsAPIURL}/GET/${command}?pin=${this.config.PIN}&sid=${this.config.SessionID}`;
 			}
 			this.log.debug(url);
-			await axios.get(url)
-				.then(data => {
-				//log.debug(device.)
-					const parser = new xml2js.Parser();
-					parser.parseStringPromise(data.data).then(function (result) {
-						log.debug(JSON.stringify(result.fsapiResponse));
-						answer.result = result.fsapiResponse;
-						answer.success = result.fsapiResponse.status[0].toString() == "FS_OK";
-					})
-						.catch(function (err) {
-							// Failed});
-							log.debug(JSON.stringify(err));
-							log.error("Parse error");
-						});
-				})
-				.catch(function (error)
-				{
-					if (error.response)
-					{
-						log.error("Connection error");
-						log.debug(JSON.stringify(error));
-						adapter.createSession();
-					}
-				});
+			try  {
+				await axios.get(url)
+					.then(data => {
+						//log.debug(device.)
+						const parser = new xml2js.Parser();
+						parser.parseStringPromise(data.data)
+							.then(function (result) {
+								log.debug(JSON.stringify(result.fsapiResponse));
+								answer.result = result.fsapiResponse;
+								answer.success = result.fsapiResponse.status[0].toString() == "FS_OK";
+							});
+					});
+			} catch (error) {
+				log.error("Connection error");
+				log.debug(JSON.stringify(error));
+				adapter.createSession();
+			}
 		}
 		else
 		{
@@ -1385,113 +1385,106 @@ class FrontierSilicon extends utils.Adapter {
 		let connected = false;
 		if(this.config.fsAPIURL !== null)
 		{
-			url = `${this.config.fsAPIURL}/CREATE_SESSION?pin=${this.config.PIN}`;
-			log.debug(url);
-			await axios.get(url)
-				.then(device => {
-				//log.debug(device.)
-					const parser = new xml2js.Parser();
-					parser.parseStringPromise(device.data)
-						.then(function (result) {
-							log.debug(result.fsapiResponse.sessionId);
-							dev.Session = result.fsapiResponse.sessionId;
-							log.debug("Session created");
-							connected = true;
-							sessionTimestamp = Date.now();
-						})
-						.catch(function (err) {
-							// Failed});
-							log.debug(JSON.stringify(err));
-							log.debug("No session created");
-						});
-				})
-				.catch(function (error)
+			try {
+				url = `${this.config.fsAPIURL}/CREATE_SESSION?pin=${this.config.PIN}`;
+				log.debug(url);
+				await axios.get(url)
+					.then(device => {
+						//log.debug(device.)
+						const parser = new xml2js.Parser();
+						parser.parseStringPromise(device.data)
+							.then(function (result) {
+								log.debug(result.fsapiResponse.sessionId);
+								dev.Session = result.fsapiResponse.sessionId;
+								log.debug("Session created");
+								connected = true;
+								sessionTimestamp = Date.now();
+							});
+					});
+				this.config.SessionID = Number(dev.Session);
+				//this.config.SessionTS = Date.now();
+				await this.setStateAsync("info.connection", connected, true);
+				if(this.log.level=="debug" || this.log.level=="silly")
 				{
-					if (error.response)
-					{
-						log.warn("Falsche PIN?");
-						log.warn(JSON.stringify(error));
-						return;
-					}
-				});
-			this.config.SessionID = Number(dev.Session);
-			//this.config.SessionTS = Date.now();
-			await this.setStateAsync("info.connection", connected, true);
-			if(this.log.level=="debug" || this.log.level=="silly")
-			{
-				await this.setObjectNotExistsAsync("debug", {
-					type: "channel",
-					common: {
-						name: "Debugging Tools",
-					},
-					native: {},
-				});
-				await this.setObjectNotExistsAsync("debug.resetSession", {
-					type: "state",
-					common: {
-						name: "Reset Session",
-						type: "boolean",
-						role: "button",
-						read: false,
-						write: true,
-					},
-					native: {},
-				});
-				await this.setObjectNotExistsAsync("debug.session", {
-					type: "state",
-					common: {
-						name: "Session ID",
-						type: "number",
-						role: "value",
-						read: true,
-						write: false,
-					},
-					native: {},
-				});
-				await this.setObjectNotExistsAsync("debug.sessionCreationTime", {
-					type: "state",
-					common: {
-						name: "Session Timestamp",
-						type: "number",
-						role: "value.time",
-						read: true,
-						write: false,
-					},
-					native: {},
-				});
-				await this.setObjectNotExistsAsync("debug.lastNotifyCall", {
-					type: "state",
-					common: {
-						name: "Timestamp of last notify call",
-						type: "number",
-						role: "value.time",
-						read: true,
-						write: false,
-					},
-					native: {},
-				});
-				await this.setObjectNotExistsAsync("debug.lastNotifyError", {
-					type: "state",
-					common: {
-						name: "Error of last notify call",
-						type: "string",
-						role: "text",
-						read: true,
-						write: false,
-					},
-					native: {},
-				});
+					await this.setObjectNotExistsAsync("debug", {
+						type: "channel",
+						common: {
+							name: "Debugging Tools",
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync("debug.resetSession", {
+						type: "state",
+						common: {
+							name: "Reset Session",
+							type: "boolean",
+							role: "button",
+							read: false,
+							write: true,
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync("debug.session", {
+						type: "state",
+						common: {
+							name: "Session ID",
+							type: "number",
+							role: "value",
+							read: true,
+							write: false,
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync("debug.sessionCreationTime", {
+						type: "state",
+						common: {
+							name: "Session Timestamp",
+							type: "number",
+							role: "value.time",
+							read: true,
+							write: false,
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync("debug.lastNotifyCall", {
+						type: "state",
+						common: {
+							name: "Timestamp of last notify call",
+							type: "number",
+							role: "value.time",
+							read: true,
+							write: false,
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync("debug.lastNotifyError", {
+						type: "state",
+						common: {
+							name: "Error of last notify call",
+							type: "string",
+							role: "text",
+							read: true,
+							write: false,
+						},
+						native: {},
+					});
 
-				await this.setStateAsync("debug.session", {val: Number(dev.Session), ack: true});
-				await this.setStateAsync("debug.sessionCreationTime", { val: sessionTimestamp, ack: true});
+					await this.setStateAsync("debug.session", {val: Number(dev.Session), ack: true});
+					await this.setStateAsync("debug.sessionCreationTime", { val: sessionTimestamp, ack: true});
 
+				}
+				else
+				{
+					await this.deleteChannelAsync("debug");
+				}
+
+				await this.sleep(200);
 			}
-			else
-			{
-				await this.deleteChannelAsync("debug");
+			catch (err) {
+			// createSession failed});
+				log.error(err);
+				log.info("No session created");
 			}
-
-			await this.sleep(200);
 		}
 	}
 
@@ -1520,7 +1513,7 @@ class FrontierSilicon extends utils.Adapter {
 		return new Promise((resolve) => {
 			sleeps.set(ts, resolve);
 			setTimeout(resolve, ms);
-		});;
+		});
 	}
 
 	async onFSAPIMessage()
