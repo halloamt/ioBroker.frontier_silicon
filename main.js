@@ -174,7 +174,7 @@ class FrontierSilicon extends utils.Adapter {
 		if (notifyTimestamp <= Date.now() - (this.config.PollIntervall * 1000 + 40000))
 		{
 			clearTimeout(timeOutMessage);
-			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), 1); // Poll states every configured seconds
+			timeOutMessage = setTimeout(() => this.onFSAPIMessage(), this.config.PollIntervall * 1000); // Poll states every configured seconds
 		}
 		if (state) {
 			if (!id || !state || state.ack) return;
@@ -1327,7 +1327,6 @@ class FrontierSilicon extends utils.Adapter {
 		{
 			let url = "";
 			const log = this.log;
-			const adapter = this;
 
 			if(command.toUpperCase().startsWith("/FSAPI"))
 			{
@@ -1358,7 +1357,7 @@ class FrontierSilicon extends utils.Adapter {
 			{
 				url = `${this.config.fsAPIURL}/GET/${command}?pin=${this.config.PIN}&sid=${this.config.SessionID}`;
 			}
-			this.log.debug(url);
+			this.log.debug(`Call API with url: ${url}`);
 			try  {
 				await axios.get(url)
 					.then(data => {
@@ -1372,14 +1371,17 @@ class FrontierSilicon extends utils.Adapter {
 							});
 					});
 			} catch (error) {
-				log.error("Connection error");
-				log.debug(JSON.stringify(error));
-				adapter.createSession();
+				log.error("Session error, trying to reestablish session...");
+				// @ts-ignore
+				log.debug(error);
+				await this.setStateAsync("info.connection", false, true);
 			}
 		}
 		else
 		{
-			this.log.error("No connection");
+			this.log.error("No connection, retrying...");
+			await this.sleep(30000); //retry in 30 sec
+			//this.createSession();
 		}
 		//this.log.debug(JSON.stringify(answer.result));
 		return answer;
@@ -1389,23 +1391,23 @@ class FrontierSilicon extends utils.Adapter {
 	{
 		const log = this.log;
 		const dev = {};
-		log.debug("CreateSession");
+		log.info("Create Session");
 		let url;
 		let connected = false;
 		if(this.config.fsAPIURL !== null)
 		{
 			try {
 				url = `${this.config.fsAPIURL}/CREATE_SESSION?pin=${this.config.PIN}`;
-				log.debug(url);
+				log.debug(`Create session with ${url}`);
 				await axios.get(url)
 					.then(device => {
 						//log.debug(device.)
 						const parser = new xml2js.Parser();
 						parser.parseStringPromise(device.data)
 							.then(function (result) {
-								log.debug(result.fsapiResponse.sessionId);
+								//log.debug(result.fsapiResponse.sessionId);
 								dev.Session = result.fsapiResponse.sessionId;
-								log.debug("Session created");
+								log.info(`Session ${dev.Session} created`);
 								connected = true;
 								sessionTimestamp = Date.now();
 							});

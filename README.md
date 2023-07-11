@@ -194,6 +194,7 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 
 - (pdbjjens) Breaking Changes: node>=14, js-contoller>=4 and admin>=5 required
 - (pdbjjens) New: json config UI
+- (pdbjjens) New: Re-establish session if network connection is lost
 - (pdbjjens) New: Remove obsolete unit testing
 - (pdbjjens) Fix: Prevent crashes if radio device is not reachable
 
