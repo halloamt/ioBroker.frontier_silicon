@@ -13,13 +13,14 @@ const xml2js = require("xml2js");
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
-
+const SESSION_RETRYS = 2;
 let timeOutMessage;
 let sessionTimestamp = 0;
 let notifyTimestamp = 0;
 let lastSleepClear = 0;
 const sleeps = new Map();
 let polling = false;
+let sessionRetryCnt = SESSION_RETRYS;
 
 class FrontierSilicon extends utils.Adapter {
 
@@ -1493,9 +1494,15 @@ class FrontierSilicon extends utils.Adapter {
 			}
 			catch (err) {
 			// createSession failed});
+				if (sessionRetryCnt > 0) {
 				// @ts-ignore
-				log.error(err);
-				log.info("No session created");
+					log.error(err);
+					log.info(`No session created, retry ${sessionRetryCnt} more times`);
+					--sessionRetryCnt;
+				} else {
+					sessionRetryCnt = SESSION_RETRYS;
+					this.terminate(`Terminated Adapter after ${SESSION_RETRYS} Session Re-establish Attempts`, 11);
+				}
 			}
 		}
 	}
