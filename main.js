@@ -13,7 +13,7 @@ const xml2js = require("xml2js");
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
-const SESSION_RETRYS = 2;
+const SESSION_RETRYS = 9; // Total number of session re-establish attempts before adapter is terminated = SESSION_RETRYS + 1
 let timeOutMessage;
 let sessionTimestamp = 0;
 let notifyTimestamp = 0;
@@ -131,12 +131,7 @@ class FrontierSilicon extends utils.Adapter {
 	onUnload(callback) {
 		try {
 			// Here you must clear all timeouts or intervals that may still be active
-			// clearTimeout(timeout1);
-			// clearTimeout(timeout2);
-			// ...
-			// clearInterval(interval1);
 			clearTimeout(timeOutMessage);
-			// @ts-ignore
 			sleeps.forEach((value) =>
 			{
 				clearTimeout(value);
@@ -1380,9 +1375,7 @@ class FrontierSilicon extends utils.Adapter {
 		}
 		else
 		{
-			this.log.error("No connection, retrying...");
-			await this.sleep(30000); //retry in 30 sec
-			//this.createSession();
+			this.log.info("No connection, retrying...");
 		}
 		//this.log.debug(JSON.stringify(answer.result));
 		return answer;
@@ -1410,6 +1403,7 @@ class FrontierSilicon extends utils.Adapter {
 								dev.Session = result.fsapiResponse.sessionId;
 								log.info(`Session ${dev.Session} created`);
 								connected = true;
+								sessionRetryCnt = SESSION_RETRYS;
 								sessionTimestamp = Date.now();
 							});
 					});
@@ -1499,9 +1493,16 @@ class FrontierSilicon extends utils.Adapter {
 					log.error(err);
 					log.info(`No session created, retry ${sessionRetryCnt} more times`);
 					--sessionRetryCnt;
-				} else {
+				} else { //terminate adapter after unsuccessful session retries
 					sessionRetryCnt = SESSION_RETRYS;
-					this.terminate(`Terminated Adapter after ${SESSION_RETRYS} Session Re-establish Attempts`, 11);
+					//adapter.terminate does not clear up timers or intervals
+					clearTimeout(timeOutMessage);
+					sleeps.forEach((value) =>
+					{
+						clearTimeout(value);
+					});
+					sleeps.clear();
+					this.terminate(`Adapter terminated after ${++sessionRetryCnt} Session Re-establish Attempts`, 11);
 				}
 			}
 		}
