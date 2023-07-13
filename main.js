@@ -1388,6 +1388,8 @@ class FrontierSilicon extends utils.Adapter {
 		log.info("Create Session");
 		let url;
 		let connected = false;
+		const friendlyName = await this.getStateAsync("device.friendlyName");
+		const devIp = this.config.IP;
 		if(this.config.fsAPIURL !== null)
 		{
 			try {
@@ -1401,7 +1403,8 @@ class FrontierSilicon extends utils.Adapter {
 							.then(function (result) {
 								//log.debug(result.fsapiResponse.sessionId);
 								dev.Session = result.fsapiResponse.sessionId;
-								log.info(`Session ${dev.Session} created`);
+								// @ts-ignore
+								log.info(`Session ${dev.Session} with Device ${friendlyName.val} @ ${devIp} created`);
 								connected = true;
 								sessionRetryCnt = SESSION_RETRYS;
 								sessionTimestamp = Date.now();
