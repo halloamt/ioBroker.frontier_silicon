@@ -9,11 +9,14 @@
 const utils = require("@iobroker/adapter-core");
 const axios = require("axios").default;
 // @ts-ignore
+// @ts-ignore
 const xml2js = require("xml2js");
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
 const SESSION_RETRYS = 9; // Total number of session re-establish attempts before adapter is terminated = SESSION_RETRYS + 1
+const IP_FORMAT = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+const PIN_FORMAT = /^(\d{4})$/;
 let timeOutMessage;
 let sessionTimestamp = 0;
 let notifyTimestamp = 0;
@@ -21,6 +24,7 @@ let lastSleepClear = 0;
 const sleeps = new Map();
 let polling = false;
 let sessionRetryCnt = SESSION_RETRYS;
+
 
 class FrontierSilicon extends utils.Adapter {
 
@@ -53,11 +57,17 @@ class FrontierSilicon extends utils.Adapter {
 		//this.log.info("config PIN: " + this.config.PIN);
 		//this.log.info("config IP: " + this.config.IP);
 		if (!this.config.IP) {
-			this.log.error(`Server IP is empty - please check instance configuration of ${this.namespace}`);
+			this.log.error(`Device IP is empty - please check instance configuration of ${this.namespace}`);
+			return;
+		} else if (!this.config.IP.match(IP_FORMAT)) {
+			this.log.error(`Device IP format not valid. Should be e.g. 192.168.123.123`);
 			return;
 		}
 		if (!this.config.PIN) {
 			this.log.error(`PIN code is empty - please check instance configuration of ${this.namespace}`);
+			return;
+		} else if (!this.config.PIN.match(PIN_FORMAT)) {
+			this.log.error(`Device PIN format not valid. Should be four decimal digits. Default is 1234`);
 			return;
 		}
 		try {
@@ -70,6 +80,30 @@ class FrontierSilicon extends utils.Adapter {
 		}
 
 		//await this.createSession();
+		try {
+			const conn = await this.getStateAsync("info.connection");
+			if(conn === null || conn === undefined || !conn.val || this.config.SessionID === 0)
+			{
+				await this.createSession();
+			}
+		} catch (err) {
+			// @ts-ignore
+			//this.log.error(err.message);
+			// @ts-ignore
+			if (err.response) {
+				// @ts-ignore
+				if (err.response.status === 403) {
+					this.log.error("Wrong PIN - enter PIN set on device. Default is 1234");
+					return;
+				}
+			// @ts-ignore
+			} else if (err.request) {
+				// @ts-ignore
+				this.log.error(err);
+			}
+		}
+
+
 		await this.discoverDeviceFeatures();
 		await this.discoverState();
 
@@ -131,19 +165,22 @@ class FrontierSilicon extends utils.Adapter {
 	onUnload(callback) {
 		try {
 			// Here you must clear all timeouts or intervals that may still be active
-			clearTimeout(timeOutMessage);
-			sleeps.forEach((value) =>
-			{
-				clearTimeout(value);
-			});
-			sleeps.clear();
-
+			this.deleteSession;
+			this.clearUp();
 			callback();
 		} catch (e) {
 			callback();
 		}
 	}
 
+	clearUp() {
+		clearTimeout(timeOutMessage);
+		sleeps.forEach((value) =>
+		{
+			clearTimeout(value);
+		});
+		sleeps.clear();
+	}
 	// If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
 	// You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
 	// /**
@@ -467,7 +504,43 @@ class FrontierSilicon extends utils.Adapter {
 
 	async discoverDeviceFeatures()
 	{
-		const result = await this.callAPI("netRemote.sys.caps.validModes", "", -1, 100);
+		await this.setObjectNotExistsAsync("device.radioId", {
+			type: "state",
+			common: {
+				name: "Radio ID",
+				type: "string",
+				role: "text",
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+		let result = await this.callAPI("netRemote.sys.info.radioId");
+		if(result.success)
+		{
+			await this.setStateAsync("device.radioId", {val: result.result.value[0].c8_array[0], ack: true});
+		}
+
+		//netRemote.sys.caps.volumeSteps
+		await this.setObjectNotExistsAsync("audio.maxVolume", {
+			type: "state",
+			common: {
+				name: "Max Volume setting",
+				type: "number",
+				role: "value.max",
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+		result = await this.callAPI("netRemote.sys.caps.volumeSteps");
+		if(result.success)
+		{
+			await this.setStateAsync("audio.maxVolume", {val: result.result.value[0].u8[0]-1, ack: true});
+			this.config.VolumeMax = result.result.value[0].u8[0] - 1;
+		}
+
+		result = await this.callAPI("netRemote.sys.caps.validModes", "", -1, 100);
 
 		if(!result.success) return;
 
@@ -1184,7 +1257,7 @@ class FrontierSilicon extends utils.Adapter {
 		const dev = {};
 		try
 		{
-			await axios.get(`http://${this.config.IP}/devices`)
+			await axios.get(`http://${this.config.IP}/device`)
 				.then(async device => {
 				//log.debug(device.)
 					const parser = new xml2js.Parser();
@@ -1246,46 +1319,10 @@ class FrontierSilicon extends utils.Adapter {
 				await this.setStateAsync("device.webfsapi", { val: dev.webfsapi.toString(), ack: true });
 				this.config.fsAPIURL = dev.webfsapi.toString();
 			}
-
-			await this.setObjectNotExistsAsync("device.radioId", {
-				type: "state",
-				common: {
-					name: "Radio ID",
-					type: "string",
-					role: "text",
-					read: true,
-					write: false,
-				},
-				native: {},
-			});
-			let result = await this.callAPI("netRemote.sys.info.radioId");
-			if(result.success)
-			{
-				await this.setStateAsync("device.radioId", {val: result.result.value[0].c8_array[0], ack: true});
-			}
-
-			//netRemote.sys.caps.volumeSteps
-			await this.setObjectNotExistsAsync("audio.maxVolume", {
-				type: "state",
-				common: {
-					name: "Max Volume setting",
-					type: "number",
-					role: "value.max",
-					read: true,
-					write: false,
-				},
-				native: {},
-			});
-			result = await this.callAPI("netRemote.sys.caps.volumeSteps");
-			if(result.success)
-			{
-				await this.setStateAsync("audio.maxVolume", {val: result.result.value[0].u8[0]-1, ack: true});
-				this.config.VolumeMax = result.result.value[0].u8[0] - 1;
-			}
 		}
 		catch (err)
 		{
-			this.log.info(`Device ${this.config.IP} not reachable`);
+			this.log.debug(JSON.stringify(err));
 			throw err;
 		}
 	}
@@ -1300,25 +1337,17 @@ class FrontierSilicon extends utils.Adapter {
 	 */
 	async callAPI(command, value = "", start = -65535, maxItems = 65535, notify = false)
 	{
-		//const log = this.log;
-		let conn = await this.getStateAsync("info.connection");
 		const answer = {};
 		answer.success = false;
 
-		if(conn !== null && conn !== undefined)
+		if(sessionTimestamp <= Date.now() - this.config.RecreateSessionInterval * 60 * 1000)
 		{
-			if(!conn.val || this.config.SessionID === 0
-				|| sessionTimestamp <= Date.now() - this.config.RecreateSessionInterval * 60 * 1000)
-			{
-				await this.createSession();
-			}
+			this.log.debug("Recreating Session after RecreateSessionInterval");
+			await this.createSession(true); //recreate session
 		}
-		else
-		{
-			await this.createSession();
-		}
-		conn = await this.getStateAsync("info.connection");
-		//this.log.debug(JSON.stringify(conn));
+
+		const conn = await this.getStateAsync("info.connection");
+
 		if(conn !== null && conn !== undefined && conn.val)
 		{
 			let url = "";
@@ -1367,31 +1396,28 @@ class FrontierSilicon extends utils.Adapter {
 							});
 					});
 			} catch (error) {
-				log.error("Session error, trying to reestablish session...");
+				this.log.error("Session error, trying to reestablish session...");
 				// @ts-ignore
-				log.debug(error);
+				this.log.debug(JSON.stringify(error));
 				await this.setStateAsync("info.connection", false, true);
+				this.createSession();
 			}
 		}
-		else
-		{
-			this.log.info("No connection, retrying...");
-		}
-		//this.log.debug(JSON.stringify(answer.result));
 		return answer;
 	}
 
-	async createSession()
+	async createSession(reCreateSession = false)
 	{
 		const log = this.log;
 		const dev = {};
-		log.info("Create Session");
 		let url;
 		let connected = false;
-		const friendlyName = await this.getStateAsync("device.friendlyName");
-		const devIp = this.config.IP;
-		if(this.config.fsAPIURL !== null)
-		{
+		if (this.config.fsAPIURL !== null) {
+			const devName = await this.getStateAsync("device.friendlyName");
+			const devIp = this.config.IP;
+			// @ts-ignore
+			if (!reCreateSession) log.info(`Trying to create session with ${devName.val} @ ${devIp} ...`);
+
 			try {
 				url = `${this.config.fsAPIURL}/CREATE_SESSION?pin=${this.config.PIN}`;
 				log.debug(`Create session with ${url}`);
@@ -1404,7 +1430,13 @@ class FrontierSilicon extends utils.Adapter {
 								//log.debug(result.fsapiResponse.sessionId);
 								dev.Session = result.fsapiResponse.sessionId;
 								// @ts-ignore
-								log.info(`Session ${dev.Session} with Device ${friendlyName.val} @ ${devIp} created`);
+								if (!reCreateSession) {
+									// @ts-ignore
+									log.info(`Session ${dev.Session} with Device ${devName.val} @ ${devIp} created`);
+								} else {
+									// @ts-ignore
+									log.debug(`Session ${dev.Session} with Device ${devName.val} @ ${devIp} created`);
+								}
 								connected = true;
 								sessionRetryCnt = SESSION_RETRYS;
 								sessionTimestamp = Date.now();
@@ -1490,25 +1522,87 @@ class FrontierSilicon extends utils.Adapter {
 				await this.sleep(200);
 			}
 			catch (err) {
-			// createSession failed});
-				if (sessionRetryCnt > 0) {
+			// create session failed
+				await this.setStateAsync("info.connection", connected, true);
+				this.log.debug (JSON.stringify(err));
 				// @ts-ignore
-					log.error(err);
-					log.info(`No session created, retry ${sessionRetryCnt} more times`);
-					--sessionRetryCnt;
-				} else { //terminate adapter after unsuccessful session retries
-					sessionRetryCnt = SESSION_RETRYS;
-					//adapter.terminate does not clear up timers or intervals
-					clearTimeout(timeOutMessage);
-					sleeps.forEach((value) =>
-					{
-						clearTimeout(value);
-					});
-					sleeps.clear();
-					this.terminate(`Adapter terminated after ${++sessionRetryCnt} Session Re-establish Attempts`, 11);
+				if (err.response) { // catch wrong PIN
+					// @ts-ignore
+					if (err.response.status === 403) {
+						throw (err);
+					}
+				// @ts-ignore
+				} else if (err.request) { // catch device not reachable
+					// @ts-ignore
+					this.log.error(err);
+					// @ts-ignore
+					if (err.code == "ETIMEDOUT") {
+						if (sessionRetryCnt > 0) {
+						// @ts-ignore
+						//this.log.error(JSON.stringify(err));
+							this.log.info(`No session created, retry ${sessionRetryCnt} more times`);
+							--sessionRetryCnt;
+							this.createSession();
+						} else { //terminate adapter after unsuccessful session retries
+							sessionRetryCnt = SESSION_RETRYS;
+							//adapter.terminate does not clear up timers or intervals
+							this.clearUp();
+							this.terminate(`Adapter terminated after ${++sessionRetryCnt} Session Re-establish Attempts`, 11);
+						}
+					}
+				} else {
+					this.log.error (JSON.stringify(err));
 				}
 			}
 		}
+	}
+
+	async deleteSession()
+	{
+		const log = this.log;
+		let url;
+		let connected = false;
+		if (this.config.fsAPIURL !== null) {
+			// @ts-ignore
+			log.debug(`Deleting Session with ${this.config.SessionID}`);
+
+			try {
+				url = `${this.config.fsAPIURL}/DELETE_SESSION?pin=${this.config.PIN}&sid=${this.config.SessionID}`;
+				log.debug(`Delete session with ${url}`);
+				await axios.get(url)
+					.then(device => {
+						//log.debug(device.)
+						const parser = new xml2js.Parser();
+						parser.parseStringPromise(device.data)
+							.then(function (result) {
+								//log.debug(result.fsapiResponse.sessionId);
+								//dev.Session = result.fsapiResponse.sessionId;
+								// @ts-ignore
+								if (result.fsapiResponse.status === "FS_OK") {
+									// @ts-ignore
+									log.debug(`Session ${this.config.SessionID} deleted`);
+								} else {
+									// @ts-ignore
+									log.debug(`Session ${this.config.SessionID} could not be deleted`);
+								}
+							});
+					});
+				this.config.SessionID = 0;
+				connected = false;
+				// await this.setStateAsync("info.connection", connected, true);
+				if(this.log.level=="debug" || this.log.level=="silly")
+				{
+					await this.deleteChannelAsync("debug");
+				}
+				await this.sleep(200);
+			}
+			catch (err) {
+			// delete session failed due to connection error
+				connected = false;
+				this.log.debug ("Delete Session failed: " + JSON.stringify(err));
+			}
+		}
+		await this.setStateAsync("info.connection", connected, true);
 	}
 
 	// If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
@@ -1562,6 +1656,7 @@ class FrontierSilicon extends utils.Adapter {
 								timers.push(key);
 							}
 						});
+						// @ts-ignore
 						// @ts-ignore
 						timers.forEach((value, index) => sleeps.delete(index));
 					}
