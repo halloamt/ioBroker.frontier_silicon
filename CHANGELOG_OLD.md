@@ -1,4 +1,8 @@
 # Older changes
+## 0.0.7 und 0.0.8
+
+- (halloamt) Formal but neccessary stuff for ioBroker
+
 ## 0.0.6
 
 - (halloamt) Nothing really, small stuff for npm

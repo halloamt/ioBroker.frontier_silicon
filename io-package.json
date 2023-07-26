@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "frontier_silicon",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "news": {
+      "0.1.1": {
+        "en": "Breaking Change: node>=14, js-contoller>=4 and admin>=5 required\nBreaking Change: PIN encryption and validity check of all parameters in config UI\nBreaking Change: Type of `frontier_silicon.X.modes.selectPreset` changed from \"string\" to  \"number\"\nChange: Validity check of all parameters in config UI\nChange: Re-establish session if network connection is lost\nNew: Synchronization of power, volume and mute states with the UNDOK App",
+        "de": "Breaking Change: node>=14, js-contoller>=4 und admin>=5 erforderlich\nBreaking Change: PIN-Verschlüsselung und Gültigkeitskontrolle aller Parameter in config UI\nBreaking Change: Typ von frontier_silicon.X.modes.select geändert von String zu Number\nÄnderung: Validierung aller Parameter in config UI\nÄnderung: Wiederherstellen der Session, wenn Netzwerkverbindung verloren geht\nNeu: Synchronisierung von Power-, Volume- und Mute-Zuständen mit der UNDOK App",
+        "ru": "Изменение разрыва: node>=14, js-contoller>=4 и admin>=5 требуется\nИзменение: шифрование PIN и проверка действия всех параметров в config UI\nИзменение разрыва: Тип frontier_silicon.X.modes.select Пресет изменился из строки на номер\nИзменение: Проверка валидности всех параметров в config UI\nИзменить: Восстановить сессию, если сетевое соединение потеряно\nНовое: Синхронизация мощности, объемов и мутных государств с приложением UNDOK",
+        "pt": "Breaking Change: node>=14, js-contoller>=4 e admin>=5 obrigatório\nAlteração de ruptura: criptografia PIN e verificação de validade de todos os parâmetros em UI de configuração\nAlteração de ruptura: Tipo de fronteira_silicon.X.modes.select Preset alterado de string para número\nAlteração: Verificação de validade de todos os parâmetros em UI de configuração\nAlterar: restabelecer sessão se a conexão de rede for perdida\nNovo: Sincronização de estados de poder, volume e mudo com o aplicativo UNDOK",
+        "nl": "Vertaling:\nPIN encryptie en geldigheidscontrole van alle parameters in Config UI\nVertaling: Druk veranderd van touw naar nummer\nValidity controle over alle parameters in Config UI\nVertaling:\nVertaling:",
+        "fr": "Changement de rupture: nodeю=14, js-contoller vaccin=4 et admin>5 requis\nChangement de rupture: cryptage PIN et vérification de validité de tous les paramètres dans config UI\nChangement de rupture: Type de frontier_silicon.X.modes.select Preset a changé de chaîne en nombre\nChangement: Vérification de la validité de tous les paramètres dans config UI\nChangement: Réinitialiser la session si la connexion réseau est perdue\nNouveau: Synchronisation de puissance, de volume et d'états muets avec l'application UNDOK",
+        "it": "Cambiamento di rottura: nodo>=14, js-contoller>=4 e admin>=5 richiesto\nCambiamento di rottura: crittografia PIN e controllo di validità di tutti i parametri in configurazione UI\nCambiamento di rottura: Tipo di frontiera_silicon.X.modes.select Preimpostazione modificata da stringa a numero\nModifica: Controllo di validità di tutti i parametri in configurazione UI\nModifica: Ristabilire la sessione se la connessione di rete è persa\nNuovo: Sincronizzazione di potere, volume e stati muti con l'App UNDOK",
+        "es": "Cambio de ruptura: node confianza=14, js-contoller confianza=4 y admin=5 requerido\nCambio de ruptura: Cifrado de PIN y verificación de validez de todos los parámetros en config UI\nCambio de ruptura: Tipo de frontera_silicon.X.modes.select Preset cambió de cadena a número\nCambio: Verificación de validez de todos los parámetros en config UI\nCambio: restablecer sesión si se pierde la conexión de red\nNuevo: Sincronización del poder, el volumen y los estados mudos con la aplicación de la UNDOK",
+        "pl": "Zmiana: węzeł >=14, js-contoller>=4 i admin>=5 wymaganych\nZmiana: PIN szyfrowanie i ważność sprawdzania wszystkich parametrów w konfiguście\nZmiana graniczna Preset zmienił się z ciągów na liczbę\nZmiana: Własność sprawdza wszystkie parametry w konfigubie\nZmiana: Powstawanie, jeśli połączenia sieciowe się nie utracą\nNowy: Synchronizacja władzy, objętości i stanu mute z UNDOK",
+        "uk": "Зміна несправностей: вузол>=14, js-contoller>=4 і admin>=5 потрібно\nЗміна несправностей: PIN-кодування та перевірка терміну дії всіх параметрів в конфігурації UI\nЗміна несправностей: тип фронтальної частини_silicon.X.modes.select Подати зміни з рядка на номер\nЗміна: Перевірка дійсності всіх параметрів в config UI\nЗміна: Відновити сеанс, якщо мережеве підключення втрачено\nНовий: Синхронізація повноважень, об’ємних та матових станів з додатком UNDOK",
+        "zh-cn": "排减变化:不de>=14, js-contoller>=4和专用>=5\n打破变化:加密和有效检查伊格特的所有参数\n打破变化:边界的类型:硅-X.modes.select B. 预 选\n变化:对伊格特的所有参数进行核查\n变化:如果网络联系丧失,重建会议\n新的:与联合国DOKapp的电力、数量和变性国家的统一"
+      },
       "0.1.0": {
         "en": "Breaking Changes: node>=14, js-contoller>=4 and admin>=5 required\nNew: json config UI\nNew: Re-establish session if network connection is lost\nNew: Remove obsolete unit testing\nFix: Prevent crashes if radio device is not reachable",
         "de": "Breaking Changes: node>=14, js-contoller>=4 und admin>=5 erforderlich\nNeu: json config UI\nNeu: Wiederherstellen der Sitzung, wenn Netzwerkverbindung verloren geht\nNeu: Entfernen Sie obsolete Gerätetests\nFix: Verhindern Sie Abstürzen, wenn Funkgerät nicht erreichbar ist",
@@ -80,19 +93,6 @@
         "pl": "Zdjęcia i ikony",
         "uk": "Фотографії та іконки",
         "zh-cn": "家具和设备"
-      },
-      "0.0.5": {
-        "en": "Even more buttons, bugfixes",
-        "de": "Noch mehr Tasten, Bugfixes",
-        "ru": "Еще больше кнопок, багфиксов",
-        "pt": "Ainda mais botões, correções de bugs",
-        "nl": "Nog meer knoppen",
-        "fr": "Encore plus de boutons, bugfixes",
-        "it": "Ancora più pulsanti, bugfix",
-        "es": "Aún más botones, bugfixes",
-        "pl": "Nawet inne przyciski, trąbka",
-        "uk": "Ще більше кнопок, фіксаторів",
-        "zh-cn": "甚至更多的州,黑暗"
       }
     },
     "titleLang": {
