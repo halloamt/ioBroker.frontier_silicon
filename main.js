@@ -72,6 +72,7 @@ class FrontierSilicon extends utils.Adapter {
 		catch (err) {
 			// @ts-ignore
 			this.log.error(err);
+			this.log.info("Connection error, Device not reachable");
 			return;
 		}
 
@@ -1402,16 +1403,26 @@ class FrontierSilicon extends utils.Adapter {
 				if (err.response) { // catch Session error
 					// @ts-ignore
 					if (err.response.status === 404) {
-						//throw (err);
-
 						this.log.info("Session error, trying to reestablish session...");
 						// @ts-ignore
 						this.log.debug("callAPI Error: " + JSON.stringify(err));
 						await this.setStateAsync("info.connection", false, true);
 						this.createSession();
 					}
-				} else {
-					this.log.debug("Unknown callAPI Error: " + JSON.stringify(err));
+				// @ts-ignore
+				} else if (err.request) { // catch device not reachable
+					// @ts-ignore
+					this.log.error(err);
+					// @ts-ignore
+					if (err.code == "ETIMEDOUT" || err.code == "ECONNRESET") {
+						this.log.info("Connection error, trying to reestablish session...");
+						// @ts-ignore
+						this.log.debug("callAPI Error: " + JSON.stringify(err));
+						await this.setStateAsync("info.connection", false, true);
+						this.createSession();
+					} else {
+						this.log.debug("Unknown callAPI Error: " + JSON.stringify(err));
+					}
 				}
 			}
 		}
