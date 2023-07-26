@@ -9,7 +9,6 @@
 const utils = require("@iobroker/adapter-core");
 const axios = require("axios").default;
 // @ts-ignore
-// @ts-ignore
 const xml2js = require("xml2js");
 
 // Load your modules here, e.g.:
@@ -17,11 +16,12 @@ const xml2js = require("xml2js");
 const SESSION_RETRYS = 9; // Total number of session re-establish attempts before adapter is terminated = SESSION_RETRYS + 1
 const IP_FORMAT = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 const PIN_FORMAT = /^(\d{4})$/;
+const sleeps = new Map();
+
 let timeOutMessage;
 let sessionTimestamp = 0;
 let notifyTimestamp = 0;
 let lastSleepClear = 0;
-const sleeps = new Map();
 let polling = false;
 let sessionRetryCnt = SESSION_RETRYS;
 
@@ -52,10 +52,6 @@ class FrontierSilicon extends utils.Adapter {
 		// Reset the connection indicator during startup
 		await this.setStateAsync("info.connection", false, true);
 
-		// The adapters config (in the instance object everything under the attribute "native") is accessible via
-		// this.config:
-		//this.log.info("config PIN: " + this.config.PIN);
-		//this.log.info("config IP: " + this.config.IP);
 		if (!this.config.IP) {
 			this.log.error(`Device IP is empty - please check instance configuration of ${this.namespace}`);
 			return;
@@ -79,34 +75,33 @@ class FrontierSilicon extends utils.Adapter {
 			return;
 		}
 
-		//await this.createSession();
-		try {
-			const conn = await this.getStateAsync("info.connection");
-			if(conn === null || conn === undefined || !conn.val || this.config.SessionID === 0)
-			{
+		// createSession() to check for PIN mismatch;
+		const conn = await this.getStateAsync("info.connection");
+		if(conn === null || conn === undefined || !conn.val || this.config.SessionID === 0)
+		{
+			try {
 				await this.createSession();
-			}
-		} catch (err) {
+			} catch (err) {
 			// @ts-ignore
-			//this.log.error(err.message);
-			// @ts-ignore
-			if (err.response) {
+				if (err.response) {
 				// @ts-ignore
-				if (err.response.status === 403) {
-					this.log.error("Wrong PIN - enter PIN set on device. Default is 1234");
-					return;
+					if (err.response.status === 403) {
+						this.log.error("Wrong PIN - enter PIN set on device. Default is 1234");
+						return;
+					} else {
+					// @ts-ignore
+						this.log.error(err);
+					}
+					// @ts-ignore
+				} else if (err.request) {
+				// @ts-ignore
+					this.log.error(err);
 				}
-			// @ts-ignore
-			} else if (err.request) {
-				// @ts-ignore
-				this.log.error(err);
 			}
 		}
 
-
 		await this.discoverDeviceFeatures();
 		await this.discoverState();
-
 		await this.getAllPresets(false);
 
 		this.onFSAPIMessage();
@@ -163,17 +158,23 @@ class FrontierSilicon extends utils.Adapter {
 	 * @param {() => void} callback
 	 */
 	onUnload(callback) {
-		try {
-			// Here you must clear all timeouts or intervals that may still be active
-			this.deleteSession;
-			this.clearUp();
-			callback();
-		} catch (e) {
-			callback();
-		}
+
+		// Here you must clear all timeouts or intervals that may still be active
+		polling = true; // disable onFSAPI processing
+		this.cleanUp(); //stop all timeouts
+		this.setStateAsync("info.connection", false, true)
+
+		//		this.deleteSession()
+			.then(() => {
+				//
+				callback();
+			})
+			.catch (() => {
+				callback();
+			});
 	}
 
-	clearUp() {
+	cleanUp() {
 		clearTimeout(timeOutMessage);
 		sleeps.forEach((value) =>
 		{
@@ -181,6 +182,7 @@ class FrontierSilicon extends utils.Adapter {
 		});
 		sleeps.clear();
 	}
+
 	// If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
 	// You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
 	// /**
@@ -1322,7 +1324,7 @@ class FrontierSilicon extends utils.Adapter {
 		}
 		catch (err)
 		{
-			this.log.debug(JSON.stringify(err));
+			this.log.debug("Error in getDeviceInfo: " + JSON.stringify(err));
 			throw err;
 		}
 	}
@@ -1395,12 +1397,22 @@ class FrontierSilicon extends utils.Adapter {
 								answer.success = result.fsapiResponse.status[0].toString() == "FS_OK";
 							});
 					});
-			} catch (error) {
-				this.log.error("Session error, trying to reestablish session...");
+			} catch (err) {
 				// @ts-ignore
-				this.log.debug(JSON.stringify(error));
-				await this.setStateAsync("info.connection", false, true);
-				this.createSession();
+				if (err.response) { // catch Session error
+					// @ts-ignore
+					if (err.response.status === 404) {
+						//throw (err);
+
+						this.log.info("Session error, trying to reestablish session...");
+						// @ts-ignore
+						this.log.debug("callAPI Error: " + JSON.stringify(err));
+						await this.setStateAsync("info.connection", false, true);
+						this.createSession();
+					}
+				} else {
+					this.log.debug("Unknown callAPI Error: " + JSON.stringify(err));
+				}
 			}
 		}
 		return answer;
@@ -1423,7 +1435,6 @@ class FrontierSilicon extends utils.Adapter {
 				log.debug(`Create session with ${url}`);
 				await axios.get(url)
 					.then(device => {
-						//log.debug(device.)
 						const parser = new xml2js.Parser();
 						parser.parseStringPromise(device.data)
 							.then(function (result) {
@@ -1546,28 +1557,29 @@ class FrontierSilicon extends utils.Adapter {
 						} else { //terminate adapter after unsuccessful session retries
 							sessionRetryCnt = SESSION_RETRYS;
 							//adapter.terminate does not clear up timers or intervals
-							this.clearUp();
-							this.terminate(`Adapter terminated after ${++sessionRetryCnt} Session Re-establish Attempts`, 11);
+							this.cleanUp();
+							this.terminate(`Device not reachable - Adapter terminated after ${++sessionRetryCnt} create Session attempts`, 11);
 						}
 					}
 				} else {
-					this.log.error (JSON.stringify(err));
+					this.log.error ("Unknown createSession Error: " + JSON.stringify(err));
 				}
 			}
 		}
 	}
 
+	/*
 	async deleteSession()
 	{
 		const log = this.log;
 		let url;
-		let connected = false;
+		//const connected = false;
+		const currentSession = this.config.SessionID;
 		if (this.config.fsAPIURL !== null) {
-			// @ts-ignore
-			log.debug(`Deleting Session with ${this.config.SessionID}`);
-
+			//await this.setStateAsync("info.connection", connected, true);
+			log.debug(`Deleting Session ${currentSession}`);
 			try {
-				url = `${this.config.fsAPIURL}/DELETE_SESSION?pin=${this.config.PIN}&sid=${this.config.SessionID}`;
+				url = `${this.config.fsAPIURL}/DELETE_SESSION?pin=${this.config.PIN}&sid=${currentSession.toString()}`;
 				log.debug(`Delete session with ${url}`);
 				await axios.get(url)
 					.then(device => {
@@ -1577,33 +1589,33 @@ class FrontierSilicon extends utils.Adapter {
 							.then(function (result) {
 								//log.debug(result.fsapiResponse.sessionId);
 								//dev.Session = result.fsapiResponse.sessionId;
-								// @ts-ignore
-								if (result.fsapiResponse.status === "FS_OK") {
+								log.debug(JSON.stringify(result.fsapiResponse));
+								if (result.fsapiResponse.status[0].toString() == "FS_OK") {
 									// @ts-ignore
-									log.debug(`Session ${this.config.SessionID} deleted`);
+									log.debug(`Session ${currentSession} deleted`);
 								} else {
 									// @ts-ignore
-									log.debug(`Session ${this.config.SessionID} could not be deleted`);
+									log.debug(`Session ${currentSession} could not be deleted`);
 								}
 							});
 					});
-				this.config.SessionID = 0;
-				connected = false;
+				//this.config.SessionID = 0;
+				//connected = false;
 				// await this.setStateAsync("info.connection", connected, true);
-				if(this.log.level=="debug" || this.log.level=="silly")
-				{
-					await this.deleteChannelAsync("debug");
-				}
-				await this.sleep(200);
+				//if(this.log.level=="debug" || this.log.level=="silly")
+				//{
+				//	await this.deleteChannelAsync("debug");
+				//}
+				//await this.sleep(200);
 			}
 			catch (err) {
 			// delete session failed due to connection error
-				connected = false;
+				//connected = false;
 				this.log.debug ("Delete Session failed: " + JSON.stringify(err));
 			}
 		}
-		await this.setStateAsync("info.connection", connected, true);
 	}
+*/
 
 	// If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
 	// /**
@@ -1681,6 +1693,13 @@ class FrontierSilicon extends utils.Adapter {
 						switch (item.$.node)
 						{
 							case "netremote.sys.state":
+								await this.callAPI("netRemote.sys.power")
+									.then(function (result) {
+										if(result !== null && result !== undefined && result.val !== null )
+										{
+											adapter.setStateAsync("device.power", { val: result.result.value[0].u8[0] == 1, ack: true });
+										}
+									});
 								break;
 							case "netremote.sys.mode":
 								await this.setStateAsync("modes.selected", { val: Number(item.value[0].u32[0]), ack: true });
@@ -1747,6 +1766,21 @@ class FrontierSilicon extends utils.Adapter {
 											adapter.setStateAsync("media.album", { val: result.result.value[0].c8_array[0], ack: true });
 										}
 									});
+								await this.callAPI("netremote.sys.audio.volume")
+									.then(function (result) {
+										if(result !== null && result !== undefined && result.val !== null )
+										{
+											adapter.setStateAsync("audio.volume", { val: Number(result.result.value[0].u8[0]), ack: true });
+										}
+									});
+								await this.callAPI("netremote.sys.audio.mute")
+									.then(function (result) {
+										if(result !== null && result !== undefined && result.val !== null )
+										{
+											adapter.setStateAsync("audio.mute", { val: result.result.value[0].u8[0] == 1, ack: true });
+										}
+									});
+
 								await this.callAPI("netremote.sys.mode")
 									.then(function (result) {
 										if(result !== null && result !== undefined && result.val !== null )
