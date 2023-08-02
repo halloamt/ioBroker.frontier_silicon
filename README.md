@@ -207,6 +207,10 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+- (pdbjjens) New: Optionally display PIN code and limit to 4 digits in config GUI
+
 ### 0.1.1 (2023-07-26)
 
 - (pdbjjens) Breaking Change: node>=14, js-contoller>=4 and admin>=5 required
