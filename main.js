@@ -63,7 +63,7 @@ class FrontierSilicon extends utils.Adapter {
 			this.log.error(`PIN code is empty - please check instance configuration of ${this.namespace}`);
 			return;
 		} else if (!this.config.PIN.match(PIN_FORMAT)) {
-			this.log.error(`Device PIN format not valid. Should be four decimal digits. Default is 1234`);
+			this.log.error(`PIN code ${this.config.PIN} format not valid. Should be four decimal digits. Default is 1234`);
 			return;
 		}
 		try {

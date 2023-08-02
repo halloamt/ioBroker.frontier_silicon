@@ -17,7 +17,8 @@
                 "PIN": {
                     "type": "password",
                     "repeat": false,
-                    "visible": false,
+                    "visible": true,
+                    "maxLength": 4,
                     "sm": 12,
                     "md": 6,
                     "lg": 6,
