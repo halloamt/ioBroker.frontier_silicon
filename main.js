@@ -528,7 +528,7 @@ class FrontierSilicon extends utils.Adapter {
 		await this.setObjectNotExistsAsync("audio.maxVolume", {
 			type: "state",
 			common: {
-				name: "Max Volume setting",
+				name: "Max volume setting",
 				type: "number",
 				role: "value.max",
 				read: true,
@@ -611,7 +611,7 @@ class FrontierSilicon extends utils.Adapter {
 			pro = this.setObjectNotExistsAsync(`modes.${key}.key`, {
 				type: "state",
 				common: {
-					name: "Mode Key",
+					name: "Mode key",
 					type: "number",
 					role: "media.input",
 					read: true,
@@ -637,7 +637,7 @@ class FrontierSilicon extends utils.Adapter {
 			pro = this.setObjectNotExistsAsync(`modes.${key}.label`, {
 				type: "state",
 				common: {
-					name: "Mode Label",
+					name: "Mode label",
 					type: "string",
 					role: "text",
 					read: true,
@@ -812,7 +812,7 @@ class FrontierSilicon extends utils.Adapter {
 		await this.setObjectNotExistsAsync(`modes.${mode}.presets.available`, {
 			type: "state",
 			common: {
-				name: "Mode Key",
+				name: "Mode key",
 				type: "boolean",
 				role: "indicator",
 				read: true,
@@ -844,7 +844,7 @@ class FrontierSilicon extends utils.Adapter {
 			pro = this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.name`, {
 				type: "state",
 				common: {
-					name: "Preset Name",
+					name: "Preset name",
 					type: "string",
 					role: "text",
 					read: true,
@@ -856,7 +856,7 @@ class FrontierSilicon extends utils.Adapter {
 			pro = this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.key`, {
 				type: "state",
 				common: {
-					name: "Preset Key",
+					name: "Preset key",
 					type: "number",
 					role: "media.playid",
 					read: true,
@@ -868,7 +868,7 @@ class FrontierSilicon extends utils.Adapter {
 			pro = this.setObjectNotExistsAsync(`modes.${mode}.presets.${key}.recall`, {
 				type: "state",
 				common: {
-					name: "Recall Preset",
+					name: "Recall preset",
 					type: "boolean",
 					role: "button",
 					read: false,
@@ -936,7 +936,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("modes.selected", {
 				type: "state",
 				common: {
-					name: "Mode",
+					name: "Selected mode",
 					type: "number",
 					role: "media.input",
 					read: true,
@@ -956,7 +956,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("modes.selectedLabel", {
 				type: "state",
 				common: {
-					name: "Mode",
+					name: "Selected mode label",
 					type: "string",
 					role: "media.input",
 					read: true,
@@ -976,7 +976,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("modes.selectPreset", {
 				type: "state",
 				common: {
-					name: "Mode",
+					name: "Select preset",
 					type: "number",
 					role: "media.track",
 					read: false,
@@ -1007,7 +1007,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("media.album", {
 				type: "state",
 				common: {
-					name: "Media name",
+					name: "Media album",
 					type: "string",
 					role: "media.album",
 					read: true,
@@ -1075,7 +1075,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("media.graphic", {
 				type: "state",
 				common: {
-					name: "Media text",
+					name: "Media graphic",
 					type: "string",
 					role: "media.cover",
 					read: true,
@@ -1136,7 +1136,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("audio.control.volumeUp", {
 				type: "state",
 				common: {
-					name: "Volume Up",
+					name: "Volume up",
 					type: "boolean",
 					role: "button.volume.up",
 					read: false,
@@ -1148,7 +1148,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("audio.control.volumeDown", {
 				type: "state",
 				common: {
-					name: "Volume Down",
+					name: "Volume down",
 					type: "boolean",
 					role: "button.volume.down",
 					read: false,
@@ -1216,7 +1216,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("media.state", {
 				type: "state",
 				common: {
-					name: "State",
+					name: "Media state",
 					type: "number",
 					role: "media.state",
 					read: true,
@@ -1276,7 +1276,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("device.friendlyName", {
 				type: "state",
 				common: {
-					name: "Friendly Name",
+					name: "Friendly name",
 					type: "string",
 					role: "info.name",
 					read: true,
@@ -1300,7 +1300,7 @@ class FrontierSilicon extends utils.Adapter {
 			await this.setObjectNotExistsAsync("device.version", {
 				type: "state",
 				common: {
-					name: "SW Version",
+					name: "SW version",
 					type: "string",
 					role: "text",
 					read: true,
@@ -1472,14 +1472,14 @@ class FrontierSilicon extends utils.Adapter {
 					await this.setObjectNotExistsAsync("debug", {
 						type: "channel",
 						common: {
-							name: "Debugging Tools",
+							name: "Debugging tools",
 						},
 						native: {},
 					});
 					await this.setObjectNotExistsAsync("debug.resetSession", {
 						type: "state",
 						common: {
-							name: "Reset Session",
+							name: "Reset session",
 							type: "boolean",
 							role: "button",
 							read: false,
@@ -1501,7 +1501,7 @@ class FrontierSilicon extends utils.Adapter {
 					await this.setObjectNotExistsAsync("debug.sessionCreationTime", {
 						type: "state",
 						common: {
-							name: "Session Timestamp",
+							name: "Session timestamp",
 							type: "number",
 							role: "value.time",
 							read: true,

@@ -184,39 +184,19 @@
       "_id": "info",
       "type": "channel",
       "common": {
-        "name": "Information"
-      },
-      "native": {}
-    },
-    {
-      "_id": "device",
-      "type": "device",
-      "common": {
-        "name": "Gerät"
-      },
-      "native": {}
-    },
-    {
-      "_id": "modes",
-      "type": "channel",
-      "common": {
-        "name": "Modi"
-      },
-      "native": {}
-    },
-    {
-      "_id": "audio",
-      "type": "channel",
-      "common": {
-        "name": "Audio settings"
-      },
-      "native": {}
-    },
-    {
-      "_id": "media",
-      "type": "channel",
-      "common": {
-        "name": "Media information"
+        "name": {
+          "en": "Information",
+          "de": "Information",
+          "ru": "Информация",
+          "pt": "Em formação",
+          "nl": "Informatie",
+          "fr": "Information",
+          "it": "Informazione",
+          "es": "Información",
+          "pl": "Informacja",
+          "uk": "Інформація",
+          "zh-cn": "信息"
+        }
       },
       "native": {}
     },
@@ -224,12 +204,104 @@
       "_id": "info.connection",
       "type": "state",
       "common": {
-        "role": "indicator.connected",
-        "name": "Device or service connected",
+        "name": {
+          "en": "Device or service connected",
+          "de": "Gerät oder Dienst verbunden",
+          "ru": "Устройство или служба подключены",
+          "pt": "Dispositivo ou serviço conectado",
+          "nl": "Apparaat of service verbonden",
+          "fr": "Appareil ou service connecté",
+          "it": "Dispositivo o servizio connesso",
+          "es": "Dispositivo o servicio conectado",
+          "pl": "Podłączono urządzenie lub usługę",
+          "uk": "Пристрої або послуги підключені",
+          "zh-cn": "连接的设备或服务"
+        },
         "type": "boolean",
+        "role": "indicator.connected",
         "read": true,
         "write": false,
         "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "device",
+      "type": "channel",
+      "common": {
+        "name": {
+          "en": "Device Information",
+          "de": "Geräteinformation",
+          "ru": "Информация об устройстве",
+          "pt": "Informação de dispositivo",
+          "nl": "Apparaat informatie",
+          "fr": "Informations sur l'appareil",
+          "it": "Informazioni sul dispositivo",
+          "es": "Información del dispositivo",
+          "pl": "Informacje o urządzeniu",
+          "uk": "Інформація про пристрій",
+          "zh-cn": "设备信息"
+        }
+      },
+      "native": {}
+    },
+    {
+      "_id": "modes",
+      "type": "channel",
+      "common": {
+        "name": {
+          "en": "Modes",
+          "de": "Modi",
+          "ru": "Режимы",
+          "pt": "Modos",
+          "nl": "Modes",
+          "fr": "Modes",
+          "it": "Modalità",
+          "es": "Modos",
+          "pl": "Modes",
+          "uk": "Режими",
+          "zh-cn": "导 言"
+        }
+      },
+      "native": {}
+    },
+    {
+      "_id": "audio",
+      "type": "channel",
+      "common": {
+        "name": {
+          "en": "Audio settings",
+          "de": "Audioeinstellungen",
+          "ru": "Аудио настройки",
+          "pt": "Definições de áudio",
+          "nl": "Audio setting",
+          "fr": "Paramètres audio",
+          "it": "Impostazioni audio",
+          "es": "Ajustes de audio",
+          "pl": "Ustawienie Audio",
+          "uk": "Налаштування аудіо",
+          "zh-cn": "Audio环境"
+        }
+      },
+      "native": {}
+    },
+    {
+      "_id": "media",
+      "type": "channel",
+      "common": {
+        "name": {
+          "en": "Media information",
+          "de": "Medieninformation",
+          "ru": "Медиа информация",
+          "pt": "InformaÃ§Ãμes sobre mídia",
+          "nl": "Media informatie",
+          "fr": "Information sur les médias",
+          "it": "Informazioni sui media",
+          "es": "Información sobre medios de comunicación",
+          "pl": "Media",
+          "uk": "Медіа інформація",
+          "zh-cn": "媒体信息"
+        }
       },
       "native": {}
     }
