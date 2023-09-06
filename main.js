@@ -72,32 +72,20 @@ class FrontierSilicon extends utils.Adapter {
 		catch (err) {
 			// @ts-ignore
 			this.log.error(err);
-			this.log.info("Connection error, Device not reachable");
+			this.log.info("Check if you entered the correct IP address of your device and if it is reachable on your network.");
 			return;
 		}
 
-		// createSession() to check for PIN mismatch;
+		// create session to check for PIN mismatch
 		const conn = await this.getStateAsync("info.connection");
 		if(conn === null || conn === undefined || !conn.val || this.config.SessionID === 0)
 		{
 			try {
 				await this.createSession();
 			} catch (err) {
-			// @ts-ignore
-				if (err.response) {
 				// @ts-ignore
-					if (err.response.status === 403) {
-						this.log.error("Wrong PIN - enter PIN set on device. Default is 1234");
-						return;
-					} else {
-					// @ts-ignore
-						this.log.error(err);
-					}
-					// @ts-ignore
-				} else if (err.request) {
-				// @ts-ignore
-					this.log.error(err);
-				}
+				this.log.error(err);
+				return;
 			}
 		}
 
@@ -132,26 +120,6 @@ class FrontierSilicon extends utils.Adapter {
 			this.subscribeStates("debug.resetSession");
 		}
 
-		/*
-			setState examples
-			you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-		*/
-		// the variable testVariable is set to true as command (ack=false)
-		//await this.setStateAsync("testVariable", true);
-
-		// same thing, but the value is flagged "ack"
-		// ack should be always set to true if the value is received from or acknowledged from the target system
-		//await this.setStateAsync("testVariable", { val: true, ack: true });
-
-		// same thing, but the state is deleted after 30s (getState will return null afterwards)
-		//await this.setStateAsync("testVariable", { val: true, ack: true, expire: 30 });
-
-		// examples for the checkPassword/checkGroup functions
-		//let result = await this.checkPasswordAsync("admin", "iobroker");
-		//this.log.info("check user admin pw iobroker: " + result);
-
-		//result = await this.checkGroupAsync("admin", "admin");
-		//this.log.info("check group user admin group admin: " + result);
 	}
 
 	/**
@@ -465,7 +433,12 @@ class FrontierSilicon extends utils.Adapter {
 				case "debug":
 					if(zustand[3] === "resetSession")
 					{
-						await this.createSession();
+						try {
+							await this.createSession();
+						} catch (err) {
+							// @ts-ignore
+							this.log.error(err);
+						}
 					}
 					break;
 				default:
@@ -1346,7 +1319,14 @@ class FrontierSilicon extends utils.Adapter {
 		if(sessionTimestamp <= Date.now() - this.config.RecreateSessionInterval * 60 * 1000)
 		{
 			this.log.debug("Recreating Session after RecreateSessionInterval");
-			await this.createSession(true); //recreate session
+			//recreate session
+			try {
+				await this.createSession(true);
+			} catch (err) {
+				// @ts-ignore
+				this.log.error(err);
+			}
+
 		}
 
 		const conn = await this.getStateAsync("info.connection");
@@ -1399,30 +1379,14 @@ class FrontierSilicon extends utils.Adapter {
 							});
 					});
 			} catch (err) {
+				this.log.info("Session error, trying to reestablish session...");
 				// @ts-ignore
-				if (err.response) { // catch Session error
+				await this.setStateAsync("info.connection", false, true);
+				try {
+					await this.createSession();
+				} catch (error) {
 					// @ts-ignore
-					if (err.response.status === 404) {
-						this.log.info("Session error, trying to reestablish session...");
-						// @ts-ignore
-						this.log.debug("callAPI Error: " + JSON.stringify(err));
-						await this.setStateAsync("info.connection", false, true);
-						this.createSession();
-					}
-				// @ts-ignore
-				} else if (err.request) { // catch device not reachable
-					// @ts-ignore
-					this.log.error(err);
-					// @ts-ignore
-					if (err.code == "ETIMEDOUT" || err.code == "ECONNRESET") {
-						this.log.info("Connection error, trying to reestablish session...");
-						// @ts-ignore
-						this.log.debug("callAPI Error: " + JSON.stringify(err));
-						await this.setStateAsync("info.connection", false, true);
-						this.createSession();
-					} else {
-						this.log.debug("Unknown callAPI Error: " + JSON.stringify(err));
-					}
+					this.log.error(error);
 				}
 			}
 		}
@@ -1546,34 +1510,42 @@ class FrontierSilicon extends utils.Adapter {
 			catch (err) {
 			// create session failed
 				await this.setStateAsync("info.connection", connected, true);
-				this.log.debug (JSON.stringify(err));
 				// @ts-ignore
 				if (err.response) { // catch wrong PIN
 					// @ts-ignore
-					if (err.response.status === 403) {
-						throw (err);
-					}
+					if (err.response.status == 403) {
+						throw (new Error ("PIN mismatch - enter the PIN set on your device. Default is 1234"));
+					} else
+					// @ts-ignore
+						if (err.response.status == 404) {
+							throw (new Error ("Session ID mismatch or invalid command"));
+						} else {
+							// @ts-ignore
+							throw (new Error  ("Unknown createSession response error: " + JSON.stringify(err)));
+						}
 				// @ts-ignore
 				} else if (err.request) { // catch device not reachable
 					// @ts-ignore
-					this.log.error(err);
-					// @ts-ignore
-					if (err.code == "ETIMEDOUT") {
+					if (err.code === "ETIMEDOUT" || err.code === "ECONNRESET" || err.code === "EHOSTUNREACH") {
 						if (sessionRetryCnt > 0) {
 						// @ts-ignore
-						//this.log.error(JSON.stringify(err));
-							this.log.info(`No session created, retry ${sessionRetryCnt} more times`);
+							this.log.error(err);
+							this.log.info(`Device unreachable, retry ${sessionRetryCnt} more times`);
 							--sessionRetryCnt;
+							await this.sleep(500);
 							this.createSession();
 						} else { //terminate adapter after unsuccessful session retries
 							sessionRetryCnt = SESSION_RETRYS;
 							//adapter.terminate does not clear up timers or intervals
 							this.cleanUp();
-							this.terminate(`Device not reachable - Adapter terminated after ${++sessionRetryCnt} create Session attempts`, 11);
+							this.terminate(`Device unreachable - Adapter terminated after ${++sessionRetryCnt} create Session attempts`, 11);
 						}
+					} else {
+						// @ts-ignore
+						throw (new Error  ("Unknown createSession request error: " + JSON.stringify(err)));
 					}
 				} else {
-					this.log.error ("Unknown createSession Error: " + JSON.stringify(err));
+					throw (new Error   ("Unknown createSession error: " + JSON.stringify(err)));
 				}
 			}
 		}
