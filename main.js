@@ -71,6 +71,8 @@ class FrontierSilicon extends utils.Adapter {
 		}
 		catch (err) {
 			// @ts-ignore
+			this.log.debug("Error in getDeviceInfo: " + JSON.stringify(err));
+			// @ts-ignore
 			this.log.error(err);
 			this.log.info("Check if you entered the correct IP address of your device and if it is reachable on your network.");
 			return;
@@ -1298,10 +1300,31 @@ class FrontierSilicon extends utils.Adapter {
 		}
 		catch (err)
 		{
-			this.log.debug("Error in getDeviceInfo: " + JSON.stringify(err));
-			throw err;
+			//this.log.debug("Error in getDeviceInfo: " + JSON.stringify(err));
+			// @ts-ignore
+			if (err.request) { // catch device not reachable
+				// @ts-ignore
+				if (err.code === "ETIMEDOUT" || err.code === "ECONNRESET" || err.code === "EHOSTUNREACH") {
+					if (sessionRetryCnt > 0) {
+						this.log.info(`Device unreachable, retry ${sessionRetryCnt} more times`);
+						--sessionRetryCnt;
+						//await this.sleep(500);
+						await this.getDeviceInfo();
+					} else { //terminate adapter after unsuccessful retries
+						sessionRetryCnt = SESSION_RETRYS;
+						this.log.info(`Device unreachable - Adapter stopped after ${++sessionRetryCnt} connection attempts`);
+						throw (err);
+					}
+				} else {
+					// @ts-ignore
+					throw (err);
+				}
+			} else {
+				throw (err);
+			}
 		}
 	}
+
 
 	/**
 	 * Call FSAPI
@@ -1533,7 +1556,7 @@ class FrontierSilicon extends utils.Adapter {
 							this.log.info(`Device unreachable, retry ${sessionRetryCnt} more times`);
 							--sessionRetryCnt;
 							await this.sleep(500);
-							this.createSession();
+							await this.createSession();
 						} else { //terminate adapter after unsuccessful session retries
 							sessionRetryCnt = SESSION_RETRYS;
 							//adapter.terminate does not clear up timers or intervals
