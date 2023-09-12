@@ -731,7 +731,7 @@ class FrontierSilicon extends utils.Adapter {
 		let result = await this.callAPI("netRemote.nav.state", "1");
 		if(!result.success) return;
 		result = await this.callAPI("netRemote.sys.mode");
-		const mode = result.result.value[0].u32[0];
+		const mode = result.result.value[0].u32[0]; // save original mode
 		let unmute = false;
 
 		const mute = await this.callAPI("netRemote.sys.audio.mute");
@@ -753,7 +753,7 @@ class FrontierSilicon extends utils.Adapter {
 			}
 			await this.getModePresets(i, unmute);
 		}
-		await this.callAPI("netRemote.sys.mode", mode);
+		await this.callAPI("netRemote.sys.mode", mode); // restore original mode
 		if(unmute)
 		{
 			await this.callAPI("netRemote.sys.audio.mute", "0");
@@ -762,7 +762,7 @@ class FrontierSilicon extends utils.Adapter {
 
 	async getModePresets(mode, unmute = false)
 	{
-		this.log.debug(`Presets ${mode}`);
+		this.log.debug(`Presets of mode ${mode}`);
 
 		let result = await this.callAPI("netRemote.sys.mode", mode.toString());
 		await this.sleep(1000);
@@ -785,7 +785,7 @@ class FrontierSilicon extends utils.Adapter {
 		await this.setObjectNotExistsAsync(`modes.${mode}.presets.available`, {
 			type: "state",
 			common: {
-				name: "Mode key",
+				name: "Presets available",
 				type: "boolean",
 				role: "indicator",
 				read: true,
@@ -794,7 +794,7 @@ class FrontierSilicon extends utils.Adapter {
 			native: {},
 		});
 		await this.setStateAsync(`modes.${mode}.presets.available`, { val: result.success, ack: true });
-		//this.log.debug(result.success.toString() + " - " + (available !== undefined).toString());
+		//this.log.debug(result.success.toString() + " - " + result.result.status[0].toString());
 		if(!result.success) return;
 
 		if(unmute)
@@ -1694,8 +1694,9 @@ class FrontierSilicon extends utils.Adapter {
 										}
 									});
 								//adapter.setStateAsync("modes.selectPreset", {val:null, ack: true});
-								await this.getModePresets(item.value[0].u32[0], false);
-								await this.UpdatePreset();
+								//removed the following two lines to fix readPresets. Side effects tbs.
+								//await this.getModePresets(item.value[0].u32[0], false);
+								//await this.UpdatePreset();
 								break;
 							case "netremote.play.serviceids.ecc":
 								break;
