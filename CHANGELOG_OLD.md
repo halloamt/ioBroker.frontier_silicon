@@ -1,4 +1,13 @@
 # Older changes
+## 0.0.9
+
+- (halloamt) Selected preset can be read now. The adapter guesses a little but this seems to work.
+
+- (halloamt) Nicer readme
+- (halloamt) (Hopefully) more robust session handling.
+- (halloamt) Long polling should work more reliably
+- (halloamt) Sleep timers are cleared on `onUnload`
+
 ## 0.0.7 und 0.0.8
 
 - (halloamt) Formal but neccessary stuff for ioBroker

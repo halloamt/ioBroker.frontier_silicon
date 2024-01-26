@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "frontier_silicon",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "news": {
+      "0.1.2": {
+        "en": "Change: node>=16, js-contoller>=4 and admin>=5 required\nNew: Optionally display PIN code and limit to 4 digits in config GUI\nUpdated dependencies",
+        "de": "Änderung: node>=16, js-contoller>=4 und admin>=5 erforderlich\nNeu: Optional PIN-Code anzeigen und auf 4 Stellen in config GUI begrenzen\nAktualisierte Abhängigkeiten",
+        "ru": "Изменение: node>=16, js-contoller>=4 и admin>=5 требуется\nНовый: Опционально отображать PIN-код и ограничиться 4 цифрами в настройке GUI\nОбновленные зависимости",
+        "pt": "Alteração: node>=16, js-contoller>=4 e admin>=5 requerido\nNovo: Opcionalmente exibir código PIN e limite para 4 dígitos em config GUI\nDependências atualizadas",
+        "nl": "Verandering: node>=16, js-contoller>=4 en admin>=5 vereist\nNieuw: Optioneel PIN-code tonen en beperken tot 4 cijfers in config GUI\nBijgewerkte afhankelijkheden",
+        "fr": "Changement : noeud>=16, js-contoller>=4 et admin>=5 requis\nNouveau: Optionnellement afficher le code PIN et limiter à 4 chiffres dans la configuration GUI\nDépendances actualisées",
+        "it": "Modifica: nodo>=16, js-contoller>=4 e admin>=5 richiesto\nNovità: Consente di visualizzare il codice PIN e limitare a 4 cifre in configurazione GUI\nDipendenze aggiornate",
+        "es": "Cambio: node confianza=16, js-contoller confianza=4 y administración=5 requerido\nNuevo: Opcionalmente mostrar código PIN y limitar a 4 dígitos en config GUI\nDependencias actualizadas",
+        "pl": "Zmiana: węzeł > = 16, js- contoller > = 4 i admin > = 5 wymagane\nNowy: Opcjonalnie wyświetl kod PIN i ogranicz do 4 cyfr w GUI konfiguracyjnym\nAktualizacja zależności",
+        "uk": "Зміна: вершина>=16, js-contoller>=4 і admin>=5 потрібно\nНовий: Необов'язково відображати PIN-код і обмежити до 4 цифр в config GUI\nОновлені залежності",
+        "zh-cn": "更改:节点>=16、js-contoller>=4和admin>=5\n新建: 可选显示 PIN 代码, 并在配置图形界面中限制为 4 位数\n更新的依赖关系"
+      },
       "0.1.1": {
         "en": "Breaking Change: node>=14, js-contoller>=4 and admin>=5 required\nBreaking Change: PIN encryption and validity check of all parameters in config UI\nBreaking Change: Type of `frontier_silicon.X.modes.selectPreset` changed from \"string\" to  \"number\"\nChange: Validity check of all parameters in config UI\nChange: Re-establish session if network connection is lost\nNew: Synchronization of power, volume and mute states with the UNDOK App",
         "de": "Breaking Change: node>=14, js-contoller>=4 und admin>=5 erforderlich\nBreaking Change: PIN-Verschlüsselung und Gültigkeitskontrolle aller Parameter in config UI\nBreaking Change: Typ von frontier_silicon.X.modes.select geändert von String zu Number\nÄnderung: Validierung aller Parameter in config UI\nÄnderung: Wiederherstellen der Session, wenn Netzwerkverbindung verloren geht\nNeu: Synchronisierung von Power-, Volume- und Mute-Zuständen mit der UNDOK App",
@@ -80,19 +93,6 @@
         "pl": "Formalny, lecz niekomercyjny materiał dla ioBrokera",
         "uk": "Формальні але необхідні речі для ioBroker",
         "zh-cn": "Broker的原状但必要性障碍"
-      },
-      "0.0.6": {
-        "en": "Pictures and icons",
-        "de": "Bilder und Icons",
-        "ru": "Фотографии и иконки",
-        "pt": "Fotos e ícones",
-        "nl": "Foto's en iconen",
-        "fr": "Images et icônes",
-        "it": "Immagini e icone",
-        "es": "Fotos e iconos",
-        "pl": "Zdjęcia i ikony",
-        "uk": "Фотографії та іконки",
-        "zh-cn": "家具和设备"
       }
     },
     "titleLang": {
