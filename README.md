@@ -207,10 +207,11 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### **WORK IN PROGRESS** - 2024 maintenance release
 
 - (pdbjjens) Change: node>=16, js-contoller>=4 and admin>=5 required
 - (pdbjjens) New: Optionally display PIN code and limit to 4 digits in config GUI
+- (pdbjjens) Updated dependencies
 
 ### 0.1.1 (2023-07-26)
 
@@ -261,7 +262,7 @@ The authors are in no way endorsed by or affiliated with Frontier Smart Technolo
 
 MIT License
 
-Copyright (c) 2023 halloamt <iobroker@halloserv.de>
+Copyright (c) 2024 halloamt <iobroker@halloserv.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
