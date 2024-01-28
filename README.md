@@ -207,6 +207,10 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+- (pdbjjens) Change: Increase minor version number
+
 ### 0.1.2 (2024-01-26) - 2024 maintenance release
 
 - (pdbjjens) Change: node>=16, js-contoller>=4 and admin>=5 required
