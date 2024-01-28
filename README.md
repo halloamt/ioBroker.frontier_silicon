@@ -207,7 +207,7 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.2.0 (2024-01-28)
 
 - (pdbjjens) Change: Increase minor version number
 
@@ -240,10 +240,6 @@ Please be aware that you can sometimes choose between "pushing a button" or "set
 - (pdbjjens) New: Updated dependencies
 - (pdbjjens) New: Use adapter-dev instead of gulp translate
 - (pdbjjens) Fix: Prevent js-controller >=3.2.x warnings regarding non-existent objects and typeErrors
-
-### 0.0.10 (2020-11-29)
-
-- Translations
 
 ## Legal Notices
 

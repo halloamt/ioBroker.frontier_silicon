@@ -1,4 +1,8 @@
 # Older changes
+## 0.0.10 (2020-11-29)
+
+- Translations
+
 ## 0.0.9
 
 - (halloamt) Selected preset can be read now. The adapter guesses a little but this seems to work.

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "frontier_silicon",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "news": {
+      "0.2.0": {
+        "en": "Change: Increase minor version number",
+        "de": "Änderung: Nebenversionsnummer erhöhen",
+        "ru": "Изменение: Увеличить число версии",
+        "pt": "Mudança: Aumentar o número de versão menor",
+        "nl": "Wijziging: Verhoog klein versienummer",
+        "fr": "Changement: Augmenter le nombre de versions mineures",
+        "it": "Modifica: Aumentare il numero di versione minore",
+        "es": "Cambio: Aumentar el número de versión menor",
+        "pl": "Zmiana: Zwiększ numer wersji mniejszej",
+        "uk": "Зміна: Підвищений номер меншої версії",
+        "zh-cn": "更改: 增加小版本号"
+      },
       "0.1.2": {
         "en": "Change: node>=16, js-contoller>=4 and admin>=5 required\nNew: Optionally display PIN code and limit to 4 digits in config GUI\nUpdated dependencies",
         "de": "Änderung: node>=16, js-contoller>=4 und admin>=5 erforderlich\nNeu: Optional PIN-Code anzeigen und auf 4 Stellen in config GUI begrenzen\nAktualisierte Abhängigkeiten",
@@ -80,19 +93,6 @@
         "pl": "Nicer przeczytał i (pomyślnie) bardziej solidny sesyjny charakter",
         "uk": "Хороший читме і (повно) більш надійний процес сеансу",
         "zh-cn": "尼亚区读者和(希望)更强的会议"
-      },
-      "0.0.8": {
-        "en": "Formal but neccessary stuff for ioBroker",
-        "de": "Formales, aber notwendiges Material für ioBroker",
-        "ru": "Формальные, но необходимые вещи для ioBroker",
-        "pt": "Material formal mas necessário para ioBroker",
-        "nl": "Formal maar neccessary spul voor ioBroker",
-        "fr": "Des trucs formels mais neccessaires pour ioBroker",
-        "it": "Roba formale ma neccessaria per ioBroker",
-        "es": "Cosas formales pero no exitosas para ioBroker",
-        "pl": "Formalny, lecz niekomercyjny materiał dla ioBrokera",
-        "uk": "Формальні але необхідні речі для ioBroker",
-        "zh-cn": "Broker的原状但必要性障碍"
       }
     },
     "titleLang": {

@@ -1,6 +1,6 @@
 {
   "name": "iobroker.frontier_silicon",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Provides support for media players equipped with a Frontier Silicon chipset using FSAPI.",
   "author": {
     "name": "halloamt",
